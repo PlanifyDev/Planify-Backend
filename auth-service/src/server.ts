@@ -9,3 +9,5 @@ app.get("/test", (_, res) => {
 app.listen(port, () => {
   console.log(`\n\t ✌️ \n\n server listening on port ${port} ...`);
 });
+
+export default app;
