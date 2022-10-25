@@ -4,7 +4,13 @@
   "description": "",
   "main": "/src/server.ts",
   "scripts": {
-    "dev": "nodemon ./src/server.ts"
+    "dev": "nodemon ./src/server.ts",
+    "build": "npx tsc ",
+    "test": "npx tsc & node node_modules/jasmine/bin/jasmine",
+    "start": "npx tsc & node ./build/server.js",
+    "lint": "eslint ./src",
+    "lint:fix": "eslint ./src --fix",
+    "prettier-format": "prettier --config .prettierrc . --write"
   },
   "keywords": [],
   "author": "",
