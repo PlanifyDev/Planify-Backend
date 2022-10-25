@@ -1,7 +1,7 @@
 import express from "express";
 
 const app = express();
-const port = 3000;
+const port = 4000;
 app.get("/test", (_, res) => {
   res.status(200).send({ status: "✌️" });
 });
