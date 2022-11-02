@@ -1,41 +1,89 @@
-import conn from "./connection";
+import conn from "../connection";
 import { UserDao } from "./dao/userDao";
-import { User } from "../contracts/types";
-
+import { User, UserDB } from "../contracts/types";
+import { MyQuery } from "./query";
 export class UserDataStore implements UserDao {
-  insertUser(user: User): Promise<void> {
-    throw new Error("Method not implemented.");
+  async insertUser(user: User): Promise<void> {
+    const newUser: string[] = [];
+    for (const key in user) {
+      newUser.push(user[key]);
+    }
+    try {
+      await conn.query(MyQuery.insertUser, newUser);
+      return Promise.resolve();
+    } catch (error) {
+      console.log(error);
+
+      return Promise.reject(error);
+    }
   }
-  getUserByEmail(email: string): Promise<User> {
-    throw new Error("Method not implemented.");
+
+  async getUserByEmail(email: string): Promise<UserDB> {
+    try {
+      const user = await conn.query(MyQuery.getUserByEmail, [email]);
+      return Promise.resolve(user.rows[0]);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
-  getUserByUsername(username: string): Promise<User> {
-    throw new Error("Method not implemented.");
+
+  async getUserById(user_id: string): Promise<UserDB> {
+    try {
+      const user = await conn.query(MyQuery.getUserById, [user_id]);
+      return Promise.resolve(user.rows[0]);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
-  updatePassword(userId: string, newPassword: string): Promise<void> {
-    throw new Error("Method not implemented.");
+
+  async updatePassword(user_id: string, newPassword: string): Promise<void> {
+    try {
+      await conn.query(MyQuery.updatePassword, [newPassword, user_id]);
+      return Promise.resolve();
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
-  updateName(
-    userId: string,
+
+  async updateName(
+    user_id: string,
     first_name: string,
     last_name: string
-  ): Promise<User> {
-    throw new Error("Method not implemented.");
+  ): Promise<void> {
+    try {
+      await conn.query(MyQuery.updateName, [first_name, last_name, user_id]);
+      return Promise.resolve();
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
-  updateUsername(userId: string, username: string): Promise<void> {
-    throw new Error("Method not implemented.");
+
+  async updateImg(user_id: string, newUrl: string): Promise<void> {
+    try {
+      await conn.query(MyQuery.updateImg, [newUrl, user_id]);
+      return Promise.resolve();
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
-  updateImage(userId: string, newUrl: string): Promise<void> {
-    throw new Error("Method not implemented.");
+
+  async updateVerification(user_id: string): Promise<void> {
+    try {
+      await conn.query(MyQuery.updateVerification, [user_id]);
+      return Promise.resolve();
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
-  UpdateVerification(userId: string): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  deleteUser(userId: string): Promise<void> {
-    throw new Error("Method not implemented.");
+
+  async deleteUser(user_id: string): Promise<void> {
+    try {
+      await conn.query(MyQuery.deleteUser, [user_id]);
+      Promise.resolve();
+    } catch (error) {
+      Promise.reject(error);
+    }
   }
 }
-export let DB: UserDao;
-export async function initDB() {
-  DB = new UserDataStore();
-}
+
+export const DB = new UserDataStore();

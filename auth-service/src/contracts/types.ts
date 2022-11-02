@@ -4,16 +4,16 @@ export interface User {
   id: string;
   firstname: string;
   lastname: string;
-  username: string;
+  image_url: string;
   email: string;
   password: string;
 }
-
+export type UserDB = User & { verified: boolean };
 type withError<T> = T & { error: string };
-export type expressHandler<Req, Res> = RequestHandler<
-  string,
-  Partial<withError<Res>>,
-  Partial<Req>
+export type expressHandler<Param, ReqBody, ResBody> = RequestHandler<
+  Partial<Param>,
+  Partial<withError<ResBody>>,
+  Partial<ReqBody>
 >;
 
 export interface jwtObject {
