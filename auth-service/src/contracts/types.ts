@@ -10,12 +10,17 @@ export interface User {
 }
 export type UserDB = User & { verified: boolean };
 type withError<T> = T & { error: string };
-export type expressHandler<Param, ReqBody, ResBody> = RequestHandler<
+export type myHandler<ReqBody, ResBody> = RequestHandler<
+  string,
+  Partial<withError<ResBody>>,
+  Partial<ReqBody>
+>;
+export type myHandlerWithParam<Param, ReqBody, ResBody> = RequestHandler<
   Partial<Param>,
   Partial<withError<ResBody>>,
   Partial<ReqBody>
 >;
 
-export interface jwtObject {
+export interface JwtPayload {
   userId: string;
 }
