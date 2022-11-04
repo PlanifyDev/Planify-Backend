@@ -20,7 +20,7 @@ export interface SignInReq {
 }
 
 export interface SigninRes {
-  user: Pick<User, "firstname" | "lastname" | "image_url" | "email" | "id">;
+  user: Pick<User, "id" | "firstname" | "lastname" | "image_url" | "email">;
   jwt: string;
 }
 

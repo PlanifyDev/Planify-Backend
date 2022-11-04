@@ -1,10 +1,10 @@
 import { Router } from "express";
 import asyncHandler from "express-async-handler";
-import { signUpHandler } from "../handlers/userHandler";
+import * as handler from "../handlers/userHandler";
 export const userRouter = Router();
 
-userRouter.post("/signup", asyncHandler(signUpHandler));
+userRouter.post("/signup", asyncHandler(handler.signUpHandler));
 
-// userRouter.post("/signin", asyncHandler());
+userRouter.post("/signin", asyncHandler(handler.signInHandler));
 
 export default userRouter;

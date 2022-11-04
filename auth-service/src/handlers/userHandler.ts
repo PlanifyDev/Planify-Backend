@@ -36,3 +36,31 @@ export const signUpHandler: myHandler<api.SignUpReq, api.SignupRes> = async (
   const jwt = createToken({ userId: user.id });
   return res.status(200).send({ jwt });
 };
+
+export const signInHandler: myHandler<api.SignInReq, api.SigninRes> = async (
+  req,
+  res,
+  next
+) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(403).send({ error: ERRORS.WORONG_LOGIN });
+  }
+
+  const existing = await DB.getUserByEmail(email);
+
+  if (!existing || !comparePassword(password, existing.password)) {
+    return res.status(403).send({ error: ERRORS.WORONG_LOGIN });
+  }
+
+  const user = {
+    id: existing.id,
+    email: existing.email,
+    firstname: existing.firstname,
+    lastname: existing.firstname,
+    image_url: existing.image_url,
+  };
+  const jwt = createToken({ userId: existing.id });
+  return res.status(200).send({ user, jwt });
+};
