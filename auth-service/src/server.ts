@@ -1,7 +1,10 @@
 import express from "express";
+import cors from "cors";
 import userRouter from "./routes/userRouter";
-import { loggerMiddleware, errHandler } from "./middleware";
+import { loggerMiddleware, errHandler, notFound } from "./middleware";
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 const port = 3000;
 
@@ -14,7 +17,7 @@ app.get("/test", (_, res) => {
 app.use("/", userRouter);
 
 app.use(errHandler);
-
+app.use(notFound);
 app.listen(port, () => {
   console.log(`\n\t ✌️ \n\n server listening on port ${port} ...`);
 });

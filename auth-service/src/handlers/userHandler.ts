@@ -1,8 +1,13 @@
 import crypto from "crypto";
 import { DB } from "../datastore";
-import { myHandler, myHandlerWithParam } from "../contracts/types";
+import {
+  myHandler,
+  myHandlerWithParam,
+  User,
+  UserNewData,
+  UserDB,
+} from "../contracts/types";
 import * as api from "../contracts/api";
-import { User } from "./../contracts/types";
 import { ERRORS, hashPassword, comparePassword, createToken } from "../helpers";
 
 export const signUpHandler: myHandler<api.SignUpReq, api.SignupRes> = async (
@@ -47,10 +52,14 @@ export const signInHandler: myHandler<api.SignInReq, api.SigninRes> = async (
   if (!email || !password) {
     return res.status(403).send({ error: ERRORS.WORONG_LOGIN });
   }
-
-  const existing = await DB.getUserByEmail(email);
-
-  if (!existing || !comparePassword(password, existing.password)) {
+  let existing: UserDB;
+  try {
+    existing = await DB.getUserByEmail(email);
+  } catch (error) {
+    return next(error);
+  }
+  const isMatch = await comparePassword(password, existing.password);
+  if (!existing || !isMatch) {
     return res.status(403).send({ error: ERRORS.WORONG_LOGIN });
   }
 
@@ -58,9 +67,89 @@ export const signInHandler: myHandler<api.SignInReq, api.SigninRes> = async (
     id: existing.id,
     email: existing.email,
     firstname: existing.firstname,
-    lastname: existing.firstname,
+    lastname: existing.lastname,
     image_url: existing.image_url,
   };
   const jwt = createToken({ userId: existing.id });
   return res.status(200).send({ user, jwt });
+};
+
+export const updatePasswordHandler: myHandlerWithParam<
+  api.UpdatePassParam,
+  api.UpdatePassReq,
+  never
+> = async (req, res, next) => {
+  const userId = res.locals.userId;
+  const newPassword = await hashPassword(req.body.password);
+
+  await DB.updatePassword(userId, newPassword).catch((err) => {
+    return next(err);
+  });
+  return res.sendStatus(200);
+};
+
+export const updateNameHandler: myHandlerWithParam<
+  api.UpdateNameParam,
+  api.UpdateNameReq,
+  never
+> = async (req, res, next) => {
+  const userId = res.locals.userId;
+  const { firstname, lastname } = req.body;
+  await DB.updateName(userId, firstname, lastname).catch((err) => {
+    return next(err);
+  });
+  return res.sendStatus(200);
+};
+
+export const updateImageHandler: myHandlerWithParam<
+  api.UpdateImgParam,
+  api.UpdateImgReq,
+  never
+> = async (req, res, next) => {
+  const userId = res.locals.userId;
+  const { image_url } = req.body;
+
+  await DB.updateImg(userId, image_url).catch((err) => {
+    return next(err);
+  });
+  return res.sendStatus(200);
+};
+
+export const updateAllHandler: myHandlerWithParam<
+  api.UpdateAllParam,
+  api.UpdateAllReq,
+  never
+> = async (req, res, next) => {
+  let user: UserDB;
+  try {
+    user = await DB.getUserById(res.locals.userId);
+  } catch (error) {
+    return next(error);
+  }
+
+  const firstname = req.body.firstname || user.firstname;
+  const lastname = req.body.lastname || user.lastname;
+  const image_url = req.body.image_url || user.image_url;
+  let password = user.password;
+  if (req.body.password) {
+    password = await hashPassword(req.body.password);
+  }
+  const newUser: UserNewData = { firstname, lastname, image_url, password };
+  await DB.updateAllData(user.id, newUser).catch((error) => {
+    return next(error);
+  });
+  return res.sendStatus(200);
+};
+
+export const deleteUserHandler: myHandlerWithParam<
+  api.DeleteUserParam,
+  never,
+  never
+> = async (req, res, next) => {
+  const userId = res.locals.userId;
+
+  await DB.deleteUser(userId).catch((err) => {
+    return next(err);
+  });
+  return res.sendStatus(200);
 };

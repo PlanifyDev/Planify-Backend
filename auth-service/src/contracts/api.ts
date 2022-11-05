@@ -7,18 +7,15 @@ export type SignUpReq = Pick<
   User,
   "firstname" | "lastname" | "image_url" | "email" | "password"
 >;
-
 export interface SignupRes {
   jwt: string;
 }
 
 // ------------------------------------------------
-
 export interface SignInReq {
   email: string;
   password: string;
 }
-
 export interface SigninRes {
   user: Pick<User, "id" | "firstname" | "lastname" | "image_url" | "email">;
   jwt: string;
@@ -26,45 +23,33 @@ export interface SigninRes {
 
 // ------------------------------------------------
 
-export interface GetUserParam {
+export interface UpdatePassParam {
   user_id: string;
 }
-export type GetUserReq = Record<string, never>;
-
-export interface GetUserRes {
-  user: Pick<User, "firstname" | "lastname" | "image_url" | "email" | "id">;
-}
-
-// ------------------------------------------------
-
 export interface UpdatePassReq {
-  user_id: string;
   password: string;
 }
-export interface UpdatePassRes {
-  jwt: string;
-}
+export type UpdatePassRes = Record<string, never>;
 
 // ------------------------------------------------
-
-export interface UpdateNameReq {
+export interface UpdateNameParam {
   user_id: string;
+}
+export interface UpdateNameReq {
   firstname: string;
   lastname: string;
 }
-export interface UpdateNameRes {
-  jwt: string;
-}
+export type UpdateNameRes = Record<string, never>;
 
 // ------------------------------------------------
 
-export interface UpdateImgReq {
+export interface UpdateImgParam {
   user_id: string;
+}
+export interface UpdateImgReq {
   image_url: string;
 }
-export interface UpdateImgRes {
-  jwt: string;
-}
+export type UpdateImgRes = Record<string, never>;
 
 // ------------------------------------------------
 
@@ -75,10 +60,22 @@ export interface SetVerifyRes {
 
 // ------------------------------------------------
 
-export interface DeleteUserReq {
-  id: string;
+export interface DeleteUserParam {
+  user_id: string;
 }
+export type DeleteUserReq = Record<string, never>;
 export interface DeleteUserRes {
   message: string;
 }
 // ------------------------------------------------
+
+export interface UpdateAllParam {
+  user_id: string;
+}
+export interface UpdateAllReq {
+  firstname?: string;
+  lastname?: string;
+  image_url?: string;
+  password?: string;
+}
+export type UpdateAllRes = Record<string, never>;
