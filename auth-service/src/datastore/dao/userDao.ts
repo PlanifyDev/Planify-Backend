@@ -1,11 +1,11 @@
-import { User } from "../../contracts/types";
+import { User, UserDB, UserNewData } from "../../contracts/types";
 
 export interface UserDao {
   insertUser(user: User): Promise<void>;
 
-  getUserByEmail(email: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<UserDB | undefined>;
 
-  getUserById(user_id: string): Promise<User | undefined>;
+  getUserById(user_id: string): Promise<UserDB | undefined>;
 
   updatePassword(user_id: string, newPassword: string): Promise<void>;
 
@@ -16,6 +16,8 @@ export interface UserDao {
   ): Promise<void>;
 
   updateImg(user_id: string, newUrl: string): Promise<void>;
+
+  updateAllData(user_id: string, newUser: UserNewData): Promise<void>;
 
   updateVerification(user_id: string): Promise<void>;
 
