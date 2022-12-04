@@ -30,6 +30,7 @@
     "typescript": "^4.8.4",
     "cors": "^2.8.5",
     "nodemailer": "^6.8.0"
+   
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
