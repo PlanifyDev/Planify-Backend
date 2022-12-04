@@ -28,4 +28,5 @@ export type myHandlerWithParam<Param, ReqBody, ResBody> = RequestHandler<
 
 export interface JwtPayload {
   userId: string;
+  verified: boolean;
 }

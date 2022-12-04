@@ -7,9 +7,12 @@ export type SignUpReq = Pick<
   User,
   "firstname" | "lastname" | "image_url" | "email" | "password"
 >;
-export interface SignupRes {
-  jwt: string;
-}
+
+export interface SignupRes {}
+
+// ------------------------------------------------
+
+export interface Verify {}
 
 // ------------------------------------------------
 export interface SignInReq {
@@ -54,9 +57,7 @@ export type UpdateImgRes = Record<string, never>;
 // ------------------------------------------------
 
 export type SetVerifyReq = Record<string, never>;
-export interface SetVerifyRes {
-  jwt: string;
-}
+export interface SetVerifyRes {}
 
 // ------------------------------------------------
 

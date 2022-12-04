@@ -4,6 +4,7 @@ export enum ERRORS {
   USER_NOT_FOUND = "User not found",
   USER_REQUIRED_FIELDS = "Email, username, and password are required",
   DUPLICATE_EMAIL = "An account with this email already exists",
-  WORONG_LOGIN = "Wrong Email or Password",
+  WRONG_LOGIN = "Wrong Email or Password",
   NOT_AUTHORIZED = "Not Authorized",
+  BAD_VERIFY_RUL = "Invalid verification URL ",
 }

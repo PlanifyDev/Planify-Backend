@@ -12,7 +12,7 @@ const port = accessEnv("PORT") || 3000;
 app.use(loggerMiddleware);
 
 app.get("/test", (_, res) => {
-  res.status(200).send({ status: "✌️✌️" });
+  res.status(200).send({ status: "✌️✌️✌️" });
 });
 
 app.use("/", userRouter);

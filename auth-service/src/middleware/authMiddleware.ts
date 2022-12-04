@@ -18,12 +18,8 @@ export const jwtParseMiddleware = async (
 
   try {
     payload = verifyToken(token);
-  } catch (e) {
-    const verifyErr = e as VerifyErrors;
-    if (verifyErr instanceof TokenExpiredError) {
-      return res.status(401).send({ error: ERRORS.TOKEN_EXPIRED });
-    }
-    return res.status(401).send({ error: ERRORS.BAD_TOKEN });
+  } catch (error) {
+    return res.status(401).send({ error: ERRORS[error.message] });
   }
 
   const user = await DB.getUserById(payload.userId);

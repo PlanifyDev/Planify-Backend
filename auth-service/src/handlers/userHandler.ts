@@ -6,9 +6,17 @@ import {
   User,
   UserNewData,
   UserDB,
+  JwtPayload,
 } from "../contracts/types";
 import * as api from "../contracts/api";
-import { ERRORS, hashPassword, comparePassword, createToken } from "../helpers";
+import {
+  ERRORS,
+  hashPassword,
+  comparePassword,
+  createToken,
+  sendEmail,
+  verifyToken,
+} from "../helpers";
 
 export const signUpHandler: myHandler<api.SignUpReq, api.SignupRes> = async (
   req,
@@ -24,6 +32,9 @@ export const signUpHandler: myHandler<api.SignUpReq, api.SignupRes> = async (
     return res.status(403).send({ error: ERRORS.DUPLICATE_EMAIL });
   }
 
+  // TO-DO
+  // >> validation on all fields
+
   const hashedPassword = await hashPassword(password);
   const user: User = {
     id: crypto.randomUUID(),
@@ -38,8 +49,36 @@ export const signUpHandler: myHandler<api.SignUpReq, api.SignupRes> = async (
     return next(error);
   });
 
-  const jwt = createToken({ userId: user.id });
-  return res.status(200).send({ jwt });
+  const jwt = createToken({ userId: user.id, verified: false }, "1d");
+
+  // send verification email to user
+  const fullName = firstname + " " + lastname;
+  sendEmail(user.email, jwt, fullName);
+
+  return res.status(200);
+};
+
+export const verifyHandler: myHandler<never, api.Verify> = async (req, res) => {
+  const token = req.query.key as string;
+  if (!token) {
+    return res.status(401).send({ error: ERRORS.BAD_VERIFY_RUL });
+  }
+
+  let payload: JwtPayload;
+
+  try {
+    payload = verifyToken(token);
+  } catch (error) {
+    return res.status(401).send({ error: ERRORS.BAD_VERIFY_RUL });
+  }
+
+  const user = await DB.getUserById(payload.userId);
+  if (!user) {
+    return res.status(401).send({ error: ERRORS.BAD_VERIFY_RUL });
+  }
+
+  await DB.updateVerification(payload.userId);
+  return res.status(200).redirect("http://localhost:3000/test");
 };
 
 export const signInHandler: myHandler<api.SignInReq, api.SigninRes> = async (
@@ -50,7 +89,7 @@ export const signInHandler: myHandler<api.SignInReq, api.SigninRes> = async (
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(403).send({ error: ERRORS.WORONG_LOGIN });
+    return res.status(403).send({ error: ERRORS.WRONG_LOGIN });
   }
   let existing: UserDB;
   try {
@@ -60,7 +99,7 @@ export const signInHandler: myHandler<api.SignInReq, api.SigninRes> = async (
   }
   const isMatch = await comparePassword(password, existing.password);
   if (!existing || !isMatch) {
-    return res.status(403).send({ error: ERRORS.WORONG_LOGIN });
+    return res.status(403).send({ error: ERRORS.WRONG_LOGIN });
   }
 
   const user = {
@@ -69,8 +108,9 @@ export const signInHandler: myHandler<api.SignInReq, api.SigninRes> = async (
     firstname: existing.firstname,
     lastname: existing.lastname,
     image_url: existing.image_url,
+    verified: existing.verified,
   };
-  const jwt = createToken({ userId: existing.id });
+  const jwt = createToken({ userId: existing.id, verified: existing.verified });
   return res.status(200).send({ user, jwt });
 };
 
