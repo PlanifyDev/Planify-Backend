@@ -5,6 +5,7 @@ import { jwtParseMiddleware, isSameUser } from "../middleware";
 export const userRouter = Router();
 
 userRouter.post("/signup", asyncHandler(handler.signUpHandler));
+userRouter.get("/verify", asyncHandler(handler.verifyHandler));
 userRouter.post("/signin", asyncHandler(handler.signInHandler));
 
 userRouter.put(

@@ -6,6 +6,7 @@ import {
   User,
   UserNewData,
   UserDB,
+  JwtPayload,
 } from "../contracts/types";
 import * as api from "../contracts/api";
 import {
@@ -14,6 +15,7 @@ import {
   comparePassword,
   createToken,
   sendEmail,
+  verifyToken,
 } from "../helpers";
 
 export const signUpHandler: myHandler<api.SignUpReq, api.SignupRes> = async (
@@ -47,13 +49,36 @@ export const signUpHandler: myHandler<api.SignUpReq, api.SignupRes> = async (
     return next(error);
   });
 
-  const jwt = createToken({ userId: user.id, verified: false });
+  const jwt = createToken({ userId: user.id, verified: false }, "1d");
 
   // send verification email to user
   const fullName = firstname + " " + lastname;
   sendEmail(user.email, jwt, fullName);
 
-  return res.status(200).send({ jwt });
+  return res.status(200);
+};
+
+export const verifyHandler: myHandler<never, api.Verify> = async (req, res) => {
+  const token = req.query.key as string;
+  if (!token) {
+    return res.status(401).send({ error: ERRORS.BAD_VERIFY_RUL });
+  }
+
+  let payload: JwtPayload;
+
+  try {
+    payload = verifyToken(token);
+  } catch (error) {
+    return res.status(401).send({ error: ERRORS.BAD_VERIFY_RUL });
+  }
+
+  const user = await DB.getUserById(payload.userId);
+  if (!user) {
+    return res.status(401).send({ error: ERRORS.BAD_VERIFY_RUL });
+  }
+
+  await DB.updateVerification(payload.userId);
+  return res.status(200).redirect("http://localhost:3000/test");
 };
 
 export const signInHandler: myHandler<api.SignInReq, api.SigninRes> = async (

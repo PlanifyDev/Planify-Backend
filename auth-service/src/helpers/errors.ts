@@ -6,4 +6,5 @@ export enum ERRORS {
   DUPLICATE_EMAIL = "An account with this email already exists",
   WRONG_LOGIN = "Wrong Email or Password",
   NOT_AUTHORIZED = "Not Authorized",
+  BAD_VERIFY_RUL = "Invalid verification URL ",
 }
