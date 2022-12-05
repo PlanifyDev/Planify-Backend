@@ -1,12 +1,5 @@
-USER = "postgres"
-HOST = "localhost"
-DB_NAME = "auth_service"
-PASSWORD = "postgres"
-PORT_DATA = 5432
-JWT_SECRET="98D7E63E53AD872F6F4AB59D"
-SALT_ROUND=10
-JWT_SECRET=jkaewrl904y32y8932ga@lkmdsrap^423890436
-DATABASE_URI=postgres://wwaxgifyomzjri:9366fa0942c2c1bd630d8b81eb537b5ec35096c19f643016d6494c867bbe5ece@ec2-3-219-135-162.compute-1.amazonaws.com:5432/d2jvfb0kcs668u
-VERIFY_EMAIL= planify2@gmail.com
-VERIFY_PASSWORD=rnucizjzwddwsjfr
-PORT=3000
+## TO-DO
+
+### use caching to save user after pass auth middleware
+
+### validation on user data

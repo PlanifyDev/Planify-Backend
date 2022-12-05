@@ -15,6 +15,11 @@ export interface SignupRes {}
 export interface Verify {}
 
 // ------------------------------------------------
+
+export interface SendEmail {}
+
+// ------------------------------------------------
+
 export interface SignInReq {
   email: string;
   password: string;

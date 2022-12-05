@@ -2,7 +2,6 @@ import { ERRORS, verifyToken } from "../helpers";
 import { DB } from "../datastore";
 import { Request, Response, NextFunction } from "express";
 import { JwtPayload } from "../contracts/types";
-import { TokenExpiredError, VerifyErrors } from "jsonwebtoken";
 
 export const jwtParseMiddleware = async (
   req: Request,
@@ -28,6 +27,19 @@ export const jwtParseMiddleware = async (
   }
 
   res.locals.userId = user.id;
+  res.locals.verified = user.verified;
+  return next();
+};
+
+export const checkVerification = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (res.locals.verified != true) {
+    return res.status(401).send({ error: ERRORS.NOT_VERIFIED });
+  }
+
   return next();
 };
 
