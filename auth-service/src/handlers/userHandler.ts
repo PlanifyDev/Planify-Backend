@@ -49,10 +49,28 @@ export const signUpHandler: myHandler<api.SignUpReq, api.SignupRes> = async (
     return next(error);
   });
 
+  // create verification token with expire date
   const jwt = createToken({ userId: user.id, verified: false }, "1d");
 
   // send verification email to user
   const fullName = firstname + " " + lastname;
+  sendEmail(user.email, jwt, fullName);
+
+  return res.status(200);
+};
+
+export const sendEmailHandler: myHandler<never, api.SendEmail> = async (
+  _,
+  res
+) => {
+  const userId = res.locals.userId;
+  const user = await DB.getUserById(userId);
+
+  // create verification token with expire date
+  const jwt = createToken({ userId: user.id, verified: false }, "1d");
+
+  // send verification email to user
+  const fullName = user.firstname + " " + user.lastname;
   sendEmail(user.email, jwt, fullName);
 
   return res.status(200);

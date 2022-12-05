@@ -1,7 +1,11 @@
 import { Router } from "express";
 import asyncHandler from "express-async-handler";
 import * as handler from "../handlers/userHandler";
-import { jwtParseMiddleware, isSameUser } from "../middleware";
+import {
+  jwtParseMiddleware,
+  checkVerification,
+  isSameUser,
+} from "../middleware";
 export const userRouter = Router();
 
 userRouter.post("/signup", asyncHandler(handler.signUpHandler));
@@ -17,18 +21,21 @@ userRouter.put(
 userRouter.put(
   "/updatename/:id",
   jwtParseMiddleware,
+  checkVerification,
   isSameUser,
   asyncHandler(handler.updateNameHandler)
 );
 userRouter.put(
   "/updateimg/:id",
   jwtParseMiddleware,
+  checkVerification,
   isSameUser,
   asyncHandler(handler.updateImageHandler)
 );
 userRouter.put(
   "/updateall/:id",
   jwtParseMiddleware,
+  checkVerification,
   isSameUser,
   asyncHandler(handler.updateAllHandler)
 );
@@ -38,5 +45,7 @@ userRouter.delete(
   isSameUser,
   asyncHandler(handler.deleteUserHandler)
 );
+userRouter.use("/sendEmail", jwtParseMiddleware);
+userRouter.get("/sendEmail", asyncHandler(handler.sendEmailHandler));
 
 export default userRouter;
