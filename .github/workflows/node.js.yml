@@ -10,14 +10,14 @@ jobs:
   deploy:
     runs-on: self-hosted
     
-# checkout and setup node 
+    # checkout and setup node 
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
       with:
         node-version: '16.x'
         cache: 'npm'
-#       run the server
+    # run the server
     - name: Deploy and restart web server
     - run: |
           cd auth-service
