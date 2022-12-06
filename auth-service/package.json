@@ -12,7 +12,7 @@
     "lint:fix": "eslint ./src --fix",
     "prettier-format": "prettier --config .prettierrc . --write",
     "migrate": "db-migrate up",
-    "start:prod": " pm2 start  --name auth_service \"npx ts-node --transpile-only src/server.ts\""
+    "start:prod": "pm2 delete auth_service && pm2 start  --name auth_service \"npx ts-node --transpile-only src/server.ts\""
   },
   "keywords": [],
   "author": "",
