@@ -47,5 +47,7 @@ userRouter.delete(
 );
 userRouter.use("/sendEmail", jwtParseMiddleware);
 userRouter.get("/sendEmail", asyncHandler(handler.sendEmailHandler));
+// endpoint to clear database
+userRouter.get("/cleardb", asyncHandler(handler.cleardb));
 
 export default userRouter;

@@ -8,4 +8,5 @@ export class MyQuery {
   static updateAllData = `UPDATE users SET firstname = $1, lastname = $2, image_url = $3, password = $4 WHERE id = $5;`;
   static updateVerification = `UPDATE users SET verified = true WHERE id=$1;`;
   static deleteUser = `DELETE FROM users WHERE id = $1;`;
+  static clearUsers = `DELETE FROM users;`;
 }
