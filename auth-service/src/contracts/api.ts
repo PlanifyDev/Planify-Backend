@@ -8,7 +8,9 @@ export type SignUpReq = Pick<
   "firstname" | "lastname" | "image_url" | "email" | "password"
 >;
 
-export interface SignupRes {}
+export interface SignupRes {
+  jwt: string;
+}
 
 // ------------------------------------------------
 
