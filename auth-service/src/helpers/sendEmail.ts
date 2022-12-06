@@ -5,7 +5,7 @@ import { emailContent } from "./emailContent";
 export const sendEmail = (email: string, token: string, name: string): void => {
   const authEmail = accessEnv("VERIFY_EMAIL");
   const authPassword = accessEnv("VERIFY_PASSWORD");
-  const verificationLink = `http://52.91.28.172:3000:3000/verify/?key=${token}`;
+  const verificationLink = `http://52.91.28.172:3000/verify/?key=${token}`;
 
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
