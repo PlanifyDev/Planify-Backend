@@ -14,7 +14,7 @@ jobs:
 
     runs-on: self-hosted
     
-    secrets: inherit
+
     
     strategy:
       matrix:
@@ -30,6 +30,8 @@ jobs:
         cache: 'npm'
         cache-dependency-path: auth-service/package-lock.json
 #         working-directory: '/home/ubuntu/actions-runner/_work/Planify-Backend/Planify-Backend/auth-service/'
+        secrets: inherit
+        
     env:
       DATABASE_URI: ${{ secrets.DATABASE_URI }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
