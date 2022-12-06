@@ -28,14 +28,15 @@ jobs:
         cache: 'npm'
         cache-dependency-path: auth-service/package-lock.json
         # working-directory: '/home/ubuntu/actions-runner/_work/Planify-Backend/Planify-Backend/auth-service/'
-        secrets: inherit
-      env:
-        DATABASE_URI: ${{ secrets.DATABASE_URI }}
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
-        VERIFY_EMAIL: ${{ secrets.VERIFY_EMAIL }}
-        VERIFY_PASSWORD: ${{ secrets.VERIFY_PASSWORD }}
-        SALT_ROUND: ${{ secrets.SALT_ROUND }}
-        PORT: ${{ secrets.PORT }}
+    - name: create env file
+      run: |
+        touch .env
+        echo DATABASE_URI = ${{ secrets.DATABASE_URI }} >> .env
+        echo JWT_SECRET = ${{ secrets.JWT_SECRET }} >> .env
+        echo VERIFY_EMAIL = ${{ secrets.VERIFY_EMAIL }} >> .env
+        echo VERIFY_PASSWORD = ${{ secrets.VERIFY_PASSWORD }} >> .env
+        echo SALT_ROUND = ${{ secrets.SALT_ROUND }} >> .env
+        echo PORT = ${{ secrets.PORT }} >> .env
 
     - run: |
           cd auth-service
