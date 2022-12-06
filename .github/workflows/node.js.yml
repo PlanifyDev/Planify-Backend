@@ -37,6 +37,7 @@ jobs:
         echo VERIFY_PASSWORD = ${{ secrets.VERIFY_PASSWORD }} >> .env
         echo SALT_ROUND = ${{ secrets.SALT_ROUND }} >> .env
         echo PORT = ${{ secrets.PORT }} >> .env
+        mv .env ./auth-service/
 
     - run: |
           cd auth-service
