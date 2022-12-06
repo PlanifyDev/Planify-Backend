@@ -211,3 +211,13 @@ export const deleteUserHandler: myHandlerWithParam<
   });
   return res.sendStatus(200);
 };
+
+export const cleardb: myHandler<never, never> = async (req, res, next) => {
+  await DB.clearUsers()
+    .then(() => {
+      return res.sendStatus(200);
+    })
+    .catch((err) => {
+      return next(err);
+    });
+};

@@ -22,4 +22,5 @@ export interface UserDao {
   updateVerification(user_id: string): Promise<void>;
 
   deleteUser(user_id: string): Promise<void>;
+  clearUsers(): Promise<void>;
 }
