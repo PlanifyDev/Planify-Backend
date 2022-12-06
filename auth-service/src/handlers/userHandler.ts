@@ -56,7 +56,7 @@ export const signUpHandler: myHandler<api.SignUpReq, api.SignupRes> = async (
   const fullName = firstname + " " + lastname;
   sendEmail(user.email, jwt, fullName);
 
-  return res.status(200);
+  return res.status(200).send({ jwt });
 };
 
 export const sendEmailHandler: myHandler<never, api.SendEmail> = async (
