@@ -96,7 +96,7 @@ export const verifyHandler: myHandler<never, api.Verify> = async (req, res) => {
   }
 
   await DB.updateVerification(payload.userId);
-  return res.status(200).redirect("http://localhost:3000/test");
+  return res.status(200).redirect("http://52.91.28.172:3000:3000/test");
 };
 
 export const signInHandler: myHandler<api.SignInReq, api.SigninRes> = async (
