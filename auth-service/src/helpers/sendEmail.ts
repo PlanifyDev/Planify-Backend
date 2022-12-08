@@ -1,4 +1,4 @@
-import accessEnv from "./accessEnv";
+import { accessEnv } from "./accessEnv";
 import nodemailer from "nodemailer";
 import { emailContent } from "./emailContent";
 

@@ -1,6 +1,6 @@
 import { JwtPayload } from "../contracts/types";
 import jwt from "jsonwebtoken";
-import accessEnv from "./accessEnv";
+import { accessEnv } from "./accessEnv";
 import { TokenExpiredError, VerifyErrors } from "jsonwebtoken";
 
 const secret = accessEnv("JWT_SECRET");
