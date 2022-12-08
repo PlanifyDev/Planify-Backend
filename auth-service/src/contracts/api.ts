@@ -5,7 +5,7 @@ import { User } from "./types";
 // ------------------------------------------------
 export type SignUpReq = Pick<
   User,
-  "firstname" | "lastname" | "image_url" | "email" | "password"
+  "firstname" | "lastname" | "email" | "password"
 >;
 
 export interface SignupRes {

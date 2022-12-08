@@ -16,6 +16,8 @@ import {
   createToken,
   sendEmail,
   verifyToken,
+  signInValidator,
+  signUpValidator,
 } from "../helpers";
 import AWS from "aws-sdk";
 import accessEnv from "../helpers/accessEnv";
@@ -25,24 +27,24 @@ export const signUpHandler: myHandler<api.SignUpReq, api.SignupRes> = async (
   res,
   next
 ) => {
-  const { firstname, lastname, image_url, email, password } = req.body;
-  if (!firstname || !lastname || !email || !password) {
-    return res.status(400).send({ error: ERRORS.USER_REQUIRED_FIELDS });
+  const { firstname, lastname, email, password } = req.body;
+
+  const notValidMessage = signUpValidator(firstname, lastname, email, password);
+
+  if (notValidMessage) {
+    return res.status(403).send({ error: notValidMessage as string });
   }
 
   if (await DB.getUserByEmail(email)) {
     return res.status(403).send({ error: ERRORS.DUPLICATE_EMAIL });
   }
 
-  // TO-DO
-  // >> validation on all fields
-
   const hashedPassword = await hashPassword(password);
   const user: User = {
     id: crypto.randomUUID(),
     firstname,
     lastname,
-    image_url,
+    image_url: "default image for now ",
     email,
     password: hashedPassword,
   };
@@ -108,9 +110,11 @@ export const signInHandler: myHandler<api.SignInReq, api.SigninRes> = async (
 ) => {
   const { email, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(403).send({ error: ERRORS.WRONG_LOGIN });
+  const notValidMessage = signInValidator(email, password);
+  if (notValidMessage) {
+    return res.status(403).send({ error: notValidMessage as string });
   }
+
   let existing: UserDB;
   try {
     existing = await DB.getUserByEmail(email);
