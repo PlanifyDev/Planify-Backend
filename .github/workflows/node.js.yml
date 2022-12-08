@@ -34,6 +34,9 @@ jobs:
           echo VERIFY_PASSWORD = ${{ secrets.VERIFY_PASSWORD }} >> .env
           echo SALT_ROUND = ${{ secrets.SALT_ROUND }} >> .env
           echo PORT = ${{ secrets.PORT }} >> .env
+          echo AWS_ACCESS_KEY = ${{ secrets.AWS_ACCESS_KEY }} >> .env
+          echo AWS_SECRET_KEY = ${{ secrets.AWS_SECRET_KEY }} >> .env
+          echo AWS_S3_BUCKET_NAME = ${{ secrets.AWS_S3_BUCKET_NAME }} >> .env
           mv .env ./auth-service/
 
       - run: |

@@ -37,5 +37,5 @@ export const verifyHandler: myHandler<never, Verify> = async (req, res) => {
   }
 
   await DB.updateVerification(payload.userId);
-  return res.status(200).redirect("http://52.91.28.172:3000/test");
+  return res.status(200).redirect("http://44.195.228.114:3000/test");
 };
