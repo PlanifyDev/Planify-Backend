@@ -1,6 +1,7 @@
 import { Router } from "express";
 import asyncHandler from "express-async-handler";
 import * as handler from "../handlers/userHandler";
+import fileUpload from "express-fileupload";
 import {
   jwtParseMiddleware,
   checkVerification,
@@ -30,6 +31,7 @@ userRouter.put(
   jwtParseMiddleware,
   checkVerification,
   isSameUser,
+  fileUpload(),
   asyncHandler(handler.updateImageHandler)
 );
 userRouter.put(

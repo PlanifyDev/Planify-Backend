@@ -57,9 +57,11 @@ export interface UpdateImgParam {
   user_id: string;
 }
 export interface UpdateImgReq {
+  image: File;
+}
+export interface UpdateImgRes {
   image_url: string;
 }
-export type UpdateImgRes = Record<string, never>;
 
 // ------------------------------------------------
 

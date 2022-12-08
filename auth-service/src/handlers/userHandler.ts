@@ -17,6 +17,8 @@ import {
   sendEmail,
   verifyToken,
 } from "../helpers";
+import AWS from "aws-sdk";
+import accessEnv from "../helpers/accessEnv";
 
 export const signUpHandler: myHandler<api.SignUpReq, api.SignupRes> = async (
   req,
@@ -162,15 +164,34 @@ export const updateNameHandler: myHandlerWithParam<
 export const updateImageHandler: myHandlerWithParam<
   api.UpdateImgParam,
   api.UpdateImgReq,
-  never
+  api.UpdateImgRes
 > = async (req, res, next) => {
   const userId = res.locals.userId;
-  const { image_url } = req.body;
-
-  await DB.updateImg(userId, image_url).catch((err) => {
-    return next(err);
+  AWS.config.update({
+    accessKeyId: accessEnv("AWS_ACCESS_KEY"),
+    secretAccessKey: accessEnv("AWS_SECRET_KEY"),
+    region: "us-east-1",
   });
-  return res.sendStatus(200);
+
+  const s3 = new AWS.S3();
+
+  const fileContent = Buffer.from(req.files.img["data"], "binary");
+
+  const params = {
+    Bucket: accessEnv("AWS_S3_BUCKET_NAME"),
+    Key: userId,
+    Body: fileContent,
+    ContentType: req.files.img["mimetype"],
+    ACL: "public-read",
+  };
+
+  s3.upload(params, (err, data) => {
+    if (err) {
+      return res.status(500).send({ error: err.message });
+    }
+    console.log(data);
+    return res.status(200).send({ image_url: data.Location });
+  });
 };
 
 export const updateAllHandler: myHandlerWithParam<
