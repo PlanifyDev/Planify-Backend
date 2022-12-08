@@ -1,5 +1,5 @@
 import { Pool } from "pg";
-import accessEnv from "../helpers/accessEnv";
+import { accessEnv } from "../helpers";
 const DATABASE_URI = accessEnv("DATABASE_URI");
 let conn: Pool;
 try {

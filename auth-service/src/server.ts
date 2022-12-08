@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import userRouter from "./routes/userRouter";
 import { loggerMiddleware, errHandler, notFound } from "./middleware";
-import accessEnv from "./helpers/accessEnv";
+import { accessEnv } from "./helpers";
 
 const app = express();
 
