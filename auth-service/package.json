@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon ./src/server.ts",
     "build": "npx tsc ",
-    "test": "jest ",
+    "test": "jest --forceExit",
     "start": "npx tsc & node ./build/server.js",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix",

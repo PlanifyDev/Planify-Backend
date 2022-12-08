@@ -10,11 +10,18 @@ export const signInHandler: myHandler<SignInReq, SigninRes> = async (
 ) => {
   const { email, password } = req.body;
 
-  const notValidMessage = help.notValid({ email }, { password });
-  if (notValidMessage) {
-    return res.status(403).send({ error: notValidMessage as string });
+  // ---------------- check if all field is existing ----------------
+  if (!email || !password) {
+    return res.status(400).send({ error: help.ERRORS.WRONG_LOGIN });
   }
 
+  // ---------------- check if all inputs is valid ----------------
+  const notValidMessage = help.notValid({ email }, { password });
+  if (notValidMessage) {
+    return res.status(400).send({ error: notValidMessage as string });
+  }
+
+  // -------------- get user from db -------------------------
   let existing: UserDB;
   try {
     existing = await DB.getUserByEmail(email);
@@ -23,12 +30,13 @@ export const signInHandler: myHandler<SignInReq, SigninRes> = async (
   }
 
   if (!existing) {
-    return res.status(403).send({ error: help.ERRORS.WRONG_LOGIN });
+    return res.status(400).send({ error: help.ERRORS.WRONG_LOGIN });
   }
 
+  // ---------- check if password is correct or not ------------
   const isMatch = await help.comparePassword(password, existing.password);
   if (!existing || !isMatch) {
-    return res.status(403).send({ error: help.ERRORS.WRONG_LOGIN });
+    return res.status(400).send({ error: help.ERRORS.WRONG_LOGIN });
   }
 
   const user = {
@@ -39,9 +47,12 @@ export const signInHandler: myHandler<SignInReq, SigninRes> = async (
     image_url: existing.image_url,
     verified: existing.verified,
   };
+
+  // create token without expire date
   const jwt = help.createToken({
     userId: existing.id,
     verified: existing.verified,
   });
+
   return res.status(200).send({ user, jwt });
 };

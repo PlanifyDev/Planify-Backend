@@ -2,7 +2,7 @@ import { User } from "./types";
 
 // user API
 
-// ------------------------------------------------
+// ----------- Sign up api ------------------------
 export type SignUpReq = Pick<
   User,
   "firstname" | "lastname" | "email" | "password"
@@ -11,7 +11,6 @@ export type SignUpReq = Pick<
 export interface SignupRes {
   jwt: string;
 }
-
 // ------------------------------------------------
 
 export interface Verify {}
