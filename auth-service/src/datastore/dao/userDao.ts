@@ -7,14 +7,6 @@ export interface UserDao {
 
   getUserById(user_id: string): Promise<UserDB | undefined>;
 
-  updatePassword(user_id: string, newPassword: string): Promise<void>;
-
-  updateName(
-    user_id: string,
-    first_name: string,
-    last_name: string
-  ): Promise<void>;
-
   updateImg(user_id: string, newUrl: string): Promise<void>;
 
   updateAllData(user_id: string, newUser: UserNewData): Promise<void>;

@@ -36,28 +36,6 @@ export class UserDataStore implements UserDao {
     }
   }
 
-  async updatePassword(user_id: string, newPassword: string): Promise<void> {
-    try {
-      await conn.query(MyQuery.updatePassword, [newPassword, user_id]);
-      return Promise.resolve();
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  }
-
-  async updateName(
-    user_id: string,
-    first_name: string,
-    last_name: string
-  ): Promise<void> {
-    try {
-      await conn.query(MyQuery.updateName, [first_name, last_name, user_id]);
-      return Promise.resolve();
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  }
-
   async updateImg(user_id: string, newUrl: string): Promise<void> {
     try {
       await conn.query(MyQuery.updateImg, [newUrl, user_id]);

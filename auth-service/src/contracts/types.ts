@@ -9,10 +9,7 @@ export interface User {
   password: string;
 }
 export type UserDB = User & { verified: boolean };
-export type UserNewData = Pick<
-  User,
-  "firstname" | "lastname" | "image_url" | "password"
->;
+export type UserNewData = Pick<User, "firstname" | "lastname" | "password">;
 
 type withError<T> = T & { error: string };
 export type myHandler<ReqBody, ResBody> = RequestHandler<

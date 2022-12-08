@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import accessEnv from "./accessEnv";
+import { accessEnv } from "./accessEnv";
 
 const slatRound = accessEnv("SALT_ROUND");
 

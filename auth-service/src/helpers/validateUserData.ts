@@ -1,48 +1,34 @@
 import validator from "validator";
 
-export const signUpValidator = (
-  firstname: string,
-  lastname: string,
-  email: string,
-  password: string
-): string | boolean => {
-  if (!firstname || !lastname || !email || !password) {
-    return "Email, username, and password are required";
+export const notValid = (...data: object[]): string | boolean => {
+  let mydata = {};
+  for (let i = 0; i < data.length; i++) {
+    mydata[Object.keys(data[i])[0]] = Object.values(data[i])[0];
   }
 
-  if (!validator.isAlpha(firstname) || !validator.isAlpha(lastname)) {
-    return "Name must only contain alphabetic characters";
+  if (mydata["firstname"] && mydata["lastname"]) {
+    if (
+      !validator.isAlpha(mydata["firstname"]) ||
+      !validator.isAlpha(mydata["lastname"])
+    ) {
+      return "Name must only contain alphabetic characters";
+    }
+
+    if (mydata["firstname"].length > 15 || mydata["lastname"].length > 15) {
+      return "Name is not valid";
+    }
   }
 
-  if (firstname.length > 15 || lastname.length > 15) {
-    return "Name is not valid";
+  if (mydata["password"]) {
+    if (mydata["password"].length < 8) {
+      return "Password is too short";
+    }
   }
 
-  if (password.length < 8) {
-    return "Password is too short";
-  }
-
-  if (!validator.isEmail(email)) {
-    return "Email is not valid";
-  }
-
-  return false;
-};
-
-export const signInValidator = (
-  email: string,
-  password: string
-): string | boolean => {
-  if (!email || !password) {
-    return "Wrong Email or Password";
-  }
-
-  if (password.length < 8) {
-    return "Password is too short";
-  }
-
-  if (!validator.isEmail(email)) {
-    return "Email is not valid";
+  if (mydata["email"]) {
+    if (!validator.isEmail(mydata["email"])) {
+      return "Email is not valid";
+    }
   }
 
   return false;
