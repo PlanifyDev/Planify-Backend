@@ -30,13 +30,13 @@ export const signInHandler: myHandler<SignInReq, SigninRes> = async (
   }
 
   if (!existing) {
-    return res.status(400).send({ error: help.ERRORS.WRONG_LOGIN });
+    return res.status(403).send({ error: help.ERRORS.WRONG_LOGIN });
   }
 
   // ---------- check if password is correct or not ------------
   const isMatch = await help.comparePassword(password, existing.password);
   if (!existing || !isMatch) {
-    return res.status(400).send({ error: help.ERRORS.WRONG_LOGIN });
+    return res.status(403).send({ error: help.ERRORS.WRONG_LOGIN });
   }
 
   const user = {
