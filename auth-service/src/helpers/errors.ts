@@ -7,4 +7,5 @@ export enum ERRORS {
   NOT_AUTHORIZED = "Not Authorized",
   BAD_VERIFY_RUL = "Invalid verification URL ",
   NOT_VERIFIED = "This account has not been verified",
+  USER_REQUIRED_FIELDS = "Email, username, and password are required",
 }

@@ -11,6 +11,14 @@ export const signUpHandler: type.myHandler<SignUpReq, SignupRes> = async (
 ) => {
   const { firstname, lastname, email, password } = req.body;
 
+  // ---------------- check if all field is existing ----------------
+  if (!firstname || !lastname || !email || !password) {
+    return res
+      .status(400)
+      .send({ error: "Email, username, and password are required" });
+  }
+
+  // ---------------- check if all inputs is valid ----------------
   const notValidMessage = help.notValid(
     { firstname },
     { lastname },
@@ -19,13 +27,16 @@ export const signUpHandler: type.myHandler<SignUpReq, SignupRes> = async (
   );
 
   if (notValidMessage) {
-    return res.status(403).send({ error: notValidMessage as string });
+    return res.status(400).send({ error: notValidMessage as string });
   }
+  // ----------------------------------------------------------------
 
+  // ------------- check if user is already exist or not ------------
   if (await DB.getUserByEmail(email)) {
-    return res.status(403).send({ error: help.ERRORS.DUPLICATE_EMAIL });
+    return res.status(400).send({ error: help.ERRORS.DUPLICATE_EMAIL });
   }
 
+  // ---------------- hash the new password to store it --------------
   const hashedPassword = await help.hashPassword(password);
   const user: type.User = {
     id: crypto.randomUUID(),
@@ -36,6 +47,7 @@ export const signUpHandler: type.myHandler<SignUpReq, SignupRes> = async (
     password: hashedPassword,
   };
 
+  // ---------------- save all data in db --------------------------
   await DB.insertUser(user).catch((error) => {
     return next(error);
   });

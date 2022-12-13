@@ -15,10 +15,12 @@ export const updateAllHandler: type.myHandlerWithParam<
     { password: req.body.password }
   );
   if (notValidMsg) {
-    return res.status(403).send({ error: notValidMsg as string });
+    return res.status(400).send({ error: notValidMsg as string });
   }
 
   // -------------------------------------------
+
+  // ----------- get user data from DB --------
   let user: type.UserDB;
   try {
     user = await DB.getUserById(res.locals.userId);
@@ -30,26 +32,29 @@ export const updateAllHandler: type.myHandlerWithParam<
   const lastname = req.body.lastname || user.lastname;
   let password = user.password;
 
+  // ---- if he need to change password must pass old password ---------
   if (req.body.password) {
     if (!req.body.oldPassword) {
       return res
-        .status(403)
+        .status(400)
         .send({ error: "Old password is required to update " });
     }
 
     if (help.notValid({ password: req.body.oldPassword })) {
-      return res.status(403).send({ error: "Wrong password" });
+      return res.status(400).send({ error: "Wrong password" });
     }
 
+    // ------------ check if old password is correct -----------
     const isMatch = await help.comparePassword(
       req.body.oldPassword,
       user.password
     );
 
     if (!isMatch) {
-      return res.status(403).send({ error: "Wrong password" });
+      return res.status(400).send({ error: "Wrong password" });
     }
 
+    // ---- hash new password to save in DB -------------------
     password = await help.hashPassword(req.body.password);
   }
 
@@ -59,12 +64,15 @@ export const updateAllHandler: type.myHandlerWithParam<
     password,
   };
 
+  // ------------- send new data to update db ---------------
   await DB.updateAllData(user.id, newUser).catch((error) => {
     return next(error);
   });
-
   return res.sendStatus(200);
 };
+
+// =====================================================================
+// =====================================================================
 
 export const deleteUserHandler: type.myHandlerWithParam<
   api.DeleteUserParam,
