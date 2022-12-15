@@ -1,22 +1,23 @@
 import { Pool } from "pg";
 import { accessEnv } from "../helpers";
-const DATABASE_URI = accessEnv("DATABASE_URI");
+const ENV = accessEnv("ENV");
+const DATABASE_URI_PROD = accessEnv("DATABASE_URI_PROD");
+let connectionString = accessEnv("DATABASE_URI_LOCAL");
+
 let conn: Pool;
 try {
-  // conn = new Pool({
-  //   user: accessEnv("USER"),
-  //   host: accessEnv("HOST"),
-  //   database: accessEnv("DB_NAME"),
-  //   password: accessEnv("PASSWORD"),
-  //   port: Number(accessEnv("PORT_DATA")),
-  // });
+  if (ENV == "prod") {
+    connectionString = DATABASE_URI_PROD;
+    conn = new Pool({
+      connectionString,
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    });
+  } else {
+    conn = new Pool({ connectionString });
+  }
 
-  conn = new Pool({
-    connectionString: DATABASE_URI,
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  });
   console.log("database connected ...");
 } catch (error) {
   console.log("connection error");
