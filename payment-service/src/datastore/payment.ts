@@ -74,4 +74,4 @@ export class PaymentDataStore implements PaymentDao {
   }
 }
 
-export const DB = new PaymentDataStore();
+export const dbPayment = new PaymentDataStore();
