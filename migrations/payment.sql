@@ -18,7 +18,7 @@ CREATE TABLE payment (
     payment_id              VARCHAR(100) PRIMARY KEY,
     payment_description     VARCHAR(200) ,
     amount                  NUMERIC NOT NULL,
-    currency                VARCHAR(50) NOT NULL DEFAULT 'USD'
+    currency                VARCHAR(50) NOT NULL DEFAULT 'USD',
     created_data            DATE NOT NULL DEFAULT CURRENT_DATE,
     payment_details         JSON NOT NULL,
     payment_status          VARCHAR(50) NOT NULL,

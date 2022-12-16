@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
-// import userRouter from "./routes/userRouter";
-// import { loggerMiddleware, errHandler, notFound } from "./middleware";
-import { accessEnv } from "./helpers";
+import paypalRouter from "./routes/paypalRouter";
+import { loggerMiddleware, errHandler, notFound } from "./middleware";
+import { accessEnv, paypalConfig } from "./helpers";
 
 const app = express();
 
@@ -11,16 +11,18 @@ app.use(express.json());
 
 const port = accessEnv("PORT");
 
-// app.use(loggerMiddleware);
+app.use(loggerMiddleware);
 
-app.get("/", (_, res) => {
+app.get("/test_pay", (_, res) => {
   res.status(200).send({ status: "✌️" });
 });
 
-// app.use("/", userRouter);
+paypalConfig(); // configurations paypal sdk
 
-// app.use(errHandler);
-// app.use(notFound);
+app.use("/", paypalRouter);
+
+app.use(errHandler);
+app.use(notFound);
 app.listen(port, "::1", () => {
   console.log(`\n\t ✌️ \n\n server listening on port ${port} ...`);
 });
