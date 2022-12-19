@@ -2,7 +2,7 @@ import paypal from "paypal-rest-sdk";
 import { myHandler } from "../contracts/types";
 import * as api from "../contracts/api";
 import { Payment } from "../contracts/types";
-import { accessEnv } from "../helpers";
+import { create_payment_json } from "../helpers";
 import { dbPayment, dbPlan } from "../datastore";
 export const pay: myHandler<api.PaypalReq, api.PaypalRes> = async (
   req,
@@ -30,28 +30,10 @@ export const pay: myHandler<api.PaypalReq, api.PaypalRes> = async (
   }
 
   // create details of invoice
-  const create_payment_json = {
-    intent: "sale",
-    payer: {
-      payment_method: "paypal",
-    },
-    redirect_urls: {
-      return_url: accessEnv("RETURN_URL"),
-      cancel_url: accessEnv("CANCEL_URL"),
-    },
-    transactions: [
-      {
-        amount: {
-          currency: "USD",
-          total: totalAmount.toString(),
-        },
-        description: payment_description,
-      },
-    ],
-  };
+  const invoiceObj = create_payment_json(totalAmount, payment_description);
 
   // create invoice and return approval_url
-  paypal.payment.create(create_payment_json, async function (error, payment) {
+  paypal.payment.create(invoiceObj, async function (error, payment) {
     if (error) {
       return res.status(400).send({ error: error.message });
     } else {
@@ -66,7 +48,7 @@ export const pay: myHandler<api.PaypalReq, api.PaypalRes> = async (
         created_data,
         payment_details: payment,
         payment_status: payment.state,
-        user_id: res.locals.user_id || "370baf2b-da16-4539-8eab-5f0be8ef4d8e",
+        user_id: res.locals.user_id,
         plan_id,
         subscription,
       };
