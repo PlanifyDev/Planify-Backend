@@ -9,3 +9,11 @@ export enum ERRORS {
   NOT_VERIFIED = "This account has not been verified",
   USER_REQUIRED_FIELDS = "Email, username, and password are required",
 }
+
+export class NewError extends Error {
+  statusCode: number;
+  constructor(message: string, statusCode: number) {
+    super(message);
+    this.statusCode = statusCode;
+  }
+}
