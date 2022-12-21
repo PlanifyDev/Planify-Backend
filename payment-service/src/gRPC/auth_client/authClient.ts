@@ -2,10 +2,6 @@ import grpc from "grpc";
 import { authServiceClient } from "../proto_out/auth_grpc_pb";
 import { AuthorizationReq, AuthorizationRes } from "../proto_out/auth_pb";
 
-// import dotenv from "dotenv";
-// import { AuthorizationReq } from './../proto_out/auth_pb.d';
-// dotenv.config();
-// process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "1";
 const PORT = process.env.AUTH_GRPC_PORT;
 
 const client = new authServiceClient(

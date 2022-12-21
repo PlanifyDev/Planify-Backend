@@ -5,6 +5,8 @@ export interface PaymentDao {
 
   getSuccessPayments(user_id: string): Promise<Payment[] | undefined>;
 
+  getPaymentPyId(payment_id: string): Promise<Payment | undefined>;
+
   getAllPayments(user_id: string): Promise<Payment[] | undefined>;
 
   getLastSuccessPayment(user_id: string): Promise<Payment | undefined>;

@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import "express-async-errors";
 import paypalRouter from "./routes/paypalRouter";
 import { loggerMiddleware, errHandler, notFound } from "./middleware";
 import { accessEnv, paypalConfig } from "./helpers";

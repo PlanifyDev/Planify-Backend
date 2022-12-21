@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { authorization } from "../gRPC/auth_client/authClient";
-import { ERRORS } from "../helpers";
+import { ERRORS, NewError } from "../helpers";
 export const auth = async (req: Request, res: Response, next: NextFunction) => {
   const jwt = req.headers.authorization;
   if (!jwt) {
@@ -13,6 +13,15 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
       return next();
     })
     .catch((err) => {
-      return res.status(401).send({ error: err.message });
+      let error: NewError;
+      if (err.code == 2) {
+        error = new NewError(err.details, 401);
+        return next(error);
+        // throw new NewError(err.details, 401);
+      } else {
+        // rpc server error
+        return next(new Error("gRPC server error"));
+        // throw new NewError(err.details, 500);
+      }
     });
 };

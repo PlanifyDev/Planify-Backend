@@ -1,7 +1,8 @@
 export class payQuery {
   static createPayment = `INSERT INTO payment VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`;
   static getSuccessPayments = `SELECT * FROM payment WHERE user_id = $1 AND payment_status='ok' ;`;
-  static getAllPayments = `SELECT * FROM payment WHERE user_id id = $1 ;`;
+  static getPaymentPyId = `SELECT * FROM payment WHERE user_id id = $1 ;`;
+  static getAllPayments = `SELECT * FROM payment WHERE payment_id id = $1 ;`;
 
   static getLastSuccessPayment = `SELECT * FROM payment
                                   WHERE user_id id = $1 AND payment_status='ok'

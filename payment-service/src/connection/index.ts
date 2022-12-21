@@ -17,10 +17,10 @@ try {
   } else {
     conn = new Pool({ connectionString });
   }
-
   console.log("database connected ...");
 } catch (error) {
   console.log("connection error");
+  // throw new NewError("connection error", 5000);
 }
 
 export default conn;

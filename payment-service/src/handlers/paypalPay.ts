@@ -4,6 +4,7 @@ import * as api from "../contracts/api";
 import { Payment } from "../contracts/types";
 import { create_payment_json } from "../helpers";
 import { dbPayment, dbPlan } from "../datastore";
+import { NewError } from "../helpers";
 export const pay: myHandler<api.PaypalReq, api.PaypalRes> = async (
   req,
   res,
@@ -17,7 +18,7 @@ export const pay: myHandler<api.PaypalReq, api.PaypalRes> = async (
 
   const plan = await dbPlan.getPlan(plan_id);
   if (!plan) {
-    return res.status(404).send({ error: "Plan Not Found" });
+    return next(new NewError("Plan Not Found", 404));
   }
   if (subscription == "monthly") {
     totalAmount = plan.monthly_price;
@@ -26,7 +27,7 @@ export const pay: myHandler<api.PaypalReq, api.PaypalRes> = async (
     totalAmount = plan.yearly_price;
     payment_description = `Subscription in ${plan.name} plan for one year`;
   } else {
-    return res.status(404).send({ error: "Subscription Not Found" });
+    return next(new NewError("Subscription Not Found", 404));
   }
 
   // create details of invoice
@@ -35,11 +36,10 @@ export const pay: myHandler<api.PaypalReq, api.PaypalRes> = async (
   // create invoice and return approval_url
   paypal.payment.create(invoiceObj, async function (error, payment) {
     if (error) {
-      return res.status(400).send({ error: error.message });
+      return next(new NewError(error.message, 400));
     } else {
       const created_data = new Date(payment.create_time).toLocaleDateString();
 
-      console.log({ payment });
       const paymentDB_obj: Payment = {
         payment_id: payment.id,
         payment_description,
@@ -53,12 +53,9 @@ export const pay: myHandler<api.PaypalReq, api.PaypalRes> = async (
         subscription,
       };
 
-      // save payment in database
-      try {
-        await dbPayment.createPayment(paymentDB_obj);
-      } catch (error) {
-        return next(error);
-      }
+      await dbPayment.createPayment(paymentDB_obj).catch((error) => {
+        return next(new NewError(error.message, 500));
+      });
 
       const redirect_url = payment.links.filter(
         (data) => data.rel == "approval_url"
