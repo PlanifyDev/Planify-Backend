@@ -7,13 +7,14 @@
     "dev": "nodemon ./src/server.ts",
     "build": "npx tsc ",
     "test": "jest --forceExit",
-    "start": "node ./build/server.js",
+    "start": "ts-node ./src/server.ts",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix",
     "prettier-format": "prettier --config .prettierrc . --write",
     "start:prod": "pm2 delete auth_service; pm2 start  --name auth_service \"npx ts-node --transpile-only src/server.ts\"",
     "build:rpc": "sh src/gRPC/proto/build.sh",
-    "start:rpc": "node ./build/src/gRPC/rpc_server/server.js"
+    "start:rpc": "node ./build/src/gRPC/rpc_server/server.js",
+    "start:dev": "ts-node src/server.ts"
   },
   "keywords": [],
   "author": "",
