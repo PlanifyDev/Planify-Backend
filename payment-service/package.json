@@ -13,7 +13,8 @@
     "migrate": "db-migrate up",
     "start:prod": "pm2 delete payment_service; pm2 start  --name payment_service \"npx ts-node --transpile-only src/server.ts\"",
     "build:rpc": "sh src/gRPC/proto/build.sh",
-    "start:rpc": "node ./build/src/gRPC/rpc_server/server.js"
+    "start:rpc": "node ./build/gRPC/rpc_server/server.js",
+    "start:docker": "npx ts-node ./src/gRPC/rpc_server/server.ts && npx ts-node ./src/server.ts"
   },
   "keywords": [],
   "author": "",

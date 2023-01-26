@@ -1,16 +1,16 @@
 FROM node:16.17.0-alpine
 
-WORKDIR /auth-service
+WORKDIR /payment
 
 COPY . .
 
 # RUN ["npm",  "i"]
 
-COPY . .
+# COPY . .
 
 SHELL ["/bin/bash", "-c"] 
 
 # CMD ["start.sh"]
 
-CMD [ "npm", "start"]
+# CMD [ "npm", "start"]
 
