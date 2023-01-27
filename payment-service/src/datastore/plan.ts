@@ -1,5 +1,5 @@
 import conn from "../connection";
-import { PlanDao } from "./dao/PlanDao";
+import { PlanDao } from "./dao/planDao";
 import { Plan } from "../contracts/types";
 import { planQuery } from "./query";
 export class PlanDataStore implements PlanDao {

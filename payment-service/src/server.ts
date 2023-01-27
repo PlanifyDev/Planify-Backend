@@ -24,7 +24,7 @@ app.use("/", paypalRouter);
 
 app.use(errHandler);
 app.use(notFound);
-app.listen(port, "::1", () => {
+app.listen(port, () => {
   console.log(`\n\t ✌️ \n\n server listening on port ${port} ...`);
 });
 
