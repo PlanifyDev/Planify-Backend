@@ -14,6 +14,7 @@
     "start:prod": "pm2 delete auth_service; pm2 start  --name auth_service \"npx ts-node --transpile-only src/server.ts\"",
     "build:rpc": "sh src/gRPC/proto/build.sh",
     "start:rpc": "node ./build/src/gRPC/rpc_server/server.js",
+    "dev:rpc": "ts-node ./src/gRPC/rpc_server/server.ts",
     "start:dev": "ts-node src/server.ts"
   },
   "keywords": [],
