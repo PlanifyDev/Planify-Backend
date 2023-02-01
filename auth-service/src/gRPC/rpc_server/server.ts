@@ -21,6 +21,7 @@ class ImpAuthService implements IauthServiceServer {
   ): void {
     const jwt = call.request.getJwt();
     const response = new AuthorizationRes();
+    console.log("new Grpc request: ", "jwt", jwt.split(".")[1]);
 
     util
       .verifyJwt(jwt)
@@ -33,6 +34,7 @@ class ImpAuthService implements IauthServiceServer {
           name: "user missing",
           message: err,
         };
+        console.log("error", error);
         return callback(error, null);
       });
   }

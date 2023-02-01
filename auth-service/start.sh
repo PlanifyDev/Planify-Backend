@@ -1,3 +1,4 @@
 
+npm run start:rpc_prod & 
 npm run start:prod
-npm run start:rpc
+wait

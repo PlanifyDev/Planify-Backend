@@ -1,3 +1,4 @@
+-- Active: 1675014913249@@127.0.0.1@5432@auth_service@public
 CREATE TABLE users (
     id          VARCHAR(100) PRIMARY KEY,
     firstname   VARCHAR(50) NOT NULL,

@@ -1,4 +1,4 @@
-FROM node:16.17.0-alpine
+FROM node:16.19.0-alpine
 
 WORKDIR /payment
 
@@ -8,7 +8,7 @@ COPY . .
 
 # COPY . .
 
-SHELL ["/bin/bash", "-c"] 
+# SHELL ["/bin/bash", "-c"] 
 
 # CMD ["start.sh"]
 
