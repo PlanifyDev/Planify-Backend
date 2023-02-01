@@ -1,4 +1,4 @@
--- Active: 1671111403585@@127.0.0.1@5432@postgres@public
+-- Active: 1675014913249@@127.0.0.1@5432@auth_service@public
 CREATE TABLE plans (
     plan_id      VARCHAR(100) PRIMARY KEY,
     name                    VARCHAR(50) UNIQUE NOT NULL,
