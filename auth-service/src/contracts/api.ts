@@ -65,3 +65,16 @@ export interface UpdateAllReq {
   oldPassword?: string;
 }
 export interface UpdateAllRes {}
+
+// ------------------------------------------------
+
+export interface ForgetPassReq {
+  email: string;
+}
+export interface ForgetPassRes {}
+
+// ------------------------------------------------
+export interface ResetPassReq {
+  newpassword: string;
+}
+export interface ResetPassRes {}
