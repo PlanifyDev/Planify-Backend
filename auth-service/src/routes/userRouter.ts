@@ -27,6 +27,11 @@ userRouter.put(
   isSameUser,
   asyncHandler(handler.updateAllHandler)
 );
+// forgot password endpoint
+userRouter.post("/forgetpassword", asyncHandler(handler.forgetPassHandler));
+// reset password endpoint
+userRouter.post("/resetpassword", asyncHandler(handler.resetPassHandler));
+
 userRouter.delete(
   "/deleteuser/:id",
   jwtParseMiddleware,

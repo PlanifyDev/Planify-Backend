@@ -5,6 +5,7 @@ export class MyQuery {
   static updateImg = `UPDATE users SET image_url = $1 WHERE id=$2;`;
   static updateAllData = `UPDATE users SET firstname = $1, lastname = $2, password = $3 WHERE id = $4;`;
   static updateVerification = `UPDATE users SET verified = true WHERE id=$1;`;
+  static updatePassword = `UPDATE users SET password = $2 WHERE id=$1;`;
   static deleteUser = `DELETE FROM users WHERE id = $1;`;
   static clearUsers = `DELETE FROM users;`;
 }
