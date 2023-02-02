@@ -38,19 +38,20 @@ export const pay: myHandler<api.PaypalReq, api.PaypalRes> = async (
     if (error) {
       return next(new NewError(error.message, 400));
     } else {
-      const created_data = new Date(payment.create_time).toLocaleDateString();
-
+      // const created_date = new Date(payment.create_time).toLocaleDateString();
+      // const created_date = payment.create_time;
       const paymentDB_obj: Payment = {
         payment_id: payment.id,
         payment_description,
         amount: totalAmount,
         currency: "USD",
-        created_data,
+        created_date: payment.create_time,
         payment_details: payment,
         payment_status: payment.state,
         user_id: res.locals.user_id,
         plan_id,
         subscription,
+        payer_id: null,
       };
 
       await dbPayment.createPayment(paymentDB_obj).catch((error) => {

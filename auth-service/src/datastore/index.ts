@@ -94,9 +94,9 @@ export class UserDataStore implements UserDao {
   async clearUsers(): Promise<void> {
     try {
       await conn.query(MyQuery.clearUsers);
-      Promise.resolve();
+      return Promise.resolve();
     } catch (error) {
-      Promise.reject(error);
+      return Promise.reject(error.message);
     }
   }
 }

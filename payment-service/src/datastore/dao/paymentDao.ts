@@ -13,7 +13,9 @@ export interface PaymentDao {
 
   updatePaymentStatus(
     payment_id: string,
-    payment_status: string
+    payment_status: string,
+    created_date: string,
+    payer_id: string
   ): Promise<void>;
 
   deletePayment(payment_id: string): Promise<void>;

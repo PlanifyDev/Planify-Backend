@@ -1,17 +1,18 @@
 export class payQuery {
-  static createPayment = `INSERT INTO payment VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`;
+  static createPayment = `INSERT INTO payment VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`;
   static getSuccessPayments = `SELECT * FROM payment WHERE user_id = $1 AND payment_status='ok' ;`;
-  static getPaymentPyId = `SELECT * FROM payment WHERE user_id id = $1 ;`;
+  static getPaymentPyId = `SELECT * FROM payment WHERE payment_id = $1 ;`;
   static getAllPayments = `SELECT * FROM payment WHERE payment_id id = $1 ;`;
 
   static getLastSuccessPayment = `SELECT * FROM payment
                                   WHERE user_id id = $1 AND payment_status='ok'
-                                  ORDER BY created_time
+                                  ORDER BY created_date
                                   LIMIT 1 ;`;
 
   static updatePaymentStatus = `UPDATE payment
                                 SET payment_status = $2,
-                                created_data = CURRENT_DATE
+                                created_date = $3,
+                                payer_id = $4
                                 WHERE payment_id = $1;`;
 
   static deletePayment = `DELETE FROM payment WHERE payment_id = $1;`;
