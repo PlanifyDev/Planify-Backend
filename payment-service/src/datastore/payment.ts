@@ -60,12 +60,16 @@ export class PaymentDataStore implements PaymentDao {
 
   async updatePaymentStatus(
     payment_id: string,
-    payment_status: string
+    payment_status: string,
+    created_date: string,
+    payer_id: string
   ): Promise<void> {
     try {
       await conn.query(payQuery.updatePaymentStatus, [
         payment_id,
         payment_status,
+        created_date,
+        payer_id,
       ]);
       return Promise.resolve();
     } catch (error) {
