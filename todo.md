@@ -8,8 +8,6 @@
 ### auth
 
 - google auth
-  <!-- - build forget password endpoint -->
-  <!-- - verifyHandler error Cannot set headers after they are sent to the client -->
 
 ### payment
 
