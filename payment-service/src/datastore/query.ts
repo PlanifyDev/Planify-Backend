@@ -3,7 +3,7 @@ export class payQuery {
   static getSuccessPayments = `SELECT * FROM payment WHERE user_id = $1 AND payment_status='ok' ;`;
   static getPaymentPyId = `SELECT * FROM payment WHERE payment_id = $1 ;`;
   static getAllPayments = `SELECT * FROM payment WHERE payment_id id = $1 ;`;
-
+  static deleteUnsuccessPayment = `DELETE FROM payment WHERE user_id = $1 AND payment_status='created' ;`;
   static getLastSuccessPayment = `SELECT * FROM payment
                                   WHERE user_id id = $1 AND payment_status='ok'
                                   ORDER BY created_date

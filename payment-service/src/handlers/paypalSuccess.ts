@@ -55,6 +55,13 @@ export const success: myHandlerWithQuery<
               return next(new NewError(error.message, 400));
             });
 
+          //  to delete all payments with status = created with same user_id
+          await dbPayment
+            .deleteUnsuccessPayment(paymentDB.user_id)
+            .catch((error) => {
+              return next(new NewError(error.message, 400));
+            });
+
           // return res.end();
           res.redirect("http://localhost:3001/test_pay");
           // return serndEmailFuc()
