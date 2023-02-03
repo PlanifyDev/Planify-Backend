@@ -6,6 +6,7 @@ export const cancel: myHandlerWithQuery<
   api.PaypalCancelRes,
   api.PaypalCancelQuery
 > = async (req, res) => {
+  // todo: redirect to home page in front end
   // res.redirect("home page in front end");
   res.redirect("http://localhost:3001");
 };

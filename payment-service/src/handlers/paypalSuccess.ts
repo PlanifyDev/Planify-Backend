@@ -43,26 +43,32 @@ export const success: myHandlerWithQuery<
         if (error) {
           return next(new NewError(error.message, 400));
         } else {
-          paymentDB.created_data = new Date(
-            payment.create_time
-          ).toLocaleDateString();
-          paymentDB.payment_status = payment.state;
+          // update payment after executed
+          await dbPayment
+            .updatePaymentStatus(
+              paymentId,
+              payment.state,
+              payment.create_time,
+              payerId
+            )
+            .catch((error) => {
+              return next(new NewError(error.message, 400));
+            });
 
-          // update payment row after executed
-          await dbPayment.deletePayment(paymentDB.payment_id).catch((error) => {
-            return next(new NewError(error.message, 400));
-          });
-          await dbPayment.createPayment(paymentDB).catch((error) => {
-            return next(new NewError(error.message, 400));
-          });
+          //  to delete all payments with status = created with same user_id
+          await dbPayment
+            .deleteUnsuccessPayment(paymentDB.user_id)
+            .catch((error) => {
+              return next(new NewError(error.message, 400));
+            });
 
           // return res.end();
-          res.redirect("http://localhost:3001");
+          res.redirect("http://localhost:3001/test_pay");
           // return serndEmailFuc()
         }
       }
     );
   } catch (error) {
-    return next(new Error(""));
+    return next("Error");
   }
 };
