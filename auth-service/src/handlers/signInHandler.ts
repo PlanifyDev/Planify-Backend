@@ -1,7 +1,8 @@
 import { DB } from "../datastore";
-import { myHandler, UserDB } from "../contracts/types";
+import { myHandler, UserCacheData, UserDB } from "../contracts/types";
 import { SignInReq, SigninRes } from "../contracts/api";
 import * as help from "../helpers";
+import { cache } from "../cache";
 
 export const signInHandler: myHandler<SignInReq, SigninRes> = async (
   req,
@@ -53,6 +54,25 @@ export const signInHandler: myHandler<SignInReq, SigninRes> = async (
     userId: existing.id,
     verified: existing.verified,
   });
+
+  const username = existing.firstname + " " + existing.lastname;
+  const cacheUser: UserCacheData = {
+    user_token: jwt,
+    username,
+    plan_token: existing.user_plan,
+    verified: existing.verified.toString(),
+  };
+
+  // cache user data
+  await cache
+    .cacheUser(existing.id, cacheUser)
+    .then(() => {
+      console.log("user cached successfully ... ");
+    })
+    .catch((err) => {
+      console.log("error in caching user", err);
+      next(err);
+    });
 
   return res.status(200).send({ user, jwt });
 };

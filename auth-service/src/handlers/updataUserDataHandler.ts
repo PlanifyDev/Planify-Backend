@@ -2,6 +2,7 @@ import { DB } from "../datastore";
 import * as type from "../contracts/types";
 import * as api from "../contracts/api";
 import * as help from "../helpers";
+import { cache } from "../cache";
 
 export const updateAllHandler: type.myHandlerWithParam<
   api.UpdateAllParam,
@@ -63,6 +64,13 @@ export const updateAllHandler: type.myHandlerWithParam<
     lastname,
     password,
   };
+  // ------------- update name in cache ----------------------
+
+  await cache
+    .updateNameCache(user.id, firstname + " " + lastname)
+    .catch((error) => {
+      return next(error);
+    });
 
   // ------------- send new data to update db ---------------
   await DB.updateAllData(user.id, newUser).catch((error) => {
@@ -80,7 +88,12 @@ export const deleteUserHandler: type.myHandlerWithParam<
   never
 > = async (req, res, next) => {
   const userId = res.locals.userId;
+  // -------------- delete user from cache ----------------
+  await cache.signOutCache(userId).catch((err) => {
+    return next(err);
+  });
 
+  // -------------- delete user from DB ----------------
   await DB.deleteUser(userId).catch((err) => {
     return next(err);
   });
