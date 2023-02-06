@@ -90,12 +90,14 @@ def process_data(data):
     # cv2.imwrite('disp_mask.png', disp_mask)
     # cv2.imwrite('ai_mask.png', ai_mask)
 
-    print(upload_to_s3(ai_mask, bucket, folder_name='masks'))
+    mask_url = upload_to_s3(ai_mask, bucket, folder_name='masks')
 
     disp_rgb = cv2.cvtColor(disp, cv2.COLOR_BGR2RGB)
-    print(upload_to_s3(disp_rgb, bucket, folder_name='projects'))
+    disp_url = upload_to_s3(disp_rgb, bucket, folder_name='projects')
 
     return {
         'area': area,
         'inner': inner,
+        'project_img': disp_url,
+        'mask': mask_url
     }
