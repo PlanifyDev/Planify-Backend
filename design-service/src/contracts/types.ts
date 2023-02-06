@@ -12,11 +12,19 @@ export interface Project {
   deleted: boolean;
   user_id: string;
 }
-export type NewProject = Pick<
+
+export type NewProjectReq = Pick<Project, "name" | "boundary" | "user_id">;
+
+// todo add door_position, neighbors, constraints
+export type NewProjectDB = Pick<
   Project,
   "name" | "boundary" | "image_url" | "user_id"
 >;
-// todo add door_position, neighbors, constraints
+
+export type projectInRes = Pick<
+  Project,
+  "id" | "name" | "image_url" | "created_at" | "deleted"
+>;
 
 export interface Version {
   id: number;
@@ -25,18 +33,25 @@ export interface Version {
   image_url: string;
   created_at: string;
   deleted: boolean;
-  project_id: string;
+  project_id: number;
 }
 export type NewVersion = Pick<
   Version,
   "version_num" | "name" | "image_url" | "project_id"
 >;
 
+export interface UserCacheData {
+  username: string;
+  verified: string;
+  plan_token: string;
+  user_token: string;
+}
+
 type withError<T> = T & { error: string };
 export type myHandler<ReqBody, ResBody> = RequestHandler<
   string,
   Partial<withError<ResBody>>,
-  Partial<ReqBody>
+  ReqBody
 >;
 export type myHandlerWithParam<Param, ReqBody, ResBody> = RequestHandler<
   Partial<Param>,

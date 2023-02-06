@@ -1,26 +1,28 @@
 import conn from "../connection";
 import { projectDao } from "./dao/projectDao";
-import { Project, NewProject, Version, NewVersion } from "../contracts/types";
+import { Project, NewProjectDB, Version, NewVersion } from "../contracts/types";
 import { MyQuery } from "./query";
 
 export class projectDataStore implements projectDao {
-  async createProject(newProject: NewProject): Promise<void> {
-    const project: NewProject[] = [];
+  async createProject(newProjectDB: NewProjectDB): Promise<number> {
+    const project: NewProjectDB[] = [];
 
     // to ensure the order of the keys
     const keys = ["name", "boundary", "image_url", "user_id"];
     for (let i = 0; i < 4; i++) {
-      project.push(newProject[keys[i]]);
+      project.push(newProjectDB[keys[i]]);
     }
     try {
-      await conn.query(MyQuery.createProject, project);
-      return Promise.resolve();
+      const project_id = await (
+        await conn.query(MyQuery.createProject, project)
+      ).rows[0].id;
+      return Promise.resolve(project_id);
     } catch (error) {
       return Promise.reject(error);
     }
   }
 
-  async createVersion(newVersion: NewVersion): Promise<void> {
+  async createVersion(newVersion: NewVersion): Promise<number> {
     const version: NewVersion[] = [];
 
     // to ensure the order of the keys
@@ -29,8 +31,19 @@ export class projectDataStore implements projectDao {
       version.push(newVersion[keys[i]]);
     }
     try {
-      await conn.query(MyQuery.createVersion, version);
-      return Promise.resolve();
+      const version_id = await (
+        await conn.query(MyQuery.createVersion, version)
+      ).rows[0].id;
+      return Promise.resolve(version_id);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  async getProject(project_id: number): Promise<Project> {
+    try {
+      const result = await conn.query(MyQuery.getProject, [project_id]);
+      return Promise.resolve(result.rows[0]);
     } catch (error) {
       return Promise.reject(error);
     }

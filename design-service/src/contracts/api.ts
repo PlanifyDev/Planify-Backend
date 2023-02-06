@@ -1,25 +1,28 @@
-import { Project, NewProject, Version } from "./types";
+import { Project, NewProjectReq, projectInRes, Version } from "./types";
 
 // user API
 
-// ----------- Create new Project ------------------------
-export type CreateProjectReq = NewProject;
-export interface CreateProjectRes extends Version {}
+// ----------------- Create new Project --------------------------
+export type CreateProjectReq = NewProjectReq;
+export interface CreateProjectRes {
+  project: projectInRes;
+  version: Version;
+}
 
-// ----------- Create new Version ------------------------
+// ----------------- Create new Version --------------------------
 export interface CreateVersionReq {
   project_id: number;
 }
 export interface CreateVersionRes extends Version {}
 
-// ----------------- Get All Projects --------------------------
+// ----------------- Get All Projects Of User --------------------------
 
 export interface GetProjectsReq {
   user_id: string;
 }
 
 export interface GetProjectsRes {
-  projects: Project[];
+  projects: projectInRes[];
 }
 
 // ----------------- Get versions of project --------------------------
@@ -74,14 +77,14 @@ export interface RestoreVersionFromTrashReq {
 
 export interface RestoreVersionFromTrashRes {}
 
-// ----------------- Delete project --------------------------
+// ----------------- Delete project permanently --------------------------
 export interface DeleteProjectReq {
   project_id: number;
 }
 
 export interface DeleteProjectRes {}
 
-// ----------------- Delete version --------------------------
+// ----------------- Delete version permanently --------------------------
 export interface DeleteVersionReq {
   version_id: number;
 }
