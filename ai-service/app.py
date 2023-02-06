@@ -13,7 +13,7 @@ cors = CORS(app, resources={r"/foo": {"origins": "http://localhost:port"}})
 
 
 @app.route('/', methods=['GET'])
-@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
+@cross_origin(origin='localhost', headers=['Content- Type','Authorization'])
 def test():
     if request.method == 'GET':
         return 'AI service is up and running. Say thank you demon!'
@@ -22,7 +22,7 @@ def test():
 
 
 @app.route('/design', methods=['POST', 'GET', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'])
-@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
+@cross_origin(origin='localhost', headers=['Content- Type','Authorization'])
 def design():
     if request.method == 'POST':
         data = request.get_json()

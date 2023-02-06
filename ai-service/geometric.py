@@ -6,7 +6,7 @@ from pandas import Series
 from shapely import Polygon, MultiPolygon
 
 
-def get_mask(poly, shape, centerize=False):
+def get_mask(poly, shape=None, centerize=False):
     """ Return image conains multiploygon as a numpy array mask
 
     Params:
@@ -22,6 +22,12 @@ def get_mask(poly, shape, centerize=False):
     ndarray
         Mask array of the input polygon/s
     """
+
+    if shape is None:
+        if isinstance(poly, Polygon):
+            x1, y1, x2, y2 = poly.bounds
+            shape = (int(y2 - y1), int(x2 - x1))
+
     img = np.zeros(shape, dtype=np.uint8)
 
     if isinstance(poly, Polygon):
