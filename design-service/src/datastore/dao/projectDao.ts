@@ -1,14 +1,16 @@
 import {
   Project,
-  NewProject,
+  NewProjectDB,
   Version,
   NewVersion,
 } from "../../contracts/types";
 
 export interface projectDao {
-  createProject(newProject: NewProject): Promise<void>;
+  createProject(newProject: NewProjectDB): Promise<number>;
 
-  createVersion(newVersion: NewVersion): Promise<void>;
+  createVersion(newVersion: NewVersion): Promise<number>;
+
+  getProject(project_id: number): Promise<Project>;
 
   getProjects(user_id: string): Promise<Project[]>;
 
