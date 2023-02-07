@@ -2,3 +2,4 @@
 *.env
 */build
 ai-service/textures/Untitled.ipynb
+*.xml

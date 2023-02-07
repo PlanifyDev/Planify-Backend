@@ -26,7 +26,6 @@ def design():
     if request.method == 'POST':
         data = request.get_json()
         res = process_data(data)
-        print(res)
         return res
 
     else:
