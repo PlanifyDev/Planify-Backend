@@ -14,10 +14,6 @@ try {
         rejectUnauthorized: false,
       },
     });
-  } else if (ENV == "container") {
-    connectionString =
-      "postgres://postgres:postgres@172.17.0.2:5432/auth_service";
-    conn = new Pool({ connectionString });
   } else {
     conn = new Pool({ connectionString });
   }

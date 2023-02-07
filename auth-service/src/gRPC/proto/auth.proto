@@ -6,6 +6,10 @@ service authService{
   rpc Authorization(AuthorizationReq) returns (AuthorizationRes){}
 }
 
+service PlanTokensService{
+  rpc SetPlanToken(SetPlanTokenReq) returns (SetPlanTokenRes){}
+}
+
 message AuthorizationReq{
   string jwt = 1;
 }
@@ -13,3 +17,11 @@ message AuthorizationRes{
   string user_id = 1;
 }
 
+message SetPlanTokenReq{
+  string user_id = 1;
+  string plan_token = 2;
+}
+// response has ok message
+message SetPlanTokenRes{
+  string ok = 1;
+}
