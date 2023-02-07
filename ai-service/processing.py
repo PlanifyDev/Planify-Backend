@@ -47,12 +47,10 @@ def draw_display_picture(mask):
     inner[np.logical_not(mask)] = 0
 
     mask_blur = cv2.GaussianBlur(mask, (21, 21), 100) - mask
-    print(mask.shape, out.shape, inner.shape, mask_blur.shape)
     blur = cv2.merge((mask_blur, mask_blur, mask_blur))
     blur = cv2.bitwise_and(blur // 4, cv2.merge((mask, mask, mask)))
     blur[blur < 0] = 0
     final = (inner + out) - blur
-    print(time.perf_counter() - t)
     return final
 
 
@@ -78,10 +76,10 @@ def process_data(data):
     ai_mask = get_mask(poly_ai, (ai_width, ai_width))
     disp_mask = get_mask(poly_disp)
 
-    plt.imshow(disp_mask)
-    plt.show()
-    plt.imshow(ai_mask)
-    plt.show()
+    # plt.imshow(disp_mask)
+    # plt.show()
+    # plt.imshow(ai_mask)
+    # plt.show()
     ################################################################
     bucket = 'planify.s3'
 
@@ -96,8 +94,9 @@ def process_data(data):
     disp_url = upload_to_s3(disp_rgb, bucket, folder_name='projects')
 
     return {
+        **data,
         'area': area,
-        'inner': inner,
+        # 'inner': inner,
         'project_img': disp_url,
-        'mask': mask_url
+        'mask_img': mask_url
     }

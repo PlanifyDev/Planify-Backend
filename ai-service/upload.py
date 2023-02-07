@@ -1,5 +1,4 @@
 import os
-
 import boto3
 import uuid
 from PIL import Image
@@ -10,6 +9,7 @@ load_dotenv()
 access_key = os.environ.get('AWS_ACCESS_KEY_ID')
 secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
 s3_url = os.environ.get('AWS_S3_URL')
+s3_reg = os.environ.get('AWS_REGION')
 
 s3 = boto3.client('s3',
                   aws_access_key_id=access_key,

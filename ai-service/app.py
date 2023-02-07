@@ -1,7 +1,6 @@
 from flask import Flask
 from flask import request
 from flask_cors import CORS, cross_origin
-
 from processing import process_data
 
 app = Flask(__name__)
@@ -26,8 +25,9 @@ def test():
 def design():
     if request.method == 'POST':
         data = request.get_json()
-        process_data(data)
-        return 'AI response goes here lol'
+        res = process_data(data)
+        print(res)
+        return res
 
     else:
         return f"{request.method} requests are not allowed at this endpoint. Only POST requests are allowed."
