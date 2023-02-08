@@ -11,7 +11,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cache = exports.UserCacheDao = void 0;
 const redis_1 = require("redis");
-const client = (0, redis_1.createClient)();
+const helpers_1 = require("../helpers");
+const env = (0, helpers_1.accessEnv)("ENV");
+let client;
+if (env === "prod") {
+    client = (0, redis_1.createClient)((0, helpers_1.accessEnv)("REDIS_URL"));
+}
+else {
+    client = (0, redis_1.createClient)();
+}
 class UserCacheDao {
     // ------------- save user to cache (sign in) ----------------
     cacheUser(user_id, cacheUser) {
