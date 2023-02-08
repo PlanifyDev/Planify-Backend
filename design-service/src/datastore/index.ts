@@ -8,8 +8,8 @@ export class projectDataStore implements projectDao {
     const project: NewProjectDB[] = [];
 
     // to ensure the order of the keys
-    const keys = ["name", "boundary", "image_url", "user_id"];
-    for (let i = 0; i < 4; i++) {
+    const keys = ["name", "boundary", "project_img", "project_icon", "user_id"];
+    for (let i = 0; i < 5; i++) {
       project.push(newProjectDB[keys[i]]);
     }
     try {
@@ -26,8 +26,14 @@ export class projectDataStore implements projectDao {
     const version: NewVersion[] = [];
 
     // to ensure the order of the keys
-    const keys = ["version_num", "name", "image_url", "project_id"];
-    for (let i = 0; i < 4; i++) {
+    const keys = [
+      "version_num",
+      "name",
+      "version_img",
+      "version_icon",
+      "project_id",
+    ];
+    for (let i = 0; i < 5; i++) {
       version.push(newVersion[keys[i]]);
     }
     try {

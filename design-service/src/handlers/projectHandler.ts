@@ -15,14 +15,16 @@ export const createProject: type.myHandler<
   // create new project with the result
   const projectDB: type.NewProjectDB = {
     ...newProject,
-    image_url: aiResult.project_image,
+    project_img: aiResult.project_img,
+    project_icon: aiResult.project_icon,
   };
   const project_id = await DB.createProject(projectDB);
 
   const projectInRes: type.projectInRes = {
     id: project_id,
     name: newProject.name,
-    image_url: aiResult.project_image,
+    project_img: aiResult.project_img,
+    project_icon: aiResult.project_icon,
     created_at: new Date().toISOString(),
     deleted: false,
   };
@@ -30,7 +32,8 @@ export const createProject: type.myHandler<
   const newVersion: type.NewVersion = {
     version_num: 1,
     name: "version 1",
-    image_url: aiResult.version_image,
+    version_img: aiResult.version_img,
+    version_icon: aiResult.version_icon,
     project_id,
   };
 
