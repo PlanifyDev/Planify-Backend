@@ -17,8 +17,14 @@ try {
   } else {
     conn = new Pool({ connectionString });
   }
-
-  console.log("database connected ...");
+  conn.connect((err) => {
+    if (err) {
+      console.error("connection error on database ......... ");
+      process.exit(1);
+    } else {
+      console.log("database connected ...");
+    }
+  });
 } catch (error) {
   console.log("connection error");
 }

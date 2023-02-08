@@ -33,21 +33,15 @@ export const updateImageHandler: myHandlerWithParam<
     .promise()
     .then((data) => {
       const image_url = data.Location;
-      console.log("in first >>>>> ", image_url);
-
       return image_url;
     })
     .then(async (image_url) => {
-      console.log("in second >>>>> ", image_url);
-
       await DB.updateImg(userId, image_url).catch((error) => {
         throw Error(error);
       });
       return image_url;
     })
     .then((image_url) => {
-      console.log("in third >>>>> ", image_url);
-
       return res.status(200).send({ image_url });
     })
     .catch((err) => {
