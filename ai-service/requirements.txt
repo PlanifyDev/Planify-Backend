@@ -6,3 +6,4 @@ shapely~=2.0.0
 matplotlib~=3.6.1
 boto3~=1.24.28
 pillow~=9.2.0
+python-dotenv~=0.19.2
