@@ -1,13 +1,16 @@
 import { createClient } from "redis";
-
 import { accessEnv } from "../helpers";
-const env = accessEnv("ENV");
+const env = accessEnv("ENV_CACHE").trim();
 
 let client;
 if (env === "prod") {
-  client = createClient(accessEnv("REDIS_URL"));
+  client = createClient({
+    url: accessEnv("REDIS_URL"),
+  });
 } else {
-  client = createClient();
+  client = createClient({
+    url: accessEnv("REDIS_URL_LOCAL"),
+  });
 }
 
 import { UserCacheData } from "../contracts/types";
