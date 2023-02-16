@@ -1,11 +1,24 @@
 import * as type from "../contracts/types";
 import { createClient } from "redis";
-const client = createClient();
+import { accessEnv } from "../helpers";
+
+const env = accessEnv("ENV_CACHE").trim();
+
+let client;
+if (env === "prod") {
+  client = createClient({
+    url: accessEnv("REDIS_URL"),
+  });
+} else {
+  client = createClient({
+    url: accessEnv("REDIS_URL_LOCAL"),
+  });
+}
 
 export const authByCache = async (req, res, next) => {
   const token = req.headers.authorization;
 
-  const user_id = req.body.user_id;
+  const user_id = req.params.id;
   if (!token) {
     return res.status(401).send({ error: "Bad token" });
   }
@@ -18,7 +31,7 @@ export const authByCache = async (req, res, next) => {
     return res.status(401).send({ error: "Bad token" });
   }
 
-  res.locals.userId = user_id;
+  res.locals.user_id = user_id;
   res.locals.verified = user.verified;
   return next();
 };
