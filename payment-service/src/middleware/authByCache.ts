@@ -1,8 +1,6 @@
 import * as type from "../contracts/types";
 import { createClient } from "redis";
-import { accessEnv } from "../helpers/accessEnv";
-const redis_url = accessEnv("REDIS_URL_LOCAL");
-const client = createClient(redis_url);
+const client = createClient();
 
 export const authByCache = async (req, res, next) => {
   const token = req.headers.authorization;

@@ -7,7 +7,8 @@ export interface Project {
   // door_position: Object;
   // neighbors: Object;
   // constraints: Object;
-  image_url: string;
+  project_img: string;
+  project_icon: string;
   created_at: string;
   deleted: boolean;
   user_id: string;
@@ -18,26 +19,27 @@ export type NewProjectReq = Pick<Project, "name" | "boundary" | "user_id">;
 // todo add door_position, neighbors, constraints
 export type NewProjectDB = Pick<
   Project,
-  "name" | "boundary" | "image_url" | "user_id"
+  "name" | "boundary" | "project_img" | "project_icon" | "user_id"
 >;
 
 export type projectInRes = Pick<
   Project,
-  "id" | "name" | "image_url" | "created_at" | "deleted"
+  "id" | "name" | "project_img" | "project_icon" | "created_at" | "deleted"
 >;
 
 export interface Version {
   id: number;
   version_num: number;
   name: string;
-  image_url: string;
+  version_img: string;
+  version_icon: string;
   created_at: string;
   deleted: boolean;
   project_id: number;
 }
 export type NewVersion = Pick<
   Version,
-  "version_num" | "name" | "image_url" | "project_id"
+  "version_num" | "name" | "version_img" | "version_icon" | "project_id"
 >;
 
 export interface UserCacheData {

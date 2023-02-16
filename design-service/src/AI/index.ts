@@ -1,8 +1,10 @@
 import axios from "axios";
 
 type AiResponse = {
-  project_image: string;
-  version_image: string;
+  project_img: string;
+  project_icon: string;
+  version_img: string;
+  version_icon: string;
 };
 
 export const createNewProject = async (
@@ -17,8 +19,10 @@ export const createNewProject = async (
     // });
     // return Promise.resolve(res.data);
     return Promise.resolve({
-      project_image: "https://picsum.photos/200",
-      version_image: "https://picsum.photos/200",
+      project_img: "project_img",
+      project_icon: "project_icon",
+      version_img: "version_img",
+      version_icon: "version_icon",
     });
   } catch (error) {
     console.log(error);
