@@ -1,6 +1,6 @@
 import { Pool } from "pg";
 import { accessEnv } from "../helpers";
-const ENV = accessEnv("ENV");
+const ENV = accessEnv("ENV").trim();
 const DATABASE_URI_PROD = accessEnv("DATABASE_URI_PROD");
 let connectionString = accessEnv("DATABASE_URI_LOCAL");
 
@@ -14,10 +14,6 @@ try {
         rejectUnauthorized: false,
       },
     });
-  } else if (ENV == "container") {
-    connectionString =
-      "postgres://postgres:postgres@172.17.0.2:5432/auth_service";
-    conn = new Pool({ connectionString });
   } else {
     conn = new Pool({ connectionString });
   }

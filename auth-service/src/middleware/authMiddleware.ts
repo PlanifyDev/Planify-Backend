@@ -36,7 +36,7 @@ export const checkVerification = async (
   res: Response,
   next: NextFunction
 ) => {
-  if (res.locals.verified != true) {
+  if (res.locals.verified != "true") {
     return res.status(401).send({ error: ERRORS.NOT_VERIFIED });
   }
 

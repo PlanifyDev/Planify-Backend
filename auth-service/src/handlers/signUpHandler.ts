@@ -3,6 +3,7 @@ import { DB } from "../datastore";
 import * as type from "../contracts/types";
 import { SignUpReq, SignupRes } from "../contracts/api";
 import * as help from "../helpers";
+import { cache } from "../cache";
 
 export const signUpHandler: type.myHandler<SignUpReq, SignupRes> = async (
   req,
@@ -52,10 +53,22 @@ export const signUpHandler: type.myHandler<SignUpReq, SignupRes> = async (
     return next(error);
   });
 
-  // create verification token with expire date
+  // ----------------  create verification token with expire date ----------------
   const jwt = help.createToken({ userId: user.id, verified: false }, "1d");
 
-  // send verification email to user
+  // ---------------- save user data in cache -----------------------------
+  const cacheUser: type.UserCacheData = {
+    username: user.firstname + " " + user.lastname,
+    verified: "false",
+    plan_token: "free",
+    user_token: jwt,
+  };
+
+  await cache.cacheUser(user.id, cacheUser).catch((error) => {
+    return next(error);
+  });
+
+  // ---------------- send verification email to user ----------------
   const fullName = firstname + " " + lastname;
   help.sendEmail(user.email, jwt, fullName);
 
