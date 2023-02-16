@@ -33,6 +33,13 @@ export type myHandler<ReqBody, ResBody> = RequestHandler<
   Partial<ReqBody>
 >;
 
+export interface UserCacheData {
+  username: string;
+  verified: string;
+  plan_token: string;
+  user_token: string;
+}
+
 export type myHandlerWithParam<Param, ReqBody, ResBody> = RequestHandler<
   Partial<Param>,
   Partial<withError<ResBody>>,
