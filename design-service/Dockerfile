@@ -1,9 +1,4 @@
-FROM ubuntu:20.04
-
-RUN apt-get update
-RUN apt-get install -y curl
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
-RUN apt-get install -y nodejs
+FROM node:16.19.0-alpine
 
 WORKDIR /design
 
