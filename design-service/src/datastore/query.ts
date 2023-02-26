@@ -4,9 +4,9 @@ export class MyQuery {
 
   static createVersion = `INSERT INTO version (version_num, name, version_img, version_icon, project_id) VALUES ($1, $2, $3, $4, $5) RETURNING id`;
 
-  static getProject = `SELECT * FROM project WHERE id = $1`;
+  static getProject = `SELECT id, name, project_img, project_icon , created_at, is_trashed FROM project WHERE id = $1`;
 
-  static getProjects = `SELECT * FROM project WHERE id = $1`;
+  static getProjects = `SELECT id, name, project_img, project_icon , created_at, is_trashed FROM project WHERE id = $1`;
 
   static getVersions = `SELECT * FROM version WHERE project_id = $1`;
 
