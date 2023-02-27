@@ -42,7 +42,7 @@ export const verifyHandler: myHandlerWithParam<
 
   // check if verification code is correct
   if (verificationCode != verificationCode_cache) {
-    return res.status(401).send({ error: "Incorrect Verification Code" });
+    return res.status(400).send({ error: "Incorrect Verification Code" });
   }
 
   // create token without expire date
