@@ -13,6 +13,7 @@ export type UserNewData = Pick<User, "firstname" | "lastname" | "password">;
 
 export interface UserCacheData {
   username: string;
+  email: string;
   verified: string;
   plan_token: string;
   user_token: string;

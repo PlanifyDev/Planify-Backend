@@ -59,6 +59,7 @@ export const signInHandler: myHandler<SignInReq, SigninRes> = async (
   const cacheUser: UserCacheData = {
     user_token: jwt,
     username,
+    email: existing.email,
     plan_token: existing.user_plan,
     verified: existing.verified.toString(),
   };

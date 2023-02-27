@@ -3,10 +3,17 @@ import asyncHandler from "express-async-handler";
 import * as handler from "../handlers/userHandler";
 import fileUpload from "express-fileupload";
 import * as middleware from "../middleware";
+import { authByCache } from "../middleware/authByCache";
 export const userRouter = Router();
 
 userRouter.post("/signup", asyncHandler(handler.signUpHandler));
-userRouter.get("/verify", asyncHandler(handler.verifyHandler));
+
+userRouter.put(
+  "/verify/:id",
+  middleware.authByCache,
+  asyncHandler(handler.verifyHandler)
+);
+
 userRouter.post("/signin", asyncHandler(handler.signInHandler));
 userRouter.get("/signout/:id", asyncHandler(handler.signOutHandler));
 
@@ -37,9 +44,11 @@ userRouter.delete(
   asyncHandler(handler.deleteUserHandler)
 );
 
-userRouter.use("/sendEmail", middleware.jwtParseMiddleware);
-
-userRouter.get("/sendEmail", asyncHandler(handler.sendEmailHandler));
+userRouter.get(
+  "/resend-verification/:id",
+  authByCache,
+  asyncHandler(handler.resendVerificationHandler)
+);
 
 // endpoint to clear database
 userRouter.delete("/cleardb", asyncHandler(handler.cleardb));

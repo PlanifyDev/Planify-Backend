@@ -1,57 +1,67 @@
 import { DB } from "../datastore";
-import { myHandler, JwtPayload } from "../contracts/types";
-import { SendEmailRes, Verify } from "../contracts/api";
+import { myHandlerWithParam } from "../contracts/types";
+import * as api from "../contracts/api";
 import * as help from "../helpers";
 import { cache } from "../cache";
 
-export const sendEmailHandler: myHandler<never, SendEmailRes> = async (
-  _,
-  res
-) => {
+export const resendVerificationHandler: myHandlerWithParam<
+  api.resendVerificationParam,
+  api.resendVerificationReq,
+  api.resendVerificationRes
+> = async (_, res, next) => {
   const userId = res.locals.userId;
-  const user = await DB.getUserById(userId);
+  const user = await cache.getCachedUser(userId);
 
-  // create verification token with expire date
-  const jwt = help.createToken({ userId: user.id, verified: false }, "1d");
+  // ---------------- create random 6-digits code ----------------
+  const verificationCode = Math.floor(
+    100000 + Math.random() * 900000
+  ).toString();
 
-  // send verification email to user
-  const fullName = user.firstname + " " + user.lastname;
-  help.sendEmail(user.email, jwt, fullName);
+  // ---------------- save verification code in cache ----------------
+  await cache.addVerificationCode(userId, verificationCode).catch((error) => {
+    return next(error);
+  });
+
+  // ---------------- send verification email to user ----------------
+  const fullName = user.username;
+  help.sendEmail(user.email, verificationCode, fullName);
 
   return res.sendStatus(200);
 };
 
-export const verifyHandler: myHandler<never, Verify> = async (
-  req,
-  res,
-  next
-) => {
-  const token = req.query.key as string;
-  if (!token) {
-    return res.status(401).send({ error: help.ERRORS.BAD_VERIFY_RUL });
+export const verifyHandler: myHandlerWithParam<
+  api.VerifyParam,
+  api.VerifyReq,
+  api.VerifyRes
+> = async (req, res, next) => {
+  const userId = res.locals.userId;
+  const { verificationCode } = req.body;
+
+  // get verification code from cache
+  const verificationCode_cache = await cache.getVerificationCode(userId);
+
+  // check if verification code is correct
+  if (verificationCode != verificationCode_cache) {
+    return res.status(401).send({ error: "Incorrect Verification Code" });
   }
 
-  let payload: JwtPayload;
+  // create token without expire date
+  const jwt = help.createToken({
+    userId: userId,
+    verified: true,
+  });
 
-  try {
-    payload = help.verifyToken(token);
-  } catch (error) {
-    return res.status(401).send({ error: help.ERRORS.BAD_VERIFY_RUL });
-  }
-
-  const user = await DB.getUserById(payload.userId);
-  if (!user) {
-    return res.status(401).send({ error: help.ERRORS.BAD_VERIFY_RUL });
-  }
-
-  // update user verification status in DB and cache
-  await DB.updateVerification(payload.userId)
+  // update user verification status in DB and cache and update "token" in cache
+  await DB.updateVerification(userId)
     .then(async () => {
-      await cache.updateVerificationCache(payload.userId, "true");
+      await cache.updateVerificationCache(userId, jwt);
     })
     .catch((error) => {
       return next(error);
     });
 
-  return res.redirect("http://localhost:3000/test");
+  // delete verification code from cache
+  await cache.deleteVerificationCode(userId);
+
+  return res.status(200).send({ jwt });
 };

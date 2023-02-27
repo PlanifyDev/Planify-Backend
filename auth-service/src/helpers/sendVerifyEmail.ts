@@ -2,10 +2,14 @@ import { accessEnv } from "./accessEnv";
 import nodemailer from "nodemailer";
 import { emailContent } from "./emailContent";
 
-export const sendEmail = (email: string, token: string, name: string): void => {
+export const sendEmail = (
+  email: string,
+  verificationCode: string,
+  name: string
+): void => {
   const authEmail = accessEnv("VERIFY_EMAIL");
   const authPassword = accessEnv("VERIFY_PASSWORD");
-  const verificationLink = `http://localhost:3000/verify/?key=${token}`;
+  // const verificationLink = `http://localhost:3000/verify/?key=${token}`;
 
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -16,7 +20,7 @@ export const sendEmail = (email: string, token: string, name: string): void => {
     },
   });
 
-  const emailContentHtml = emailContent(verificationLink, email, name);
+  const emailContentHtml = emailContent(verificationCode, email, name);
   const mailOptions = {
     from: `"Planify" <no-reply@Planify.world>`,
     to: email,
