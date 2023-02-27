@@ -13,12 +13,23 @@ export interface SignupRes {
 }
 // ----------------- Verify -------------------------------
 
-export interface Verify {}
+export interface VerifyParam {
+  id: string;
+}
+export interface VerifyReq {
+  verificationCode: string;
+}
+export interface VerifyRes {
+  jwt: string;
+}
 
 // ------------------ Send Email ------------------------------
 
-export interface SendEmailReq {}
-export interface SendEmailRes {}
+export interface resendVerificationParam {
+  id: string;
+}
+export interface resendVerificationReq {}
+export interface resendVerificationRes {}
 
 // ------------------ Sign In  -----------------------------
 
@@ -42,22 +53,17 @@ export interface SignOutRes {}
 // ------------------Update Image ---------------------------
 
 export interface UpdateImgParam {
-  user_id: string;
+  id: string;
 }
 export interface UpdateImgReq {}
 export interface UpdateImgRes {
   image_url: string;
 }
 
-// --------------- Set Verification ---------------------------------
-
-export type SetVerifyReq = Record<string, never>;
-export interface SetVerifyRes {}
-
 // ----------------- Delete User ------------------------------
 
 export interface DeleteUserParam {
-  user_id: string;
+  id: string;
 }
 export type DeleteUserReq = Record<string, never>;
 export interface DeleteUserRes {
@@ -66,7 +72,7 @@ export interface DeleteUserRes {
 // ------------------ Update All Data --------------------------
 
 export interface UpdateAllParam {
-  user_id: string;
+  id: string;
 }
 export interface UpdateAllReq {
   firstname?: string;

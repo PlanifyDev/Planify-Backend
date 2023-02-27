@@ -39,6 +39,7 @@ export const signUpHandler: type.myHandler<SignUpReq, SignupRes> = async (
 
   // ---------------- hash the new password to store it --------------
   const hashedPassword = await help.hashPassword(password);
+
   const user: type.User = {
     id: crypto.randomUUID(),
     firstname,
@@ -54,11 +55,12 @@ export const signUpHandler: type.myHandler<SignUpReq, SignupRes> = async (
   });
 
   // ----------------  create verification token with expire date ----------------
-  const jwt = help.createToken({ userId: user.id, verified: false }, "1d");
+  const jwt = help.createToken({ userId: user.id, verified: false });
 
   // ---------------- save user data in cache -----------------------------
   const cacheUser: type.UserCacheData = {
     username: user.firstname + " " + user.lastname,
+    email: user.email,
     verified: "false",
     plan_token: "free",
     user_token: jwt,
@@ -68,9 +70,19 @@ export const signUpHandler: type.myHandler<SignUpReq, SignupRes> = async (
     return next(error);
   });
 
+  // ---------------- create random 6-digits code ----------------
+  const verificationCode = Math.floor(
+    100000 + Math.random() * 900000
+  ).toString();
+
+  // ---------------- save verification code in cache ----------------
+  await cache.addVerificationCode(user.id, verificationCode).catch((error) => {
+    return next(error);
+  });
+
   // ---------------- send verification email to user ----------------
   const fullName = firstname + " " + lastname;
-  help.sendEmail(user.email, jwt, fullName);
+  help.sendEmail(user.email, verificationCode, fullName);
 
   return res.status(200).send({ jwt });
 };

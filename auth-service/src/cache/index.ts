@@ -29,6 +29,8 @@ export class UserCacheDao implements userCacheDao {
           cacheUser.user_token,
           "username",
           cacheUser.username,
+          "email",
+          cacheUser.email,
           "plan_token",
           cacheUser.plan_token,
           "verified",
@@ -49,14 +51,18 @@ export class UserCacheDao implements userCacheDao {
   }
 
   // ------------- update verification status ----------------
-  async updateVerificationCache(
-    user_id: string,
-    verified: string
-  ): Promise<void> {
+  async updateVerificationCache(user_id: string, token: string): Promise<void> {
     try {
       await client.connect();
       await client
-        .hSet(user_id, "verified", verified)
+        .sendCommand([
+          "hmset",
+          user_id,
+          "verified",
+          "true",
+          "user_token",
+          token,
+        ])
         .then((value: any) => {
           return Promise.resolve();
         })
@@ -124,6 +130,65 @@ export class UserCacheDao implements userCacheDao {
         });
       client.disconnect();
       return user;
+    } catch (error) {
+      console.error("Error connecting to Redis:", error);
+      process.exit(1);
+    }
+  }
+
+  // ------------- add verification code to cache  ----------------
+  async addVerificationCode(user_id: string, code: string): Promise<void> {
+    try {
+      await client.connect();
+      await client
+        .hSet(user_id, "verification_code", code)
+        .then(() => {
+          return Promise.resolve();
+        })
+        .catch((err: any) => {
+          return Promise.reject(err);
+        });
+      client.disconnect();
+    } catch (error) {
+      console.error("Error connecting to Redis:", error);
+      process.exit(1);
+    }
+  }
+
+  // ------------- get verification code from cache  ----------------
+  async getVerificationCode(user_id: string): Promise<string> {
+    try {
+      await client.connect();
+      const code = await client
+        .hGet(user_id, "verification_code")
+        .then((value: any) => {
+          return Promise.resolve(value);
+        })
+        .catch((err: any) => {
+          console.log(err);
+          return Promise.reject(err);
+        });
+      client.disconnect();
+      return code;
+    } catch (error) {
+      console.error("Error connecting to Redis:", error);
+      process.exit(1);
+    }
+  }
+
+  // ------------- delete verification code from cache  ----------------
+  async deleteVerificationCode(user_id: string): Promise<void> {
+    try {
+      await client.connect();
+      await client
+        .hDel(user_id, "verification_code")
+        .then(() => {
+          return Promise.resolve();
+        })
+        .catch((err: any) => {
+          return Promise.reject(err);
+        });
+      client.disconnect();
     } catch (error) {
       console.error("Error connecting to Redis:", error);
       process.exit(1);
