@@ -1,14 +1,13 @@
 import { DB } from "../datastore";
-import { myHandler, UserCacheData, UserDB } from "../contracts/types";
-import { SignInReq, SigninRes } from "../contracts/api";
+import * as type from "../contracts/types";
+import * as api from "../contracts/api";
 import * as help from "../helpers";
 import { cache } from "../cache";
 
-export const signInHandler: myHandler<SignInReq, SigninRes> = async (
-  req,
-  res,
-  next
-) => {
+export const signInHandler: type.myHandler<
+  api.SignInReq,
+  api.SignInRes
+> = async (req, res, next) => {
   const { email, password } = req.body;
 
   // ---------------- check if all field is existing ----------------
@@ -23,7 +22,7 @@ export const signInHandler: myHandler<SignInReq, SigninRes> = async (
   }
 
   // -------------- get user from db -------------------------
-  let existing: UserDB;
+  let existing: type.User;
   try {
     existing = await DB.getUserByEmail(email);
   } catch (error) {
@@ -40,14 +39,8 @@ export const signInHandler: myHandler<SignInReq, SigninRes> = async (
     return res.status(403).send({ error: help.ERRORS.WRONG_LOGIN });
   }
 
-  const user = {
-    id: existing.id,
-    email: existing.email,
-    firstname: existing.firstname,
-    lastname: existing.lastname,
-    image_url: existing.image_url,
-    verified: existing.verified,
-  };
+  // ignore password in response "type.UserRes = Omit<type.User, 'password'>"
+  const { password: _, ...user } = existing;
 
   // create token without expire date
   const jwt = help.createToken({
@@ -55,8 +48,9 @@ export const signInHandler: myHandler<SignInReq, SigninRes> = async (
     verified: existing.verified,
   });
 
+  // create date for cache
   const username = existing.firstname + " " + existing.lastname;
-  const cacheUser: UserCacheData = {
+  const cacheUser: type.UserCacheData = {
     user_token: jwt,
     username,
     email: existing.email,

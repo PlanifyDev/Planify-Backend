@@ -22,7 +22,7 @@ export const updateAllHandler: type.myHandlerWithParam<
   // -------------------------------------------
 
   // ----------- get user data from DB --------
-  let user: type.UserDB;
+  let user: type.User;
   try {
     user = await DB.getUserById(res.locals.userId);
   } catch (error) {
@@ -59,7 +59,7 @@ export const updateAllHandler: type.myHandlerWithParam<
     password = await help.hashPassword(req.body.password);
   }
 
-  const newUser: type.UserNewData = {
+  const newUser: type.UserUpdateData = {
     firstname,
     lastname,
     password,
@@ -84,8 +84,8 @@ export const updateAllHandler: type.myHandlerWithParam<
 
 export const deleteUserHandler: type.myHandlerWithParam<
   api.DeleteUserParam,
-  never,
-  never
+  api.DeleteUserReq,
+  api.DeleteUserRes
 > = async (req, res, next) => {
   const userId = res.locals.userId;
   // -------------- delete user from cache ----------------
@@ -108,4 +108,22 @@ export const cleardb: type.myHandler<never, never> = async (req, res, next) => {
     .catch((err) => {
       return next(err);
     });
+};
+
+// =====================================================================
+//  get data of user handler
+export const getUserHandler: type.myHandlerWithParam<
+  api.GetUserDataParam,
+  api.GetUserDataReq,
+  api.GetUserDataRes
+> = async (req, res, next) => {
+  const userId = req.params.id;
+  let user: type.UserCacheData;
+  try {
+    // get user from cache
+    user = await cache.getCachedUser(userId);
+  } catch (error) {
+    return next(error);
+  }
+  return res.status(200).send({ user });
 };

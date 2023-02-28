@@ -1,9 +1,9 @@
 import conn from "../connection";
 import { UserDao } from "./dao/userDao";
-import { User, UserDB, UserNewData } from "../contracts/types";
+import * as type from "../contracts/types";
 import { MyQuery } from "./query";
 export class UserDataStore implements UserDao {
-  async insertUser(user: User): Promise<void> {
+  async insertUser(user: type.User): Promise<void> {
     const newUser: string[] = [];
     for (const key in user) {
       newUser.push(user[key]);
@@ -18,7 +18,7 @@ export class UserDataStore implements UserDao {
     }
   }
 
-  async getUserByEmail(email: string): Promise<UserDB> {
+  async getUserByEmail(email: string): Promise<type.User> {
     try {
       const user = await conn.query(MyQuery.getUserByEmail, [email]);
       return Promise.resolve(user.rows[0]);
@@ -27,7 +27,7 @@ export class UserDataStore implements UserDao {
     }
   }
 
-  async getUserById(user_id: string): Promise<UserDB> {
+  async getUserById(user_id: string): Promise<type.User> {
     try {
       const user = await conn.query(MyQuery.getUserById, [user_id]);
       return Promise.resolve(user.rows[0]);
@@ -45,7 +45,10 @@ export class UserDataStore implements UserDao {
     }
   }
 
-  async updateAllData(user_id: string, user: UserNewData): Promise<void> {
+  async updateAllData(
+    user_id: string,
+    user: type.UserUpdateData
+  ): Promise<void> {
     const newData: string[] = [];
     for (const key in user) {
       newData.push(user[key]);
