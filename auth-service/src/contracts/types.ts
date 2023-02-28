@@ -7,9 +7,18 @@ export interface User {
   image_url: string;
   email: string;
   password: string;
+  verified: boolean;
+  user_plan: string;
 }
-export type UserDB = User & { verified: boolean; user_plan: string };
-export type UserNewData = Pick<User, "firstname" | "lastname" | "password">;
+
+export type UserRegister = Pick<
+  User,
+  "firstname" | "lastname" | "email" | "password"
+>;
+
+export type UserRes = Omit<User, "password">;
+
+export type UserUpdateData = Pick<User, "firstname" | "lastname" | "password">;
 
 export interface UserCacheData {
   username: string;

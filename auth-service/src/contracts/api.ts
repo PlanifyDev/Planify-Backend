@@ -1,14 +1,12 @@
-import { User } from "./types";
+import * as type from "./types";
 
 // user API
 
 // ----------- Sign up api ------------------------
-export type SignUpReq = Pick<
-  User,
-  "firstname" | "lastname" | "email" | "password"
->;
+export type SignUpReq = type.UserRegister;
 
 export interface SignupRes {
+  user: type.UserRes;
   jwt: string;
 }
 // ----------------- Verify -------------------------------
@@ -23,7 +21,7 @@ export interface VerifyRes {
   jwt: string;
 }
 
-// ------------------ Send Email ------------------------------
+// ------------------ Send Verification Email ---------------------
 
 export interface resendVerificationParam {
   id: string;
@@ -37,8 +35,8 @@ export interface SignInReq {
   email: string;
   password: string;
 }
-export interface SigninRes {
-  user: Pick<User, "id" | "firstname" | "lastname" | "image_url" | "email">;
+export interface SignInRes {
+  user: type.UserRes;
   jwt: string;
 }
 
@@ -65,10 +63,9 @@ export interface UpdateImgRes {
 export interface DeleteUserParam {
   id: string;
 }
-export type DeleteUserReq = Record<string, never>;
-export interface DeleteUserRes {
-  message: string;
-}
+export interface DeleteUserReq {}
+export interface DeleteUserRes {}
+
 // ------------------ Update All Data --------------------------
 
 export interface UpdateAllParam {
@@ -95,3 +92,12 @@ export interface ResetPassReq {
   newpassword: string;
 }
 export interface ResetPassRes {}
+
+// ----------------- Get User Data ------------------------------
+export interface GetUserDataParam {
+  id: string;
+}
+export interface GetUserDataReq {}
+export interface GetUserDataRes {
+  user: type.UserCacheData;
+}

@@ -50,6 +50,9 @@ userRouter.get(
   asyncHandler(handler.resendVerificationHandler)
 );
 
+// endpoint to get data of user
+userRouter.get("/getuser/:id", asyncHandler(handler.getUserHandler));
+
 // endpoint to clear database
 userRouter.delete("/cleardb", asyncHandler(handler.cleardb));
 
