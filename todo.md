@@ -18,5 +18,5 @@
   - send it to user after payment
   - save it in cash
   - send it to user in any next login process
-- update `pay` endpoint to >> `/pay/<user_id>`
-<!-- - build payment by card (using strip) -->
+    <!-- - update `pay` endpoint to >> `/pay/<user_id>` -->
+    <!-- - build payment by card (using strip) -->
