@@ -27,12 +27,16 @@ export class UserCacheDao implements userCacheDao {
           user_id,
           "user_token",
           cacheUser.user_token,
-          "username",
-          cacheUser.username,
+          "firstname",
+          cacheUser.firstname,
+          "lastname",
+          cacheUser.lastname,
           "email",
           cacheUser.email,
+          "image_url",
+          cacheUser.image_url,
           "plan_token",
-          cacheUser.plan_token,
+          cacheUser.user_plan,
           "verified",
           cacheUser.verified,
         ])
@@ -46,7 +50,64 @@ export class UserCacheDao implements userCacheDao {
       client.disconnect();
     } catch (error) {
       console.error("Error connecting to Redis:", error);
-      process.exit(1);
+    }
+  }
+
+  // ------------- add verification code to cache  ----------------
+  async addVerificationCode(user_id: string, code: string): Promise<void> {
+    try {
+      await client.connect();
+      await client
+        .hSet(user_id, "verification_code", code)
+        .then(() => {
+          return Promise.resolve();
+        })
+        .catch((err: any) => {
+          return Promise.reject(err);
+        });
+      client.disconnect();
+    } catch (error) {
+      console.error("Error connecting to Redis:", error);
+    }
+  }
+
+  // ------------- get user from cache  ----------------
+  async getCachedUser(user_id: string): Promise<UserCacheData> {
+    try {
+      await client.connect();
+      const user = await client
+        .hGetAll(user_id)
+        .then((value: any) => {
+          return Promise.resolve(value);
+        })
+        .catch((err: any) => {
+          console.log(err);
+          return Promise.reject(err);
+        });
+      client.disconnect();
+      return user;
+    } catch (error) {
+      console.error("Error connecting to Redis:", error);
+    }
+  }
+
+  // ------------- get verification code from cache  ----------------
+  async getVerificationCode(user_id: string): Promise<string> {
+    try {
+      await client.connect();
+      const code = await client
+        .hGet(user_id, "verification_code")
+        .then((value: any) => {
+          return Promise.resolve(value);
+        })
+        .catch((err: any) => {
+          console.log(err);
+          return Promise.reject(err);
+        });
+      client.disconnect();
+      return code;
+    } catch (error) {
+      console.error("Error connecting to Redis:", error);
     }
   }
 
@@ -73,16 +134,15 @@ export class UserCacheDao implements userCacheDao {
       client.disconnect();
     } catch (error) {
       console.error("Error connecting to Redis:", error);
-      process.exit(1);
     }
   }
 
-  // ------------- delete user from cache (sign out) ----------------
-  async signOutCache(user_id: string): Promise<void> {
+  // ------------- update user image in cache ----------------
+  async updateImageCache(user_id: string, image_url: string): Promise<void> {
     try {
       await client.connect();
       await client
-        .del(user_id)
+        .sendCommand(["hmset", user_id, "image_url", image_url])
         .then(() => {
           return Promise.resolve();
         })
@@ -92,16 +152,44 @@ export class UserCacheDao implements userCacheDao {
       client.disconnect();
     } catch (error) {
       console.error("Error connecting to Redis:", error);
-      process.exit(1);
+    }
+  }
+
+  // ------------- update user plan in cache ----------------
+  async updatePlanCache(user_id: string, plan_token: string): Promise<void> {
+    try {
+      await client.connect();
+      await client
+        .sendCommand(["hmset", user_id, "plan_token", plan_token])
+        .then(() => {
+          return Promise.resolve();
+        })
+        .catch((err: any) => {
+          return Promise.reject(err);
+        });
+      client.disconnect();
+    } catch (error) {
+      console.error("Error connecting to Redis:", error);
     }
   }
 
   // ------------- update user name in cache ----------------
-  async updateNameCache(user_id: string, username: string): Promise<void> {
+  async updateNameCache(
+    user_id: string,
+    firstname: string,
+    lastname: string
+  ): Promise<void> {
     try {
       await client.connect();
       await client
-        .hSet(user_id, "username", username)
+        .sendCommand([
+          "hmset",
+          user_id,
+          "firstname",
+          firstname,
+          "lastname",
+          lastname,
+        ])
         .then(() => {
           return Promise.resolve();
         })
@@ -111,68 +199,6 @@ export class UserCacheDao implements userCacheDao {
       client.disconnect();
     } catch (error) {
       console.error("Error connecting to Redis:", error);
-      process.exit(1);
-    }
-  }
-
-  // ------------- get user from cache  ----------------
-  async getCachedUser(user_id: string): Promise<UserCacheData> {
-    try {
-      await client.connect();
-      const user = await client
-        .hGetAll(user_id)
-        .then((value: any) => {
-          return Promise.resolve(value);
-        })
-        .catch((err: any) => {
-          console.log(err);
-          return Promise.reject(err);
-        });
-      client.disconnect();
-      return user;
-    } catch (error) {
-      console.error("Error connecting to Redis:", error);
-      process.exit(1);
-    }
-  }
-
-  // ------------- add verification code to cache  ----------------
-  async addVerificationCode(user_id: string, code: string): Promise<void> {
-    try {
-      await client.connect();
-      await client
-        .hSet(user_id, "verification_code", code)
-        .then(() => {
-          return Promise.resolve();
-        })
-        .catch((err: any) => {
-          return Promise.reject(err);
-        });
-      client.disconnect();
-    } catch (error) {
-      console.error("Error connecting to Redis:", error);
-      process.exit(1);
-    }
-  }
-
-  // ------------- get verification code from cache  ----------------
-  async getVerificationCode(user_id: string): Promise<string> {
-    try {
-      await client.connect();
-      const code = await client
-        .hGet(user_id, "verification_code")
-        .then((value: any) => {
-          return Promise.resolve(value);
-        })
-        .catch((err: any) => {
-          console.log(err);
-          return Promise.reject(err);
-        });
-      client.disconnect();
-      return code;
-    } catch (error) {
-      console.error("Error connecting to Redis:", error);
-      process.exit(1);
     }
   }
 
@@ -191,7 +217,24 @@ export class UserCacheDao implements userCacheDao {
       client.disconnect();
     } catch (error) {
       console.error("Error connecting to Redis:", error);
-      process.exit(1);
+    }
+  }
+
+  // ------------- delete user from cache (sign out) ----------------
+  async signOutCache(user_id: string): Promise<void> {
+    try {
+      await client.connect();
+      await client
+        .del(user_id)
+        .then(() => {
+          return Promise.resolve();
+        })
+        .catch((err: any) => {
+          return Promise.reject(err);
+        });
+      client.disconnect();
+    } catch (error) {
+      console.error("Error connecting to Redis:", error);
     }
   }
 }
