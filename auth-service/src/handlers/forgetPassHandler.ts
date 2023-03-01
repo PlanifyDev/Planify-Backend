@@ -22,11 +22,13 @@ export const forgetPassHandler: type.myHandler<
       error: "User not found",
     });
   }
-  if (!user.verified) {
-    return res.status(400).json({
-      error: "User not verified",
-    });
-  }
+
+  // if (!user.verified) {
+  //   return res.status(400).json({
+  //     error: "User not verified",
+  //   });
+  // }
+
   // generate token
   const token = help.createToken(
     { userId: user.id, verified: user.verified },
@@ -37,7 +39,7 @@ export const forgetPassHandler: type.myHandler<
   // TODO: change the link to the frontend link
   help.sendPassEmail(
     user.email,
-    `<a href="http://localhost:3000/resetpassword?token=${token}">Reset Password</a>`
+    `<a href="http://localhost:3000/reset-password?token=${token}">Reset Password</a>`
   );
 
   return res.sendStatus(200);

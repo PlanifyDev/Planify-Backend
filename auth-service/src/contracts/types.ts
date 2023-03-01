@@ -18,15 +18,9 @@ export type UserRegister = Pick<
 
 export type UserRes = Omit<User, "password">;
 
-export type UserUpdateData = Pick<User, "firstname" | "lastname" | "password">;
+export type UserCacheData = UserRes & { user_token: string };
 
-export interface UserCacheData {
-  username: string;
-  email: string;
-  verified: string;
-  plan_token: string;
-  user_token: string;
-}
+export type UserUpdateData = Pick<User, "firstname" | "lastname" | "password">;
 
 type withError<T> = T & { error: string };
 export type myHandler<ReqBody, ResBody> = RequestHandler<
