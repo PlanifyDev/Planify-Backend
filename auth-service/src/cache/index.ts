@@ -35,10 +35,10 @@ export class UserCacheDao implements userCacheDao {
           cacheUser.email,
           "image_url",
           cacheUser.image_url,
-          "plan_token",
+          "user_plan",
           cacheUser.user_plan,
           "verified",
-          cacheUser.verified,
+          cacheUser.verified.toString(),
         ])
         .then((value: any) => {
           return Promise.resolve();
@@ -156,11 +156,11 @@ export class UserCacheDao implements userCacheDao {
   }
 
   // ------------- update user plan in cache ----------------
-  async updatePlanCache(user_id: string, plan_token: string): Promise<void> {
+  async updatePlanCache(user_id: string, user_plan: string): Promise<void> {
     try {
       await client.connect();
       await client
-        .sendCommand(["hmset", user_id, "plan_token", plan_token])
+        .sendCommand(["hmset", user_id, "user_plan", user_plan])
         .then(() => {
           return Promise.resolve();
         })

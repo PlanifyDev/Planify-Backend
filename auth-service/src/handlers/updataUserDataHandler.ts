@@ -3,7 +3,9 @@ import * as type from "../contracts/types";
 import * as api from "../contracts/api";
 import * as help from "../helpers";
 import { cache } from "../cache";
+import AWS from "aws-sdk";
 
+// ----------------- update name handler ------------------------------
 export const updateAllHandler: type.myHandlerWithParam<
   api.UpdateAllParam,
   api.UpdateAllReq,
@@ -66,11 +68,9 @@ export const updateAllHandler: type.myHandlerWithParam<
   };
   // ------------- update name in cache ----------------------
 
-  await cache
-    .updateNameCache(user.id, firstname + " " + lastname)
-    .catch((error) => {
-      return next(error);
-    });
+  await cache.updateNameCache(user.id, firstname, lastname).catch((error) => {
+    return next(error);
+  });
 
   // ------------- send new data to update db ---------------
   await DB.updateAllData(user.id, newUser).catch((error) => {
@@ -79,9 +79,7 @@ export const updateAllHandler: type.myHandlerWithParam<
   return res.sendStatus(200);
 };
 
-// =====================================================================
-// =====================================================================
-
+// ----------------- delete user handler ------------------------------
 export const deleteUserHandler: type.myHandlerWithParam<
   api.DeleteUserParam,
   api.DeleteUserReq,
@@ -97,21 +95,30 @@ export const deleteUserHandler: type.myHandlerWithParam<
   await DB.deleteUser(userId).catch((err) => {
     return next(err);
   });
+
+  // -------------- delete user from S3 ----------------
+  AWS.config.update({
+    accessKeyId: help.accessEnv("AWS_ACCESS_KEY"),
+    secretAccessKey: help.accessEnv("AWS_SECRET_KEY"),
+    region: "us-east-1",
+  });
+
+  const s3 = new AWS.S3();
+  const params = {
+    Bucket: help.accessEnv("AWS_S3_BUCKET_NAME"),
+    Key: userId,
+  };
+
+  s3.deleteObject(params, (err, data) => {
+    if (err) {
+      return next(err);
+    }
+  });
+
   return res.sendStatus(200);
 };
 
-export const cleardb: type.myHandler<never, never> = async (req, res, next) => {
-  await DB.clearUsers()
-    .then(() => {
-      return res.sendStatus(200);
-    })
-    .catch((err) => {
-      return next(err);
-    });
-};
-
-// =====================================================================
-//  get data of user handler
+// ----------------- get user handler ------------------------------
 export const getUserHandler: type.myHandlerWithParam<
   api.GetUserDataParam,
   api.GetUserDataReq,
@@ -126,4 +133,15 @@ export const getUserHandler: type.myHandlerWithParam<
     return next(error);
   }
   return res.status(200).send({ user });
+};
+
+// ----------------- delete all users from db ------------------------------
+export const cleardb: type.myHandler<never, never> = async (req, res, next) => {
+  await DB.clearUsers()
+    .then(() => {
+      return res.sendStatus(200);
+    })
+    .catch((err) => {
+      return next(err);
+    });
 };
