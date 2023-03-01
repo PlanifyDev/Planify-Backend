@@ -23,7 +23,7 @@ export const resendVerificationHandler: myHandlerWithParam<
   });
 
   // ---------------- send verification email to user ----------------
-  const fullName = user.username;
+  const fullName = user.firstname + " " + user.lastname;
   help.sendEmail(user.email, verificationCode, fullName);
 
   return res.sendStatus(200);

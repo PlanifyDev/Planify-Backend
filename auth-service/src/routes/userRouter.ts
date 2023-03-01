@@ -18,7 +18,7 @@ userRouter.post("/signin", asyncHandler(handler.signInHandler));
 userRouter.get("/signout/:id", asyncHandler(handler.signOutHandler));
 
 userRouter.put(
-  "/updateimg/:id",
+  "/update-img/:id",
   middleware.authByCache,
   middleware.checkVerification,
   fileUpload(),
@@ -26,20 +26,20 @@ userRouter.put(
 );
 
 userRouter.put(
-  "/updateall/:id",
+  "/update-all/:id",
   middleware.authByCache,
   middleware.checkVerification,
   asyncHandler(handler.updateAllHandler)
 );
 
 // forgot password endpoint
-userRouter.post("/forgetpassword", asyncHandler(handler.forgetPassHandler));
+userRouter.post("/forget-password", asyncHandler(handler.forgetPassHandler));
 
 // reset password endpoint
-userRouter.post("/resetpassword", asyncHandler(handler.resetPassHandler));
+userRouter.post("/reset-password", asyncHandler(handler.resetPassHandler));
 
 userRouter.delete(
-  "/deleteuser/:id",
+  "/delete-user/:id",
   middleware.authByCache,
   asyncHandler(handler.deleteUserHandler)
 );
@@ -51,7 +51,7 @@ userRouter.get(
 );
 
 // endpoint to get data of user
-userRouter.get("/getuser/:id", asyncHandler(handler.getUserHandler));
+userRouter.get("/get-user/:id", asyncHandler(handler.getUserHandler));
 
 // endpoint to clear database
 userRouter.delete("/cleardb", asyncHandler(handler.cleardb));

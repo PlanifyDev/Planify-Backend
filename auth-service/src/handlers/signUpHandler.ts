@@ -60,11 +60,9 @@ export const signUpHandler: type.myHandler<SignUpReq, SignupRes> = async (
   const jwt = help.createToken({ userId: newUser.id, verified: false });
 
   // ---------------- save user data in cache -----------------------------
+  // ignore password in cacheUser
   const cacheUser: type.UserCacheData = {
-    username: newUser.firstname + " " + newUser.lastname,
-    email: newUser.email,
-    verified: "false",
-    plan_token: "free",
+    ...newUser,
     user_token: jwt,
   };
 

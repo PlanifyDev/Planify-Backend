@@ -51,11 +51,8 @@ export const signInHandler: type.myHandler<
   // create date for cache
   const username = existing.firstname + " " + existing.lastname;
   const cacheUser: type.UserCacheData = {
+    ...user,
     user_token: jwt,
-    username,
-    email: existing.email,
-    plan_token: existing.user_plan,
-    verified: existing.verified.toString(),
   };
 
   // cache user data

@@ -1,4 +1,5 @@
 import { DB } from "../datastore";
+import { cache } from "../cache";
 import { myHandlerWithParam } from "../contracts/types";
 import { UpdateImgParam, UpdateImgReq, UpdateImgRes } from "../contracts/api";
 import { accessEnv } from "../helpers";
@@ -32,13 +33,19 @@ export const updateImageHandler: myHandlerWithParam<
   upload
     .promise()
     .then((data) => {
-      const image_url = data.Location;
+      image_url = data.Location;
       return image_url;
     })
+    // ------------ update image url in DB ------------
     .then(async (image_url) => {
       await DB.updateImg(userId, image_url).catch((error) => {
         throw Error(error);
       });
+      return image_url;
+    })
+    // ------------ update image url in Cache ------------
+    .then(async (image_url) => {
+      await cache.updateImageCache(userId, image_url);
       return image_url;
     })
     .then((image_url) => {
