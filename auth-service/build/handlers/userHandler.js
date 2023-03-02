@@ -15,10 +15,12 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./signUpHandler"), exports);
-__exportStar(require("./verifyHandler"), exports);
 __exportStar(require("./signInHandler"), exports);
-__exportStar(require("./signOutHandler"), exports);
-__exportStar(require("./updataImgHandler"), exports);
-__exportStar(require("./updataUserDataHandler"), exports);
+__exportStar(require("./getUserHandler"), exports);
 __exportStar(require("./forgetPassHandler"), exports);
+__exportStar(require("./updateImgHandler"), exports);
+__exportStar(require("./verifyHandler"), exports);
+__exportStar(require("./updateAllHandler"), exports);
+__exportStar(require("./signOutHandler"), exports);
+__exportStar(require("./deleteUserHandler"), exports);
 //# sourceMappingURL=userHandler.js.map

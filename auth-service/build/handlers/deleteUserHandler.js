@@ -31,51 +31,54 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyHandler = exports.resendVerificationHandler = void 0;
+exports.cleardb = exports.deleteUserHandler = void 0;
 const datastore_1 = require("../datastore");
 const help = __importStar(require("../helpers"));
 const cache_1 = require("../cache");
-const resendVerificationHandler = (_, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const aws_sdk_1 = __importDefault(require("aws-sdk"));
+// ----------------- delete user handler ------------------------------
+const deleteUserHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = res.locals.userId;
-    const user = yield cache_1.cache.getCachedUser(userId);
-    // ---------------- create random 6-digits code ----------------
-    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-    // ---------------- save verification code in cache ----------------
-    yield cache_1.cache.addVerificationCode(userId, verificationCode).catch((error) => {
-        return next(error);
+    // -------------- delete user from cache ----------------
+    yield cache_1.cache.signOutCache(userId).catch((err) => {
+        return next(err);
     });
-    // ---------------- send verification email to user ----------------
-    const fullName = user.firstname + " " + user.lastname;
-    help.sendEmail(user.email, verificationCode, fullName);
+    // -------------- delete user from DB ----------------
+    yield datastore_1.DB.deleteUser(userId).catch((err) => {
+        return next(err);
+    });
+    // -------------- delete user from S3 ----------------
+    aws_sdk_1.default.config.update({
+        accessKeyId: help.accessEnv("AWS_ACCESS_KEY"),
+        secretAccessKey: help.accessEnv("AWS_SECRET_KEY"),
+        region: "us-east-1",
+    });
+    const s3 = new aws_sdk_1.default.S3();
+    const params = {
+        Bucket: help.accessEnv("AWS_S3_BUCKET_NAME"),
+        Key: userId,
+    };
+    s3.deleteObject(params, (err, data) => {
+        if (err) {
+            return next(err);
+        }
+    });
     return res.sendStatus(200);
 });
-exports.resendVerificationHandler = resendVerificationHandler;
-const verifyHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = res.locals.userId;
-    const { verificationCode } = req.body;
-    // get verification code from cache
-    const verificationCode_cache = yield cache_1.cache.getVerificationCode(userId);
-    // check if verification code is correct
-    if (verificationCode != verificationCode_cache) {
-        return res.status(400).send({ error: "Incorrect Verification Code" });
-    }
-    // create token without expire date
-    const jwt = help.createToken({
-        userId: userId,
-        verified: true,
+exports.deleteUserHandler = deleteUserHandler;
+// ----------------- delete all users from db ------------------------------
+const cleardb = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    yield datastore_1.DB.clearUsers()
+        .then(() => {
+        return res.sendStatus(200);
+    })
+        .catch((err) => {
+        return next(err);
     });
-    // update user verification status in DB and cache and update "token" in cache
-    yield datastore_1.DB.updateVerification(userId)
-        .then(() => __awaiter(void 0, void 0, void 0, function* () {
-        yield cache_1.cache.updateVerificationCache(userId, jwt);
-    }))
-        .catch((error) => {
-        return next(error);
-    });
-    // delete verification code from cache
-    yield cache_1.cache.deleteVerificationCode(userId);
-    return res.status(200).send({ jwt });
 });
-exports.verifyHandler = verifyHandler;
-//# sourceMappingURL=verifyHandler.js.map
+exports.cleardb = cleardb;
+//# sourceMappingURL=deleteUserHandler.js.map

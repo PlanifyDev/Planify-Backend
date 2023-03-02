@@ -31,6 +31,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.signInHandler = void 0;
 const datastore_1 = require("../datastore");
@@ -63,26 +74,16 @@ const signInHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, func
     if (!existing || !isMatch) {
         return res.status(403).send({ error: help.ERRORS.WRONG_LOGIN });
     }
-    const user = {
-        id: existing.id,
-        email: existing.email,
-        firstname: existing.firstname,
-        lastname: existing.lastname,
-        image_url: existing.image_url,
-        verified: existing.verified,
-    };
+    // ignore password in response "type.UserRes = Omit<type.User, 'password'>"
+    const { password: _ } = existing, user = __rest(existing, ["password"]);
     // create token without expire date
     const jwt = help.createToken({
         userId: existing.id,
         verified: existing.verified,
     });
+    // create date for cache
     const username = existing.firstname + " " + existing.lastname;
-    const cacheUser = {
-        user_token: jwt,
-        username,
-        plan_token: existing.user_plan,
-        verified: existing.verified.toString(),
-    };
+    const cacheUser = Object.assign(Object.assign({}, user), { user_token: jwt });
     // cache user data
     yield cache_1.cache
         .cacheUser(existing.id, cacheUser)

@@ -31,6 +31,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -60,34 +71,42 @@ const signUpHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, func
     }
     // ---------------- hash the new password to store it --------------
     const hashedPassword = yield help.hashPassword(password);
-    const user = {
+    const newUser = {
         id: crypto_1.default.randomUUID(),
         firstname,
         lastname,
         image_url: "default image for now ",
         email,
         password: hashedPassword,
+        verified: false,
+        user_plan: "free",
     };
     // ---------------- save all data in db --------------------------
-    yield datastore_1.DB.insertUser(user).catch((error) => {
+    yield datastore_1.DB.insertUser(newUser).catch((error) => {
         return next(error);
     });
     // ----------------  create verification token with expire date ----------------
-    const jwt = help.createToken({ userId: user.id, verified: false }, "1d");
+    const jwt = help.createToken({ userId: newUser.id, verified: false });
     // ---------------- save user data in cache -----------------------------
-    const cacheUser = {
-        username: user.firstname + " " + user.lastname,
-        verified: "false",
-        plan_token: "free",
-        user_token: jwt,
-    };
-    yield cache_1.cache.cacheUser(user.id, cacheUser).catch((error) => {
+    // ignore password in cacheUser
+    const cacheUser = Object.assign(Object.assign({}, newUser), { user_token: jwt });
+    yield cache_1.cache.cacheUser(newUser.id, cacheUser).catch((error) => {
+        return next(error);
+    });
+    // ---------------- create random 6-digits code ----------------
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    // ---------------- save verification code in cache ----------------
+    yield cache_1.cache
+        .addVerificationCode(newUser.id, verificationCode)
+        .catch((error) => {
         return next(error);
     });
     // ---------------- send verification email to user ----------------
     const fullName = firstname + " " + lastname;
-    help.sendEmail(user.email, jwt, fullName);
-    return res.status(200).send({ jwt });
+    help.sendEmail(newUser.email, verificationCode, fullName);
+    // ignore password in response "type.UserRes = Omit<type.User, 'password'>"
+    const { password: _ } = newUser, user = __rest(newUser, ["password"]);
+    return res.status(200).send({ user, jwt });
 });
 exports.signUpHandler = signUpHandler;
 //# sourceMappingURL=signUpHandler.js.map

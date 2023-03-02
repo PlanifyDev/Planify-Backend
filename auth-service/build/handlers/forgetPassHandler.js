@@ -48,16 +48,16 @@ const forgetPassHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, 
             error: "User not found",
         });
     }
-    if (!user.verified) {
-        return res.status(400).json({
-            error: "User not verified",
-        });
-    }
+    // if (!user.verified) {
+    //   return res.status(400).json({
+    //     error: "User not verified",
+    //   });
+    // }
     // generate token
     const token = help.createToken({ userId: user.id, verified: user.verified }, "1h");
     // send email
     // TODO: change the link to the frontend link
-    help.sendPassEmail(user.email, `<a href="http://localhost:3000/resetpassword?token=${token}">Reset Password</a>`);
+    help.sendPassEmail(user.email, `<a href="http://localhost:3000/reset-password?token=${token}">Reset Password</a>`);
     return res.sendStatus(200);
 });
 exports.forgetPassHandler = forgetPassHandler;
