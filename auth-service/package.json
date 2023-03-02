@@ -64,9 +64,5 @@
     "protoc-gen-ts": "^0.8.5",
     "supertest": "^6.3.0",
     "ts-jest": "^29.0.3"
-  },
-  "engines": {
-    "node": "16.19.0",
-    "npm": "8.19.3"
   }
 }

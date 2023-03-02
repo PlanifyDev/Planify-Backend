@@ -17,9 +17,7 @@ export interface CreateVersionRes extends Version {}
 
 // ----------------- Get All Projects Of User --------------------------
 
-export interface GetProjectsReq {
-  user_id: string;
-}
+export interface GetProjectsReq {}
 
 export interface GetProjectsRes {
   projects: projectInRes[];

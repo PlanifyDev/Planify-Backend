@@ -1,24 +1,17 @@
 import { Router } from "express";
 import asyncHandler from "express-async-handler";
 import * as handler from "../handlers";
-import * as middleware from "../middleware";
+import { authByCache } from "../middleware";
 export const designRouter = Router();
 
 // ----------------- Create new Project --------------------------
-
-// designRouter.post("/project", asyncHandler(handler.createProject));
-
-designRouter.post(
-  "/project",
-  middleware.authByCache,
-  asyncHandler(handler.createProject)
-);
+designRouter.post("/project", authByCache, asyncHandler(handler.createProject));
 
 // // ----------------- Create new Version --------------------------
-// // designRouter.post("/version", asyncHandler(handler.createVersion));
+// designRouter.post("/version", asyncHandler(handler.createVersion));
 
 // // ----------------- Get All Projects --------------------------
-// // designRouter.get("/projects", asyncHandler(handler.getProjects));
+designRouter.get("/projects", authByCache, asyncHandler(handler.getProjects));
 
 // // ----------------- Get All Versions --------------------------
 // designRouter.get("/versions", asyncHandler(handler.getVersions));

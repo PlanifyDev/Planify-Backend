@@ -39,38 +39,55 @@ export const signUpHandler: type.myHandler<SignUpReq, SignupRes> = async (
 
   // ---------------- hash the new password to store it --------------
   const hashedPassword = await help.hashPassword(password);
-  const user: type.User = {
+
+  const newUser: type.User = {
     id: crypto.randomUUID(),
     firstname,
     lastname,
     image_url: "default image for now ",
     email,
     password: hashedPassword,
+    verified: false,
+    user_plan: "free",
   };
 
   // ---------------- save all data in db --------------------------
-  await DB.insertUser(user).catch((error) => {
+  await DB.insertUser(newUser).catch((error) => {
     return next(error);
   });
 
   // ----------------  create verification token with expire date ----------------
-  const jwt = help.createToken({ userId: user.id, verified: false }, "1d");
+  const jwt = help.createToken({ userId: newUser.id, verified: false });
 
   // ---------------- save user data in cache -----------------------------
+  // ignore password in cacheUser
   const cacheUser: type.UserCacheData = {
-    username: user.firstname + " " + user.lastname,
-    verified: "false",
-    plan_token: "free",
+    ...newUser,
     user_token: jwt,
   };
 
-  await cache.cacheUser(user.id, cacheUser).catch((error) => {
+  await cache.cacheUser(newUser.id, cacheUser).catch((error) => {
     return next(error);
   });
 
+  // ---------------- create random 6-digits code ----------------
+  const verificationCode = Math.floor(
+    100000 + Math.random() * 900000
+  ).toString();
+
+  // ---------------- save verification code in cache ----------------
+  await cache
+    .addVerificationCode(newUser.id, verificationCode)
+    .catch((error) => {
+      return next(error);
+    });
+
   // ---------------- send verification email to user ----------------
   const fullName = firstname + " " + lastname;
-  help.sendEmail(user.email, jwt, fullName);
+  help.sendEmail(newUser.email, verificationCode, fullName);
 
-  return res.status(200).send({ jwt });
+  // ignore password in response "type.UserRes = Omit<type.User, 'password'>"
+  const { password: _, ...user } = newUser;
+
+  return res.status(200).send({ user, jwt });
 };

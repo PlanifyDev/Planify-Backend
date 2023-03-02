@@ -3,15 +3,22 @@ import asyncHandler from "express-async-handler";
 import * as handler from "../handlers/userHandler";
 import fileUpload from "express-fileupload";
 import * as middleware from "../middleware";
+import { authByCache } from "../middleware/authByCache";
 export const userRouter = Router();
 
 userRouter.post("/signup", asyncHandler(handler.signUpHandler));
-userRouter.get("/verify", asyncHandler(handler.verifyHandler));
+
+userRouter.put(
+  "/verify/:id",
+  middleware.authByCache,
+  asyncHandler(handler.verifyHandler)
+);
+
 userRouter.post("/signin", asyncHandler(handler.signInHandler));
 userRouter.get("/signout/:id", asyncHandler(handler.signOutHandler));
 
 userRouter.put(
-  "/updateimg/:id",
+  "/update-img/:id",
   middleware.authByCache,
   middleware.checkVerification,
   fileUpload(),
@@ -19,27 +26,32 @@ userRouter.put(
 );
 
 userRouter.put(
-  "/updateall/:id",
+  "/update-all/:id",
   middleware.authByCache,
   middleware.checkVerification,
   asyncHandler(handler.updateAllHandler)
 );
 
 // forgot password endpoint
-userRouter.post("/forgetpassword", asyncHandler(handler.forgetPassHandler));
+userRouter.post("/forget-password", asyncHandler(handler.forgetPassHandler));
 
 // reset password endpoint
-userRouter.post("/resetpassword", asyncHandler(handler.resetPassHandler));
+userRouter.post("/reset-password", asyncHandler(handler.resetPassHandler));
 
 userRouter.delete(
-  "/deleteuser/:id",
+  "/delete-user/:id",
   middleware.authByCache,
   asyncHandler(handler.deleteUserHandler)
 );
 
-userRouter.use("/sendEmail", middleware.jwtParseMiddleware);
+userRouter.get(
+  "/resend-verification/:id",
+  authByCache,
+  asyncHandler(handler.resendVerificationHandler)
+);
 
-userRouter.get("/sendEmail", asyncHandler(handler.sendEmailHandler));
+// endpoint to get data of user
+userRouter.get("/get-user/:id", asyncHandler(handler.getUserHandler));
 
 // endpoint to clear database
 userRouter.delete("/cleardb", asyncHandler(handler.cleardb));
