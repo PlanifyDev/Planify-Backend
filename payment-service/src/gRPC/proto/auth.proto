@@ -2,14 +2,16 @@ syntax = "proto3";
 
 package auth;
 
-service authService{
-  rpc Authorization(AuthorizationReq) returns (AuthorizationRes){}
+service update_plan_service{
+  rpc update_plan(update_plan_req) returns (update_plan_res){}
 }
 
-message AuthorizationReq{
-  string jwt = 1;
-}
-message AuthorizationRes{
+message update_plan_req{
   string user_id = 1;
+  string user_plan = 2;
+}
+
+message update_plan_res{
+  bool status= 1;
 }
 

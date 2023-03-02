@@ -18,11 +18,11 @@ if (env === "prod") {
 
 export class PaymentCache implements PaymentCacheDao {
   // ------------- update plan token in cache ----------------
-  async updatePlanToken(user_id: string, plan_token: string): Promise<void> {
+  async updatePlanToken(user_id: string, user_plan: string): Promise<void> {
     try {
       await client.connect();
       await client
-        .hSet(user_id, "plan_token", plan_token)
+        .hSet(user_id, "user_plan", user_plan)
         .then(() => {
           return Promise.resolve();
         })
@@ -32,7 +32,6 @@ export class PaymentCache implements PaymentCacheDao {
       client.disconnect();
     } catch (error) {
       console.error("Error connecting to Redis:", error);
-      process.exit(1);
     }
   }
   // ------------- get user from cache  ----------------
@@ -52,7 +51,6 @@ export class PaymentCache implements PaymentCacheDao {
       return user;
     } catch (error) {
       console.error("Error connecting to Redis:", error);
-      process.exit(1);
     }
   }
 }
