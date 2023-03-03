@@ -12,7 +12,7 @@ CREATE TABLE project (
     created_at            TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     is_trashed            BOOLEAN NOT NULL DEFAULT FALSE,
     user_id               VARCHAR(100) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE SEQUENCE versions START WITH 1;
@@ -25,5 +25,5 @@ CREATE TABLE version (
     created_at               TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     is_trashed               BOOLEAN NOT NULL DEFAULT FALSE,
     project_id               INTEGER,
-    FOREIGN KEY (project_id) REFERENCES project(id)
+    FOREIGN KEY (project_id) REFERENCES project(id) ON DELETE CASCADE
 );
