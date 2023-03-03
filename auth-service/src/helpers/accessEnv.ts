@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
-
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "1";
 const cache = {};
 
 export const accessEnv = (key: string) => {
