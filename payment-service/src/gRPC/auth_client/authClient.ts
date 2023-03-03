@@ -1,33 +1,33 @@
 import grpc from "grpc";
-import { authServiceClient } from "../proto_out/auth_grpc_pb";
-import { AuthorizationReq, AuthorizationRes } from "../proto_out/auth_pb";
+import { update_plan_serviceClient } from "../generated//auth_grpc_pb";
+import { update_plan_req, update_plan_res } from "../generated//auth_pb";
+import * as help from "../../helpers";
+const PORT = help.accessEnv("AUTH_GRPC_PORT");
 
-const PORT = process.env.AUTH_GRPC_PORT;
-
-const client = new authServiceClient(
-  `localhost:5000`,
+const client = new update_plan_serviceClient(
+  `localhost:${PORT}`,
   grpc.credentials.createInsecure()
 );
 
-export const authorization = (jwt: string) => {
+export const update_plan = (user_id: string, user_plan: string) => {
   return new Promise((resolve, reject) => {
-    const request = new AuthorizationReq();
-    request.setJwt(jwt);
-    client.authorization(request, (error, response) => {
+    const request = new update_plan_req();
+    request.setUserId(user_id);
+    request.setUserPlan(user_plan);
+    client.update_plan(request, (error, response) => {
       if (error) {
-        return reject(error);
+        console.log(error);
+        return reject(response.getStatus());
       }
-      resolve(response.getUserId());
+      return resolve(response.getStatus());
     });
   });
 };
 
-// authorization(
-//   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNzBiYWYyYi1kYTE2LTQ1MzktOGVhYi01ZjBiZThlZjRkOGUiLCJ2ZXJpZmllZCI6ZmFsc2UsImlhdCI6MTY3MTQ4MTMzMSwiZXhwIjoxNzAzMDM4OTMxfQ.9to5VfFdgTvTe6dXMV4gAiG8HXst6RINYYwX3eDACOI"
-// )
-//   .then((user_id) => {
-//     console.log(user_id);
-//   })
-//   .catch((err) => {
-//     console.log(err);
-//   });
+update_plan("370baf2b-da16-4539-8eab-5f0be8ef4d8e", "premium")
+  .then((status) => {
+    console.log(status);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
