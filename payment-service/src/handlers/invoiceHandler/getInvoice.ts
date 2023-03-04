@@ -1,7 +1,7 @@
-import * as api from "../contracts/api";
-import { dbPayment } from "../datastore";
-import { NewError } from "../helpers";
-import * as type from "../contracts/types";
+import * as api from "../../contracts/api";
+import { dbPayment } from "../../datastore";
+import { NewError } from "../../helpers";
+import * as type from "../../contracts/types";
 
 // ------------------ Get all invoices --------------------
 export const getAllInvoices: type.myHandler<

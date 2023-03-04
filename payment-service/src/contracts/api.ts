@@ -53,3 +53,19 @@ export interface PaypalCancelQuery {
   token: string;
 }
 export interface PaypalCancelRes {}
+
+// ================================== plan api ==================================
+// -------------- Get All plans --------------
+export interface getAllPlansReq {}
+export interface getAllPlansRes {
+  plans: type.Plan[];
+}
+
+// -------------- Get plan --------------
+export interface getPlanParam {
+  plan_id: string;
+}
+export interface getPlanReq {}
+export interface getPlanRes {
+  plan: type.Plan;
+}

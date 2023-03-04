@@ -1,10 +1,10 @@
 import paypal from "paypal-rest-sdk";
-import * as api from "../contracts/api";
-import { myHandlerWithQuery, Payment } from "../contracts/types";
-import { dbPayment } from "../datastore";
-import { cache } from "../cache";
-import * as help from "../helpers";
-import * as grpc from "../gRPC/auth_client/authClient";
+import * as api from "../../contracts/api";
+import { myHandlerWithQuery, Payment } from "../../contracts/types";
+import { dbPayment } from "../../datastore";
+import { cache } from "../../cache";
+import * as help from "../../helpers";
+import * as grpc from "../../gRPC/auth_client/authClient";
 
 export const success: myHandlerWithQuery<
   api.PaypalSuccessReq,
