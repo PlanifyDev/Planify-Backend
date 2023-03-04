@@ -3,6 +3,7 @@ import * as api from "../contracts/api";
 import { myHandlerWithQuery, Payment } from "../contracts/types";
 import { dbPayment, dbPlan } from "../datastore";
 import { NewError } from "../helpers";
+import { update_plan } from "../gRPC/auth_client/authClient";
 
 export const success: myHandlerWithQuery<
   api.PaypalSuccessReq,
@@ -62,9 +63,16 @@ export const success: myHandlerWithQuery<
               return next(new NewError(error.message, 400));
             });
 
-          // return res.end();
-          res.redirect("http://localhost:3001/test_pay");
-          // return serndEmailFuc()
+          // update plan on auth service
+          await update_plan(paymentDB.user_id, paymentDB.plan_id)
+            .then((status) => {
+              console.log(status);
+            })
+            .catch((error) => {
+              return next(new NewError(error.message, 400));
+            });
+
+          return res.sendStatus(200);
         }
       }
     );
