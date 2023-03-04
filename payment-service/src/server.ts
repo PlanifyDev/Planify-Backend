@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import "express-async-errors";
-import paypalRouter from "./routes/paypalRouter";
+import * as router from "./routes";
 import { loggerMiddleware, errHandler, notFound } from "./middleware";
 import { accessEnv, paypalConfig } from "./helpers";
 
@@ -20,7 +20,8 @@ app.get("/test_pay", (_, res) => {
 
 paypalConfig(); // configurations paypal sdk
 
-app.use("/", paypalRouter);
+app.use("/paypal", router.paypalRouter);
+app.use("/invoice", router.invoiceRouter);
 
 app.use(errHandler);
 app.use(notFound);

@@ -18,7 +18,7 @@ if (env === "prod") {
 export const authByCache = async (req, res, next) => {
   const token = req.headers.authorization;
 
-  const user_id = req.params.id;
+  const { user_id } = req.body;
   if (!token) {
     return res.status(401).send({ error: "Bad token" });
   }

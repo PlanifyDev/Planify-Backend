@@ -1,18 +1,46 @@
-// export type SignUpReq = Pick<
-//   User,
-//   "firstname" | "lastname" | "email" | "password"
-// >;
+import * as type from "./types";
 
-// ------------------------------------------------
-
-export interface PaypalReq {
+// ================================== invoice api ==================================
+// --------------  Create Invoice --------------
+export interface createInvoiceReq {
+  user_id: string;
   plan_id: string;
   subscription: "monthly" | "yearly";
 }
-export interface PaypalRes {
+export interface createInvoiceRes {
   redirect_url: string;
 }
 
+// -------------- Get All invoices --------------
+export interface getAllInvoiceReq {
+  user_id: string;
+}
+export interface getAllInvoicesRes {
+  invoices: type.Payment[];
+}
+
+// -------------- Get Invoice --------------
+export interface getInvoiceParam {
+  payment_id: string;
+}
+export interface getInvoiceReq {
+  user_id: string;
+}
+export interface getInvoiceRes {
+  invoice: type.Payment;
+}
+
+// -------------- Delete Invoice --------------
+export interface deleteInvoiceParam {
+  payment_id: string;
+}
+export interface deleteInvoiceReq {
+  user_id: string;
+}
+
+export interface deleteInvoiceRes {}
+
+// ================================== paypal api ==================================
 export interface PaypalSuccessReq {}
 export interface PaypalSuccessQuery {
   paymentId: string;
