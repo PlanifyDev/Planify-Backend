@@ -34,6 +34,7 @@ export class PaymentCache implements PaymentCacheDao {
       console.error("Error connecting to Redis:", error);
     }
   }
+
   // ------------- get user from cache  ----------------
   async getCachedUser(user_id: string): Promise<UserCacheData> {
     try {

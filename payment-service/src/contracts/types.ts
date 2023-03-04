@@ -52,4 +52,7 @@ export type myHandlerWithQuery<ReqBody, ResBody, query> = RequestHandler<
   Partial<ReqBody>,
   Partial<query>
 >;
-export interface JwtPayload {}
+export interface JwtPlanPayload {
+  plan_id: string;
+  user_id: string;
+}

@@ -48,7 +48,7 @@ export class PaymentDataStore implements PaymentDao {
   async getAllPayments(user_id: string): Promise<Payment[]> {
     try {
       const allPayments = await conn.query(payQuery.getAllPayments, [user_id]);
-      return Promise.resolve(allPayments.rows);
+      return Promise.resolve(allPayments.rows as Payment[]);
     } catch (error) {
       return Promise.reject(error);
     }
