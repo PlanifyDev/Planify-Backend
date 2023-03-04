@@ -22,6 +22,7 @@ paypalConfig(); // configurations paypal sdk
 
 app.use("/paypal", router.paypalRouter);
 app.use("/invoice", router.invoiceRouter);
+app.use("/plan", router.planRouter);
 
 app.use(errHandler);
 app.use(notFound);

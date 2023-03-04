@@ -1,10 +1,10 @@
 import paypal from "paypal-rest-sdk";
-import { myHandler } from "../contracts/types";
-import * as api from "../contracts/api";
-import { Payment } from "../contracts/types";
-import { create_payment_json } from "../helpers";
-import { dbPayment, dbPlan } from "../datastore";
-import { NewError } from "../helpers";
+import { myHandler } from "../../contracts/types";
+import * as api from "../../contracts/api";
+import { Payment } from "../../contracts/types";
+import { create_payment_json } from "../../helpers";
+import { dbPayment, dbPlan } from "../../datastore";
+import { NewError } from "../../helpers";
 export const createInvoice: myHandler<
   api.createInvoiceReq,
   api.createInvoiceRes
