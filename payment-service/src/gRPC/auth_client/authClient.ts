@@ -23,11 +23,3 @@ export const update_plan = (user_id: string, user_plan: string) => {
     });
   });
 };
-
-update_plan("370baf2b-da16-4539-8eab-5f0be8ef4d8e", "premium")
-  .then((status) => {
-    console.log(status);
-  })
-  .catch((err) => {
-    console.log(err);
-  });

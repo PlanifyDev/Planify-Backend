@@ -56,9 +56,5 @@
     "supertest": "^6.3.3",
     "ts-jest": "^29.0.3"
   },
-  "license": "ISC",
-  "engines": {
-    "node": "16.19.0",
-    "npm": "8.19.3"
-  }
+  "license": "ISC"
 }
