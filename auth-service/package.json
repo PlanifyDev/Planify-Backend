@@ -5,8 +5,7 @@
   "main": "/src/server.ts",
   "scripts": {
     "dev": "nodemon ./src/server.ts",
-    "cp:rpc": "cp ./src/gRPC/generated/*.js ./build/gRPC/generated/",
-    "build": "npx tsc && cp:rpc",
+    "build": "chmod +x ./build.sh && ./build.sh",
     "test": "jest --forceExit",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix",
