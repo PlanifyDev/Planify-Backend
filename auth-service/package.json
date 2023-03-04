@@ -5,21 +5,23 @@
   "main": "/src/server.ts",
   "scripts": {
     "dev": "nodemon ./src/server.ts",
-    "build": "npx tsc ",
+    "build": "chmod +x ./build.sh && ./build.sh",
     "test": "jest --forceExit",
-    "start": "node ./build/server.js",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix",
     "prettier-format": "prettier --config .prettierrc . --write",
-    "start:prod": "pm2 delete auth_service; pm2 start  --name auth_service \"npx ts-node --transpile-only src/server.ts\"",
     "start:rpc_prod": "pm2 delete auth_rpc; pm2 start  --name auth_rpc \"npx ts-node --transpile-only src/gRPC/rpc_server/server.ts\"",
     "build:rpc": "src/gRPC/proto/build.sh",
-    "dev:rpc": "ts-node ./src/gRPC/rpc_server/server.ts"
+    "dev:rpc": "ts-node ./src/gRPC/rpc_server/server.ts",
+    "rpc": "pm2 delete auth_rpc; pm2 start  --name auth_rpc \"node ./build/gRPC/rpc_server/rpcServer.js\"",
+    "start": "pm2 delete auth_service; pm2 start  --name auth_service \"node ./build/server.js\"",
+    "auth": "npm start & npm run rpc "
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@grpc/proto-loader": "^0.7.5",
     "aws-sdk": "^2.1268.0",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",

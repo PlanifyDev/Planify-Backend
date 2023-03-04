@@ -82,7 +82,6 @@ class UserDataStore {
             }
         });
     }
-    //  update password
     updatePassword(user_id, password) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -98,6 +97,17 @@ class UserDataStore {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 yield connection_1.default.query(query_1.MyQuery.updateVerification, [user_id]);
+                return Promise.resolve();
+            }
+            catch (error) {
+                return Promise.reject(error);
+            }
+        });
+    }
+    updatePlan(user_id, user_plan) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                connection_1.default.query(query_1.MyQuery.updatePlan, [user_id, user_plan]);
                 return Promise.resolve();
             }
             catch (error) {

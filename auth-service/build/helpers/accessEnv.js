@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.accessEnv = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "1";
 const cache = {};
 const accessEnv = (key) => {
     if (!(key in process.env)) {
