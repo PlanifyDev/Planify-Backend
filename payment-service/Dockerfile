@@ -10,11 +10,11 @@ COPY . .
 
 RUN ["npm", "i", "-g", "pm2"] 
 
-RUN ["npm", "run", "build"]
+# RUN ["npm", "run", "build"]
 
 # SHELL ["/bin/bash", "-c"] 
 
 # CMD ["start.sh"]
 
-# CMD [ "npm", "start"]
+CMD [ "npm", "start"]
 
