@@ -12,7 +12,7 @@
     "prettier-format": "prettier --config .prettierrc . --write",
     "migrate": "db-migrate up",
     "build:rpc": "sh src/gRPC/proto/build.sh",
-    "start": "pm2 delete pay_service; pm2 start --name pay_service \"node ./build/server.js\""
+    "start": "pm2 start --name pay_service --no-daemon \"node ./build/server.js\""
   },
   "keywords": [],
   "author": "",

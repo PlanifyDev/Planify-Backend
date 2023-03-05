@@ -14,8 +14,8 @@
     "build:rpc": "src/gRPC/proto/build.sh",
     "dev:rpc": "ts-node ./src/gRPC/rpc_server/server.ts",
     "rpc": "pm2 delete auth_rpc; pm2 start  --name auth_rpc \"node ./build/gRPC/rpc_server/rpcServer.js\"",
-    "start": "pm2 delete auth_service; pm2 start  --name auth_service \"node ./build/server.js\"",
-    "auth": "npm start & npm run rpc "
+    "start": "pm2 delete auth_service; pm2 start --name auth_service \"node ./build/server.js\"",
+    "auth": "pm2 start --name auth_service \"node ./build/server.js\" && pm2 start --name auth_rpc --no-daemon \"node ./build/gRPC/rpc_server/rpcServer.js\";"
   },
   "keywords": [],
   "author": "",
