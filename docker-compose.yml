@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  redis:
+    container_name: my-redis
+    image: redis/redis-stack
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    volumes:
+      - redis_data:/data
+    networks:
+      - my-network
+
+  auth:
+    container_name: my-auth
+    image: auth
+    # build: ./auth-service
+    ports:
+      - "3000:3000"
+      - "5000:5000"
+    depends_on:
+      - redis
+    volumes:
+      - auth_data:/app/data
+    networks:
+      - my-network
+
+  payment:
+    container_name: my-payment
+    image: pay
+    # build: ./payment-service
+    ports:
+      - "3001:3001"
+    depends_on:
+      - auth
+    volumes:
+      - payment_data:/app/data
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
+
+volumes:
+  redis_data:
+  auth_data:
+  payment_data:
