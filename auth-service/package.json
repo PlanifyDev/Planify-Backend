@@ -21,6 +21,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@grpc/grpc-js": "^1.8.11",
     "@grpc/proto-loader": "^0.7.5",
     "aws-sdk": "^2.1268.0",
     "bcrypt": "^5.1.0",

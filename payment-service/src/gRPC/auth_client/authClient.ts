@@ -2,10 +2,10 @@ import grpc from "grpc";
 import { update_plan_serviceClient } from "../generated//auth_grpc_pb";
 import { update_plan_req, update_plan_res } from "../generated//auth_pb";
 import * as help from "../../helpers";
-const PORT = help.accessEnv("AUTH_GRPC_PORT");
+const AUTH_GRPC_URL = help.accessEnv("AUTH_GRPC_URL");
 
 const client = new update_plan_serviceClient(
-  `localhost:${PORT}`,
+  AUTH_GRPC_URL,
   grpc.credentials.createInsecure()
 );
 
