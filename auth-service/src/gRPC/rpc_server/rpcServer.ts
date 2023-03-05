@@ -1,34 +1,41 @@
-import grpc from "grpc";
-import * as help from "../../helpers/accessEnv";
+import * as grpc from "@grpc/grpc-js";
+import * as protoLoader from "@grpc/proto-loader";
 import { DB } from "../../datastore";
+import path from "path";
 
-const PORT = help.accessEnv("AUTH_GRPC_PORT");
+//path to our proto file
+// const PROTO_FILE: string = "../proto/auth.proto";
+const PROTO_FILE: string = path.join(__dirname, "../proto/auth.proto");
 
-import {
-  Iupdate_plan_serviceServer,
-  update_plan_serviceService,
-} from "../generated/auth_grpc_pb";
+const options: protoLoader.Options = {
+  keepCase: true,
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true,
+};
 
-import { update_plan_req, update_plan_res } from "../generated/auth_pb";
+const pkgDefs: protoLoader.PackageDefinition = protoLoader.loadSync(
+  PROTO_FILE,
+  options
+);
 
-class Imp_update_plan_serviceServer implements Iupdate_plan_serviceServer {
-  constructor() {
-    console.log(`>>> grpc server is running on port ${PORT} ....`);
-  }
-  [name: string]: grpc.handleCall<any, any>;
+//auth is the package name in our proto file
+const authProto: any = grpc.loadPackageDefinition(pkgDefs).auth;
 
-  update_plan(
-    call: grpc.ServerUnaryCall<update_plan_req>,
-    callback: grpc.sendUnaryData<update_plan_res>
-  ) {
-    console.log(
-      ">>> update_plan request received",
-      "- message:",
-      call.request.toObject()
-    );
-    const user_id = call.request.getUserId();
-    const user_plan = call.request.getUserPlan();
-    const res = new update_plan_res();
+//create gRPC server
+const server: grpc.Server = new grpc.Server();
+
+//implement auth service
+server.addService(authProto.update_plan_service.service, {
+  //implement update_plan
+  update_plan: (input: any, callback: any) => {
+    const user_id = input.request.user_id;
+    const user_plan = input.request.user_plan;
+    console.log(">>> update_plan request received", "- message:", {
+      user_id,
+      user_plan,
+    });
 
     if (!user_id || !user_plan) {
       console.log(
@@ -36,30 +43,30 @@ class Imp_update_plan_serviceServer implements Iupdate_plan_serviceServer {
         "- error:",
         "user_id or user_plan is missing"
       );
-      res.setStatus(false);
-      return callback(new Error("user_id or user_plan is missing"), res);
+      return callback(new Error("user_id or user_plan is missing"), null);
     }
 
     DB.updatePlan(user_id, user_plan)
       .then(() => {
         console.log(">>> update_plan request success");
-        res.setStatus(true);
-        return callback(null, res);
+        return callback(null, { status: true });
       })
       .catch((error) => {
         console.log(">>> update_plan request failed", "- error:", error);
-        res.setStatus(false);
-        return callback(error, res);
+        return callback(error, { status: false });
       });
+  },
+});
+
+//start the Server
+server.bindAsync(
+  //port to serve on
+  "0.0.0.0:5000",
+  //authentication settings
+  grpc.ServerCredentials.createInsecure(),
+  //server start callback
+  (error, port) => {
+    console.log(`>>> grpc server listening on port ${port}`);
+    server.start();
   }
-}
-
-const server = new grpc.Server();
-
-server.addService(
-  update_plan_serviceService,
-  new Imp_update_plan_serviceServer()
 );
-
-server.bind(`localhost:${PORT}`, grpc.ServerCredentials.createInsecure());
-server.start();

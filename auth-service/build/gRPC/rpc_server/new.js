@@ -22,17 +22,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const grpc = __importStar(require("@grpc/grpc-js"));
 const protoLoader = __importStar(require("@grpc/proto-loader"));
 const datastore_1 = require("../../datastore");
-const path_1 = __importDefault(require("path"));
 //path to our proto file
-// const PROTO_FILE: string = "../proto/auth.proto";
-const PROTO_FILE = path_1.default.join(__dirname, "../proto/auth.proto");
+const PROTO_FILE = "../proto/auth.proto";
 const options = {
     keepCase: true,
     longs: String,
@@ -41,15 +36,14 @@ const options = {
     oneofs: true,
 };
 const pkgDefs = protoLoader.loadSync(PROTO_FILE, options);
-//auth is the package name in our proto file
-const authProto = grpc.loadPackageDefinition(pkgDefs).auth;
+const authProto = grpc.loadPackageDefinition(pkgDefs);
 //create gRPC server
 const server = new grpc.Server();
 //implement auth service
 server.addService(authProto.update_plan_service.service, {
-    //implement update_plan
+    //implment update_plan
     update_plan: (input, callback) => {
-        const user_id = input.request.user_id;
+        const user_id = input.Request.user_id;
         const user_plan = input.request.user_plan;
         console.log(">>> update_plan request received", "- message:", {
             user_id,
@@ -81,4 +75,4 @@ grpc.ServerCredentials.createInsecure(),
     console.log(`>>> grpc server listening on port ${port}`);
     server.start();
 });
-//# sourceMappingURL=rpcServer.js.map
+//# sourceMappingURL=new.js.map
