@@ -5,16 +5,14 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon ./src/server.ts",
+    "build": "chmod +x ./build.sh && ./build.sh",
     "test": "jest --forceExit",
-    "start": "npx tsc & node ./build/server.js",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix",
     "prettier-format": "prettier --config .prettierrc . --write",
     "migrate": "db-migrate up",
-    "start:prod": "pm2 delete payment_service; pm2 start  --name payment_service \"npx ts-node --transpile-only src/server.ts\"",
     "build:rpc": "sh src/gRPC/proto/build.sh",
-    "start:rpc": "node ./build/gRPC/rpc_server/server.js",
-    "start:docker": "npx ts-node ./src/gRPC/rpc_server/server.ts && npx ts-node ./src/server.ts"
+    "start": "pm2 delete pay_service; pm2 start --name pay_service \"node ./build/server.js\""
   },
   "keywords": [],
   "author": "",
