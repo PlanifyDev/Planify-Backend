@@ -24,4 +24,4 @@ ai-service/mask.png
 */.vscode
 
 */build/
-*/*.csv
+/*.csv
