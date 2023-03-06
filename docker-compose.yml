@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   redis:
@@ -7,10 +7,8 @@ services:
     ports:
       - "6379:6379"
       - "8001:8001"
-    volumes:
-      - redis_data:/data
     networks:
-      - my-network
+      - palnify-network
 
   auth:
     container_name: my-auth
@@ -21,10 +19,8 @@ services:
       - "5000:5000"
     depends_on:
       - redis
-    volumes:
-      - auth_data:/app/data
     networks:
-      - my-network
+      - palnify-network
 
   payment:
     container_name: my-payment
@@ -34,16 +30,22 @@ services:
       - "3001:3001"
     depends_on:
       - auth
-    volumes:
-      - payment_data:/app/data
     networks:
-      - my-network
+      - palnify-network
+
+  nginx:
+    image: nginx
+    container_name: my-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - auth
+      - payment
+    networks:
+      - palnify-network
 
 networks:
-  my-network:
+  palnify-network:
     driver: bridge
-
-volumes:
-  redis_data:
-  auth_data:
-  payment_data:

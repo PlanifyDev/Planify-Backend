@@ -17,15 +17,5 @@ RUN ["npm", "i", "-g", "pm2"]
 
 # RUN ["npm", "run", "build"]
 
-# RUN ["chmod", "+x", "build.sh"]
-# RUN ["chmod", "+x", "start.sh"]
-# RUN ["apk", "add", "bash"]
-
-# SHELL ["/bin/bash", "-c"] 
-
-# CMD ["./start.sh"]
-
-# CMD ["sh", "-c", "npm run start:prod && npm run start:rpc_prod &"]
-
 CMD [ "npm", "run", "auth"]
 
