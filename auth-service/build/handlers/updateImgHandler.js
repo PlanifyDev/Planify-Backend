@@ -13,8 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateImageHandler = void 0;
-const datastore_1 = require("../datastore");
-const cache_1 = require("../cache");
 const helpers_1 = require("../helpers");
 const aws_sdk_1 = __importDefault(require("aws-sdk"));
 const updateImageHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -38,24 +36,25 @@ const updateImageHandler = (req, res, next) => __awaiter(void 0, void 0, void 0,
     upload
         .promise()
         .then((data) => {
-        image_url = data.Location;
-        return image_url;
+        // image_url = data.Location;
+        // return image_url;
+        return res.sendStatus(200);
     })
         // ------------ update image url in DB ------------
-        .then((image_url) => __awaiter(void 0, void 0, void 0, function* () {
-        yield datastore_1.DB.updateImg(userId, image_url).catch((error) => {
-            throw Error(error);
-        });
-        return image_url;
-    }))
-        // ------------ update image url in Cache ------------
-        .then((image_url) => __awaiter(void 0, void 0, void 0, function* () {
-        yield cache_1.cache.updateImageCache(userId, image_url);
-        return image_url;
-    }))
-        .then((image_url) => {
-        return res.status(200).send({ image_url });
-    })
+        // .then(async (image_url) => {
+        //   await DB.updateImg(userId, image_url).catch((error) => {
+        //     throw Error(error);
+        //   });
+        //   return image_url;
+        // })
+        // // ------------ update image url in Cache ------------
+        // .then(async (image_url) => {
+        //   await cache.updateImageCache(userId, image_url);
+        //   return image_url;
+        // })
+        // .then((image_url) => {
+        //   return res.status(200).send({ image_url });
+        // })
         .catch((err) => {
         return next(err);
     });
