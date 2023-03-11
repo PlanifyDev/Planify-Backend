@@ -8,10 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cache = exports.UserCacheDao = void 0;
 const redis_1 = require("redis");
 const helpers_1 = require("../helpers");
+const loggerService_1 = __importDefault(require("../services/loggerService"));
 const env = (0, helpers_1.accessEnv)("ENV_CACHE").trim();
 let client;
 if (env === "prod") {
@@ -24,6 +28,15 @@ else {
         url: (0, helpers_1.accessEnv)("REDIS_URL_LOCAL"),
     });
 }
+(() => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield client.connect();
+        loggerService_1.default.info("Redis connected successfully ✅ ✅ ✅ ");
+    }
+    catch (error) {
+        loggerService_1.default.error("Error connecting to Redis ❌ ❌ ❌ ❌ ❌ ❌ ❌", error.message);
+    }
+}))();
 class UserCacheDao {
     // ------------- save user to cache (sign in) ----------------
     cacheUser(user_id, cacheUser) {
@@ -59,7 +72,7 @@ class UserCacheDao {
                 client.disconnect();
             }
             catch (error) {
-                console.error("Error connecting to Redis:", error);
+                loggerService_1.default.error("Error connecting to Redis ❌ ❌ ❌ ");
             }
         });
     }
@@ -79,7 +92,7 @@ class UserCacheDao {
                 client.disconnect();
             }
             catch (error) {
-                console.error("Error connecting to Redis:", error);
+                loggerService_1.default.error("Error connecting to Redis ❌ ❌ ❌ ");
             }
         });
     }
@@ -101,7 +114,7 @@ class UserCacheDao {
                 return user;
             }
             catch (error) {
-                console.error("Error connecting to Redis:", error);
+                loggerService_1.default.error("Error connecting to Redis ❌ ❌ ❌ ");
             }
         });
     }
@@ -123,7 +136,7 @@ class UserCacheDao {
                 return code;
             }
             catch (error) {
-                console.error("Error connecting to Redis:", error);
+                loggerService_1.default.error("Error connecting to Redis ❌ ❌ ❌ ");
             }
         });
     }
@@ -151,7 +164,7 @@ class UserCacheDao {
                 client.disconnect();
             }
             catch (error) {
-                console.error("Error connecting to Redis:", error);
+                loggerService_1.default.error("Error connecting to Redis ❌ ❌ ❌ ");
             }
         });
     }
@@ -171,7 +184,7 @@ class UserCacheDao {
                 client.disconnect();
             }
             catch (error) {
-                console.error("Error connecting to Redis:", error);
+                loggerService_1.default.error("Error connecting to Redis ❌ ❌ ❌ ");
             }
         });
     }
@@ -191,7 +204,7 @@ class UserCacheDao {
                 client.disconnect();
             }
             catch (error) {
-                console.error("Error connecting to Redis:", error);
+                loggerService_1.default.error("Error connecting to Redis ❌ ❌ ❌ ");
             }
         });
     }
@@ -218,7 +231,7 @@ class UserCacheDao {
                 client.disconnect();
             }
             catch (error) {
-                console.error("Error connecting to Redis:", error);
+                loggerService_1.default.error("Error connecting to Redis ❌ ❌ ❌ ");
             }
         });
     }
@@ -238,7 +251,7 @@ class UserCacheDao {
                 client.disconnect();
             }
             catch (error) {
-                console.error("Error connecting to Redis:", error);
+                loggerService_1.default.error("Error connecting to Redis ❌ ❌ ❌ ");
             }
         });
     }
@@ -258,7 +271,7 @@ class UserCacheDao {
                 client.disconnect();
             }
             catch (error) {
-                console.error("Error connecting to Redis:", error);
+                loggerService_1.default.error("Error connecting to Redis ❌ ❌ ❌ ");
             }
         });
     }

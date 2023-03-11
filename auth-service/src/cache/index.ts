@@ -1,5 +1,7 @@
 import { createClient } from "redis";
 import { accessEnv } from "../helpers";
+import logger from "../services/loggerService";
+
 const env = accessEnv("ENV_CACHE").trim();
 
 let client;
@@ -12,6 +14,18 @@ if (env === "prod") {
     url: accessEnv("REDIS_URL_LOCAL"),
   });
 }
+
+(async () => {
+  try {
+    await client.connect();
+    logger.info("Redis connected successfully ✅ ✅ ✅ ");
+  } catch (error) {
+    logger.error(
+      "Error connecting to Redis ❌ ❌ ❌ ❌ ❌ ❌ ❌",
+      error.message
+    );
+  }
+})();
 
 import { UserCacheData } from "../contracts/types";
 import { userCacheDao } from "./userCacheDao";
@@ -49,7 +63,7 @@ export class UserCacheDao implements userCacheDao {
         });
       client.disconnect();
     } catch (error) {
-      console.error("Error connecting to Redis:", error);
+      logger.error("Error connecting to Redis ❌ ❌ ❌ ");
     }
   }
 
@@ -67,7 +81,7 @@ export class UserCacheDao implements userCacheDao {
         });
       client.disconnect();
     } catch (error) {
-      console.error("Error connecting to Redis:", error);
+      logger.error("Error connecting to Redis ❌ ❌ ❌ ");
     }
   }
 
@@ -87,7 +101,7 @@ export class UserCacheDao implements userCacheDao {
       client.disconnect();
       return user;
     } catch (error) {
-      console.error("Error connecting to Redis:", error);
+      logger.error("Error connecting to Redis ❌ ❌ ❌ ");
     }
   }
 
@@ -107,7 +121,7 @@ export class UserCacheDao implements userCacheDao {
       client.disconnect();
       return code;
     } catch (error) {
-      console.error("Error connecting to Redis:", error);
+      logger.error("Error connecting to Redis ❌ ❌ ❌ ");
     }
   }
 
@@ -133,7 +147,7 @@ export class UserCacheDao implements userCacheDao {
         });
       client.disconnect();
     } catch (error) {
-      console.error("Error connecting to Redis:", error);
+      logger.error("Error connecting to Redis ❌ ❌ ❌ ");
     }
   }
 
@@ -151,7 +165,7 @@ export class UserCacheDao implements userCacheDao {
         });
       client.disconnect();
     } catch (error) {
-      console.error("Error connecting to Redis:", error);
+      logger.error("Error connecting to Redis ❌ ❌ ❌ ");
     }
   }
 
@@ -169,7 +183,7 @@ export class UserCacheDao implements userCacheDao {
         });
       client.disconnect();
     } catch (error) {
-      console.error("Error connecting to Redis:", error);
+      logger.error("Error connecting to Redis ❌ ❌ ❌ ");
     }
   }
 
@@ -198,7 +212,7 @@ export class UserCacheDao implements userCacheDao {
         });
       client.disconnect();
     } catch (error) {
-      console.error("Error connecting to Redis:", error);
+      logger.error("Error connecting to Redis ❌ ❌ ❌ ");
     }
   }
 
@@ -216,7 +230,7 @@ export class UserCacheDao implements userCacheDao {
         });
       client.disconnect();
     } catch (error) {
-      console.error("Error connecting to Redis:", error);
+      logger.error("Error connecting to Redis ❌ ❌ ❌ ");
     }
   }
 
@@ -234,7 +248,7 @@ export class UserCacheDao implements userCacheDao {
         });
       client.disconnect();
     } catch (error) {
-      console.error("Error connecting to Redis:", error);
+      logger.error("Error connecting to Redis ❌ ❌ ❌ ");
     }
   }
 }
