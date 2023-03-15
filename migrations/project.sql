@@ -1,4 +1,3 @@
--- Active: 1675733762916@@planify.ccjo9gy5a6ho.eu-central-1.rds.amazonaws.com@5432@planify@public
 CREATE SEQUENCE projects START WITH 1;
 CREATE TABLE project (
     id                    INTEGER PRIMARY KEY DEFAULT nextval('projects'),
