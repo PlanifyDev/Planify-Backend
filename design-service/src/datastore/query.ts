@@ -1,4 +1,3 @@
-// build queries for all the database operations
 export class MyQuery {
   static createProject = `INSERT INTO project (name, boundary, project_img, project_icon, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING id`;
 
@@ -6,7 +5,7 @@ export class MyQuery {
 
   static getProject = `SELECT id, name, project_img, project_icon , created_at, is_trashed FROM project WHERE id = $1`;
 
-  static getProjects = `SELECT id, name, project_img, project_icon , created_at, is_trashed FROM project WHERE id = $1`;
+  static getProjects = `SELECT id, name, project_img, project_icon , created_at, is_trashed FROM project WHERE user_id = $1 ORDER BY id ASC`;
 
   static getVersions = `SELECT * FROM version WHERE project_id = $1`;
 

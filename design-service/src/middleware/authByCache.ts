@@ -1,6 +1,6 @@
 import * as type from "../contracts/types";
 import { createClient } from "redis";
-import { accessEnv } from "../helpers/accessEnv";
+import { accessEnv, logger } from "../helpers";
 const env = accessEnv("ENV_CACHE").trim();
 
 let client;
@@ -14,20 +14,41 @@ if (env === "prod") {
   });
 }
 
+(async () => {
+  try {
+    await client.connect();
+    logger.info("Redis connected successfully ✅ ✅ ✅ ");
+    client.disconnect();
+  } catch (error) {
+    logger.error(
+      "Error connecting to Redis ❌ ❌ ❌ ❌ ❌ ❌ ❌",
+      error.message
+    );
+  }
+})();
+
 export const authByCache = async (req, res, next) => {
   const token = req.headers.authorization;
 
   const user_id = req.body.user_id;
+  if (!user_id) {
+    res.status(401).send({ error: "User ID is missing" });
+    return next("User ID is missing");
+  }
+
   if (!token) {
-    return res.status(401).send({ error: "Bad token" });
+    res.status(401).send({ error: "Bad token" });
+    return next("Bad token");
   }
   const user = await getCachedUser(user_id);
   if (!Object.keys(user).length) {
-    return res.status(401).send({ error: "User not found" });
+    res.status(401).send({ error: "User not found" });
+    return next("User not found");
   }
 
   if (user.user_token !== token) {
-    return res.status(401).send({ error: "Bad token" });
+    res.status(401).send({ error: "Bad token" });
+    return next("Bad token");
   }
 
   res.locals.userId = user_id;
@@ -45,13 +66,11 @@ const getCachedUser = async (user_id: string): Promise<type.UserCacheData> => {
         return Promise.resolve(value);
       })
       .catch((err: any) => {
-        console.log(err);
-        return Promise.reject(err);
+        logger.error("Redis Error: in by cache in get user func", err.message);
       });
     client.disconnect();
     return user;
   } catch (error) {
-    console.error("Error connecting to Redis:", error);
-    process.exit(1);
+    logger.error("Error connecting to Redis:", error.message);
   }
 };

@@ -1,11 +1,5 @@
 import axios from "axios";
-
-type AiResponse = {
-  project_img: string;
-  project_icon: string;
-  version_img: string;
-  version_icon: string;
-};
+import { AiResponse } from "../contracts/types";
 
 export const createNewProject = async (
   boundary: Object
@@ -25,7 +19,6 @@ export const createNewProject = async (
       version_icon: "version_icon",
     });
   } catch (error) {
-    console.log(error);
     return Promise.reject(error);
   }
 };
