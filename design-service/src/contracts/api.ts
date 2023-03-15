@@ -1,13 +1,63 @@
-import { Project, NewProjectReq, projectInRes, Version } from "./types";
+import { Project, NewProjectReq, projectRes, Version } from "./types";
 
-// user API
+// ===========================================================
+// ----------------------- Project API -----------------------
+// ===========================================================
 
 // ----------------- Create new Project --------------------------
 export type CreateProjectReq = NewProjectReq;
 export interface CreateProjectRes {
-  project: projectInRes;
+  project: projectRes;
   version: Version;
 }
+
+// ----------------- Get All Projects Of User --------------------------
+
+export interface GetProjectsReq {}
+export interface GetProjectsRes {
+  projects: projectRes[];
+}
+
+// ----------------- Update Project Name --------------------------
+export interface UpdateProjectNameParam {
+  id: number;
+}
+export interface UpdateProjectNameReq {
+  name: string;
+  user_id: number;
+}
+export interface UpdateProjectNameRes {}
+
+// ----------------- Move Project to trash --------------------------
+export interface MoveProjectToTrashParam {
+  id: number;
+}
+export interface MoveProjectToTrashReq {
+  user_id: string;
+}
+export interface MoveProjectToTrashRes {}
+
+// ----------------- Restore Project from trash --------------------------
+export interface RestoreProjectFromTrashParam {
+  id: number;
+}
+export interface RestoreProjectFromTrashReq {
+  user_id: number;
+}
+export interface RestoreProjectFromTrashRes {}
+
+// ----------------- Delete project permanently --------------------------
+export interface DeleteProjectParam {
+  id: number;
+}
+export interface DeleteProjectReq {
+  user_id: number;
+}
+export interface DeleteProjectRes {}
+
+// ===========================================================
+// ----------------------- Version API -----------------------
+// ===========================================================
 
 // ----------------- Create new Version --------------------------
 export interface CreateVersionReq {
@@ -15,76 +65,35 @@ export interface CreateVersionReq {
 }
 export interface CreateVersionRes extends Version {}
 
-// ----------------- Get All Projects Of User --------------------------
-
-export interface GetProjectsReq {}
-
-export interface GetProjectsRes {
-  projects: projectInRes[];
-}
-
 // ----------------- Get versions of project --------------------------
 export interface GetVersionsReq {
   project_id: number;
 }
-
 export interface GetVersionsRes {
   versions: Version[];
 }
-
-// ----------------- Update Project Name --------------------------
-export interface UpdateProjectNameReq {
-  project_id: number;
-  name: string;
-}
-export interface UpdateProjectNameRes {}
 
 // ----------------- Update Version Name --------------------------
 export interface UpdateVersionNameReq {
   version_id: number;
   name: string;
 }
-
 export interface UpdateVersionNameRes {}
-
-// ----------------- Move Project to trash --------------------------
-export interface MoveProjectToTrashReq {
-  project_id: number;
-}
-
-export interface MoveProjectToTrashRes {}
 
 // ----------------- move Version to trash --------------------------
 export interface MoveVersionToTrashReq {
   version_id: number;
 }
-
 export interface MoveVersionToTrashRes {}
-
-// ----------------- Restore Project from trash --------------------------
-export interface RestoreProjectFromTrashReq {
-  project_id: number;
-}
-
-export interface RestoreProjectFromTrashRes {}
 
 // ----------------- Restore Version from trash --------------------------
 export interface RestoreVersionFromTrashReq {
   version_id: number;
 }
-
 export interface RestoreVersionFromTrashRes {}
-
-// ----------------- Delete project permanently --------------------------
-export interface DeleteProjectReq {
-  project_id: number;
-}
-
-export interface DeleteProjectRes {}
 
 // ----------------- Delete version permanently --------------------------
 export interface DeleteVersionReq {
   version_id: number;
 }
-
 export interface DeleteVersionRes {}
