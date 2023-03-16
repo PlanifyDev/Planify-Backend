@@ -5,16 +5,13 @@
   "main": "/src/server.ts",
   "scripts": {
     "dev": "nodemon ./src/server.ts",
-    "build": "npx tsc ",
+    "build": "chmod +x ./build.sh && ./build.sh",
     "test": "jest --forceExit",
-    "start": "node ./build/server.js",
+    "start:dev": "node ./build/server.js",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix",
     "prettier-format": "prettier --config .prettierrc . --write",
-    "start:prod": "pm2 delete auth_service; pm2 start  --name auth_service \"npx ts-node --transpile-only src/server.ts\"",
-    "start:rpc_prod": "pm2 delete auth_rpc; pm2 start  --name auth_rpc \"npx ts-node --transpile-only src/gRPC/rpc_server/server.ts\"",
-    "build:rpc": "sh src/gRPC/proto/build.sh",
-    "dev:rpc": "ts-node ./src/gRPC/rpc_server/server.ts"
+    "start": "pm2 start --name design_service --no-daemon \"node build/server.js\""
   },
   "keywords": [],
   "author": "",

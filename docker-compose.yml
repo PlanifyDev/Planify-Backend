@@ -2,7 +2,7 @@ version: "3"
 
 services:
   redis:
-    container_name: my-redis
+    container_name: planify-redis
     image: redis/redis-stack
     ports:
       - "6379:6379"
@@ -11,7 +11,7 @@ services:
       - palnify-network
 
   auth:
-    container_name: my-auth
+    container_name: planify-auth
     image: auth
     # build: ./auth-service
     ports:
@@ -23,7 +23,7 @@ services:
       - palnify-network
 
   payment:
-    container_name: my-payment
+    container_name: planify-payment
     image: pay
     # build: ./payment-service
     ports:
@@ -33,9 +33,20 @@ services:
     networks:
       - palnify-network
 
+  design:
+    container_name: planify-design
+    image: design
+    # build: ./design-service
+    ports:
+      - "3002:3002"
+    depends_on:
+      - auth
+    networks:
+      - palnify-network
+
   nginx:
     image: nginx
-    container_name: my-nginx
+    container_name: planify-nginx
     ports:
       - "80:80"
     volumes:
@@ -43,6 +54,7 @@ services:
     depends_on:
       - auth
       - payment
+      - design
     networks:
       - palnify-network
 

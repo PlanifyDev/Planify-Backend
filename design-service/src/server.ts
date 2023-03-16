@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { projectRouter, versionRouter } from "./routes/designRouter";
+import { projectRouter, versionRouter } from "./routes";
 import { loggerMiddleware, notFound } from "./middleware";
 import { accessEnv, logger } from "./helpers";
 const app = express();

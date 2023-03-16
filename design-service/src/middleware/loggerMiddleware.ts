@@ -3,13 +3,13 @@ import { MyError, logger } from "../helpers";
 
 export const loggerMiddleware: ErrorRequestHandler = (error, req, res, _) => {
   const { statusCode, statusMessage } = res;
-  const { method, path, body, ip } = req;
+  const { method, originalUrl, body, ip } = req;
 
   if (error instanceof MyError) {
     logger.error(error.message, error.errorObj);
     logger.req(
       "Server Error",
-      { method, path, body, ip },
+      { method, path: originalUrl, body, ip },
       { statusCode: 500, message: error.message }
     );
     return res
@@ -18,7 +18,7 @@ export const loggerMiddleware: ErrorRequestHandler = (error, req, res, _) => {
   } else {
     return logger.req(
       statusMessage,
-      { method, path, body, ip },
+      { method, path: originalUrl, body, ip },
       { statusCode, message: error }
     );
   }

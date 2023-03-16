@@ -1,11 +1,13 @@
-import { Project, CreateProjectDB } from "../../contracts/types";
+import * as type from "../../contracts/types";
 
 export interface ProjectDao {
-  createProject(newProject: CreateProjectDB): Promise<number>;
+  createProject(newProject: type.CreateProjectDB): Promise<number>;
 
-  getProject(project_id: number): Promise<Project>;
+  getProject(project_id: number): Promise<type.Project>;
 
-  getProjects(user_id: string): Promise<Project[]>;
+  getProjectCopy(project_id: number): Promise<type.ProjectCopy>;
+
+  getProjects(user_id: string): Promise<type.Project[]>;
 
   updateProjectName(project_id: number, name: string): Promise<void>;
 

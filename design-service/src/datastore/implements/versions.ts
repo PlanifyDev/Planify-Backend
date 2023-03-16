@@ -8,14 +8,8 @@ export class VersionDataStore implements VersionDao {
     const version: CreateVersionDB[] = [];
 
     // to ensure the order of the keys
-    const keys = [
-      "version_num",
-      "name",
-      "version_img",
-      "version_icon",
-      "project_id",
-    ];
-    for (let i = 0; i < 5; i++) {
+    const keys = ["name", "version_img", "version_icon", "project_id"];
+    for (let i = 0; i < 4; i++) {
       version.push(newVersion[keys[i]]);
     }
     try {

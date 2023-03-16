@@ -1,12 +1,13 @@
 import { RequestHandler } from "express";
 
+// project data stored in DB
 export interface Project {
   id: number;
   name: string;
   boundary: Object;
-  // door_position: Object;
+  door_position: Object;
   // neighbors: Object;
-  // constraints: Object;
+  constraints: Object;
   project_img: string;
   project_icon: string;
   created_at: string;
@@ -14,15 +15,30 @@ export interface Project {
   user_id: string;
 }
 
-export type NewProjectReq = Pick<Project, "name" | "boundary" | "user_id">; // door_position, neighbors, constraints
+// data from client to create new project
+export type NewProjectReq = Pick<
+  Project,
+  "name" | "boundary" | "door_position" | "constraints" | "user_id" // neighbors is missing
+>;
 
+// data to insert to DB
 export type CreateProjectDB = Omit<Project, "id" | "created_at" | "deleted">;
 
-export type projectRes = Omit<Project, "boundary" | "user_id">;
+// data to return to client
+export type projectRes = Omit<
+  Project,
+  "boundary" | "door_position" | "constraints" | "user_id"
+>;
 
+// data to copy from project to create new project like old project
+export type ProjectCopy = Pick<
+  Project,
+  "boundary" | "door_position" | "constraints" // neighbors is missing
+>;
+
+// version data store in DB
 export interface Version {
   id: number;
-  version_num: number;
   name: string;
   version_img: string;
   version_icon: string;
@@ -30,15 +46,21 @@ export interface Version {
   deleted: boolean;
   project_id: number;
 }
+
+// version data to insert to DB
 export type CreateVersionDB = Omit<Version, "id" | "created_at" | "deleted">;
 
-export interface AiResponse {
+export interface AiProjectResponse {
   project_img: string;
   project_icon: string;
+}
+
+export interface AiVersionResponse {
   version_img: string;
   version_icon: string;
 }
 
+// data of user that i need to check auth
 export interface UserCacheData {
   id: string;
   verified: boolean;
