@@ -9,6 +9,7 @@ COPY . .
 
 RUN ["npm", "i", "-g", "pm2"] 
 
+
 # RUN ["npm", "run", "build"]
 
 
