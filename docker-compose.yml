@@ -1,6 +1,17 @@
 version: "3"
 
 services:
+  db:
+    container_name: planify-db
+    image: mosta1489/planify_db:v1
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - palnify-network
+
   redis:
     container_name: planify-redis
     image: redis/redis-stack
@@ -12,51 +23,77 @@ services:
 
   auth:
     container_name: planify-auth
-    image: auth
+    image: mosta1489/auth:latest
     # build: ./auth-service
     ports:
       - "3000:3000"
       - "5000:5000"
     depends_on:
-      - redis
+      - rediss
+      - db
+
+    # volumes:
+    #   - ./auth-service/.env:/auth
+
+    environment:
+      - ENV_DB=dev
+
     networks:
       - palnify-network
 
   payment:
     container_name: planify-payment
-    image: pay
+    image: mosta1489/payment:v1
     # build: ./payment-service
     ports:
       - "3001:3001"
     depends_on:
       - auth
+      - redis
+      - db
+
+    # volumes:
+    #   - ./payment-service/.env:/payment
+
+    environment:
+      - ENV_DB=dev
+
     networks:
       - palnify-network
 
   design:
     container_name: planify-design
-    image: design
+    image: mosta1489/design:v1
     # build: ./design-service
     ports:
       - "3002:3002"
     depends_on:
       - auth
+      - redis
+      - db
+
+    # volumes:
+    #   - ./design-service/.env:/design
+
+    environment:
+      - ENV_DB=dev
+
     networks:
       - palnify-network
 
-  nginx:
-    image: nginx
-    container_name: planify-nginx
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-    depends_on:
-      - auth
-      - payment
-      - design
-    networks:
-      - palnify-network
+  # nginx:
+  #   image: nginx
+  #   container_name: planify-nginx
+  #   ports:
+  #     - "80:80"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf
+  #   depends_on:
+  #     - auth
+  #     - payment
+  #     - design
+  #   networks:
+  #     - palnify-network
 
 networks:
   palnify-network:
