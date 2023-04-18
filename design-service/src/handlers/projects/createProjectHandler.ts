@@ -1,7 +1,8 @@
 import { DB } from "../../datastore";
 import * as type from "../../contracts/types";
 import * as api from "../../contracts/api";
-import * as AI from "../../AI";
+// import * as AI from "../../AI";
+import { create_project } from "../../gRPC/ai_client/ai_client";
 import { MyError } from "../../helpers";
 
 /**
@@ -24,18 +25,20 @@ export const createProject: type.myHandler<
 
   // ---------------------- 1. send boundary to AI. get project images & icon ----------------------
   let aiResponse: type.AiProjectResponse;
-  try {
-    aiResponse = await AI.createNewProject(
-      newProject.boundary,
-      newProject.door_position
-    );
-  } catch (error) {
-    const myError = new MyError(
-      "AI service Error: in create project AI service",
-      error.message
-    );
-    return next(myError);
-  }
+
+  const boundary = JSON.stringify(newProject.boundary);
+  const door_position = JSON.stringify(newProject.door_position);
+  create_project(boundary, door_position)
+    .then((response) => {
+      aiResponse = response;
+    })
+    .catch((error) => {
+      const myError = new MyError(
+        "AI service Error: in create project AI service",
+        error.message
+      );
+      return next(myError);
+    });
 
   // ---------------------- 2. create new project with the result ----------------------
   const projectDB: type.CreateProjectDB = {
@@ -63,33 +66,6 @@ export const createProject: type.myHandler<
     created_at: new Date(Date.now()).toLocaleString(),
     deleted: false,
   };
-
-  // ---------------------- 3. create new version with the result ----------------------
-  // const newVersion: type.CreateVersionDB = {
-  //   version_num: 1,
-  //   name: "version 1",
-  //   version_img: aiResponse.version_img,
-  //   version_icon: aiResponse.version_icon,
-  //   project_id,
-  // };
-
-  // let version_id: number;
-  // try {
-  //   version_id = await DB.version.createVersion(newVersion);
-  // } catch (error) {
-  //   const myError = new MyError(
-  //     "DB Error: in create version func",
-  //     error.message
-  //   );
-  //   return next(myError);
-  // }
-
-  // const version: type.Version = {
-  //   id: version_id,
-  //   ...newVersion,
-  //   created_at: projectInRes.created_at,
-  //   deleted: false,
-  // };
 
   // ---------------------- 4. return the project and version ----------------------
 
