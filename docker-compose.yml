@@ -3,7 +3,7 @@ version: "3"
 services:
   db:
     container_name: planify-db
-    image: mosta1489/planify_db:v1
+    image: postgres
     ports:
       - "5432:5432"
     environment:
@@ -30,7 +30,7 @@ services:
       - "5000:5000"
     depends_on:
       - rediss
-      - db
+      # - db
 
     # volumes:
     #   - ./auth-service/.env:/auth
@@ -43,14 +43,14 @@ services:
 
   payment:
     container_name: planify-payment
-    image: mosta1489/payment:v1
+    image: mosta1489/payment
     # build: ./payment-service
     ports:
       - "3001:3001"
     depends_on:
       - auth
       - redis
-      - db
+      # - db
 
     # volumes:
     #   - ./payment-service/.env:/payment
@@ -63,14 +63,14 @@ services:
 
   design:
     container_name: planify-design
-    image: mosta1489/design:v1
+    image: mosta1489/design:latest
     # build: ./design-service
     ports:
       - "3002:3002"
     depends_on:
       - auth
       - redis
-      - db
+      # - db
 
     # volumes:
     #   - ./design-service/.env:/design
@@ -81,20 +81,21 @@ services:
     networks:
       - palnify-network
 
-  # nginx:
-  #   image: nginx
-  #   container_name: planify-nginx
-  #   ports:
-  #     - "80:80"
-  #   volumes:
-  #     - ./nginx.conf:/etc/nginx/nginx.conf
-  #   depends_on:
-  #     - auth
-  #     - payment
-  #     - design
-  #   networks:
-  #     - palnify-network
+  nginx:
+    image: nginx
+    container_name: planify-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - auth
+      - payment
+      - design
+    networks:
+      - palnify-network
 
 networks:
   palnify-network:
     driver: bridge
+# docker run -d -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres --name db postgres
