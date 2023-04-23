@@ -19,6 +19,7 @@ if (env === "prod") {
   try {
     await client.connect();
     logger.info("Redis connected successfully ✅ ✅ ✅ ");
+    client.disconnect();
   } catch (error) {
     logger.error(
       "Error connecting to Redis ❌ ❌ ❌ ❌ ❌ ❌ ❌",

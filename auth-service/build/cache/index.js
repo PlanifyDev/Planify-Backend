@@ -32,6 +32,7 @@ else {
     try {
         yield client.connect();
         loggerService_1.default.info("Redis connected successfully ✅ ✅ ✅ ");
+        client.disconnect();
     }
     catch (error) {
         loggerService_1.default.error("Error connecting to Redis ❌ ❌ ❌ ❌ ❌ ❌ ❌", error.message);
