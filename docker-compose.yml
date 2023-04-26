@@ -1,17 +1,6 @@
 version: "3"
 
 services:
-  db:
-    container_name: planify-db
-    image: postgres
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    networks:
-      - palnify-network
-
   redis:
     container_name: planify-redis
     image: redis/redis-stack
@@ -30,10 +19,6 @@ services:
       - "5000:5000"
     depends_on:
       - rediss
-      # - db
-
-    # volumes:
-    #   - ./auth-service/.env:/auth
 
     environment:
       - ENV_DB=dev
@@ -50,10 +35,6 @@ services:
     depends_on:
       - auth
       - redis
-      # - db
-
-    # volumes:
-    #   - ./payment-service/.env:/payment
 
     environment:
       - ENV_DB=dev
@@ -70,10 +51,6 @@ services:
     depends_on:
       - auth
       - redis
-      # - db
-
-    # volumes:
-    #   - ./design-service/.env:/design
 
     environment:
       - ENV_DB=dev
@@ -98,4 +75,3 @@ services:
 networks:
   palnify-network:
     driver: bridge
-# docker run -d -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres --name db postgres
