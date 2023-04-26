@@ -17,5 +17,6 @@ RUN ["npm", "i", "-g", "pm2"]
 
 # RUN ["npm", "run", "build"]
 
-CMD [ "npm", "run", "auth"]
+# CMD [ "npm", "run", "auth"]
+CMD [ "npm", "start"]
 

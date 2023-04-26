@@ -4,7 +4,7 @@ exports.MyQuery = void 0;
 class MyQuery {
 }
 exports.MyQuery = MyQuery;
-MyQuery.insertUser = `INSERT INTO users VALUES($1, $2, $3, $4, $5, $6, $7, $8);`;
+MyQuery.insertUser = `INSERT INTO users VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`;
 MyQuery.getUserByEmail = `SELECT * FROM users WHERE LOWER(email)=LOWER($1);`;
 MyQuery.getUserById = `SELECT * FROM users WHERE id=$1;`;
 MyQuery.updateImg = `UPDATE users SET image_url = $1 WHERE id=$2;`;
