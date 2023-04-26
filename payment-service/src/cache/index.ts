@@ -1,6 +1,6 @@
 import { createClient } from "redis";
 import { accessEnv } from "../helpers";
-import { UserCacheData } from "../contracts/types";
+import { Plan, UserCacheData } from "../contracts/types";
 import { PaymentCacheDao } from "./PaymentCacheDao";
 
 const env = accessEnv("ENV_CACHE").trim();
@@ -16,7 +16,58 @@ if (env === "prod") {
   });
 }
 
+(async () => {
+  try {
+    await client.connect();
+    console.log("Redis connected successfully ✅ ✅ ✅ ");
+  } catch (error) {
+    console.log(
+      "Error connecting to Redis ❌ ❌ ❌ ❌ ❌ ❌ ❌",
+      error.message
+    );
+  }
+})();
+
 export class PaymentCache implements PaymentCacheDao {
+  // ------------- cache plans ----------------
+  async cachePlans(plans: Plan[]): Promise<void> {
+    try {
+      await client.connect();
+      await client
+        .set("plans", JSON.stringify(plans), "EX", 60 * 30 * 24)
+        .then((value: any) => {
+          return Promise.resolve();
+        })
+        .catch((err: any) => {
+          console.log(err);
+          return Promise.reject(err);
+        });
+      client.disconnect();
+    } catch (error) {
+      console.log("Error connecting to Redis ❌ ❌ ❌ ");
+    }
+  }
+
+  // ------------- get plans from cache  ----------------
+  async getCachedPlans(): Promise<Plan[]> {
+    try {
+      await client.connect();
+      const plans = await client
+        .get("plans")
+        .then((value: any) => {
+          return Promise.resolve(value);
+        })
+        .catch((err: any) => {
+          console.log(err);
+          return Promise.reject(err);
+        });
+      client.disconnect();
+      return plans;
+    } catch (error) {
+      console.log("Error connecting to Redis ❌ ❌ ❌ ");
+    }
+  }
+
   // ------------- update plan token in cache ----------------
   async updatePlanToken(user_id: string, user_plan: string): Promise<void> {
     try {
@@ -31,7 +82,7 @@ export class PaymentCache implements PaymentCacheDao {
         });
       client.disconnect();
     } catch (error) {
-      console.error("Error connecting to Redis:", error);
+      console.log("Error connecting to Redis ❌ ❌ ❌ ");
     }
   }
 
@@ -51,7 +102,7 @@ export class PaymentCache implements PaymentCacheDao {
       client.disconnect();
       return user;
     } catch (error) {
-      console.error("Error connecting to Redis:", error);
+      console.log("Error connecting to Redis ❌ ❌ ❌ ");
     }
   }
 }
