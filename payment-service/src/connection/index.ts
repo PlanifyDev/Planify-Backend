@@ -13,9 +13,7 @@ if (ENV === "prod") {
   connectionString = DATABASE_URI_PROD;
   conn = new Pool({
     connectionString,
-    ssl: {
-      rejectUnauthorized: false,
-    },
+    ssl: false,
   });
 } else {
   conn = new Pool({ connectionString });

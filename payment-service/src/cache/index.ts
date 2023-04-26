@@ -20,6 +20,7 @@ if (env === "prod") {
   try {
     await client.connect();
     console.log("Redis connected successfully ✅ ✅ ✅ ");
+    client.disconnect();
   } catch (error) {
     console.log(
       "Error connecting to Redis ❌ ❌ ❌ ❌ ❌ ❌ ❌",
@@ -49,7 +50,7 @@ export class PaymentCache implements PaymentCacheDao {
   }
 
   // ------------- get plans from cache  ----------------
-  async getCachedPlans(): Promise<Plan[]> {
+  async getCachedPlans(): Promise<any> {
     try {
       await client.connect();
       const plans = await client
