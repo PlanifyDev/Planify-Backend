@@ -53,6 +53,10 @@ export class UserCacheDao implements userCacheDao {
           cacheUser.user_plan,
           "verified",
           cacheUser.verified.toString(),
+          "role",
+          cacheUser.role,
+          "country",
+          cacheUser.country,
         ])
         .then((value: any) => {
           return Promise.resolve();
@@ -137,6 +141,38 @@ export class UserCacheDao implements userCacheDao {
           "true",
           "user_token",
           token,
+        ])
+        .then((value: any) => {
+          return Promise.resolve();
+        })
+        .catch((err: any) => {
+          console.log(err);
+          return Promise.reject(err);
+        });
+      client.disconnect();
+    } catch (error) {
+      logger.error("Error connecting to Redis ❌ ❌ ❌ ");
+    }
+  }
+
+  // ------------- update user data in cache ----------------
+  async updateUserDataCache(user_id: string, userCache: any): Promise<void> {
+    try {
+      await client.connect();
+      await client
+        .sendCommand([
+          "hmset",
+          user_id,
+          "firstname",
+          userCache.firstname,
+          "lastname",
+          userCache.lastname,
+          "image_url",
+          userCache.image_url,
+          "role",
+          userCache.role,
+          "country",
+          userCache.country,
         ])
         .then((value: any) => {
           return Promise.resolve();

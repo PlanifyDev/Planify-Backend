@@ -1,6 +1,6 @@
 export enum ERRORS {
   TOKEN_EXPIRED = "Token expired",
-  BAD_TOKEN = "Bad token",
+  BAD_TOKEN = "Please login again",
   USER_NOT_FOUND = "User not found",
   DUPLICATE_EMAIL = "An account with this email already exists",
   WRONG_LOGIN = "Wrong Email or Password",

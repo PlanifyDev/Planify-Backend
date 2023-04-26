@@ -48,7 +48,8 @@ const datastore_1 = require("../datastore");
 const help = __importStar(require("../helpers"));
 const cache_1 = require("../cache");
 const signInHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password } = req.body;
+    const password = req.body.password;
+    const email = req.body.email.toLowerCase();
     // ---------------- check if all field is existing ----------------
     if (!email || !password) {
         return res.status(400).send({ error: help.ERRORS.WRONG_LOGIN });

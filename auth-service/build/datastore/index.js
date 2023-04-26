@@ -67,11 +67,13 @@ class UserDataStore {
     }
     updateAllData(user_id, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            const newData = [];
-            for (const key in user) {
-                newData.push(user[key]);
-            }
-            newData.push(user_id);
+            const newData = [
+                user.firstname,
+                user.lastname,
+                user.image_url,
+                user.password,
+                user_id,
+            ];
             try {
                 yield connection_1.default.query(query_1.MyQuery.updateAllData, newData);
                 return Promise.resolve();

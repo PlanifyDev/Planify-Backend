@@ -76,6 +76,9 @@ export interface UpdateAllReq {
   lastname?: string;
   password?: string;
   oldPassword?: string;
+  image_url?: string;
+  role?: string;
+  country?: string;
 }
 export interface UpdateAllRes {}
 

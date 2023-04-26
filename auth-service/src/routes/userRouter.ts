@@ -51,7 +51,11 @@ userRouter.get(
 );
 
 // endpoint to get data of user
-userRouter.get("/get-user/:id", asyncHandler(handler.getUserHandler));
+userRouter.get(
+  "/get-user/:id",
+  authByCache,
+  asyncHandler(handler.getUserHandler)
+);
 
 // endpoint to clear database
 userRouter.delete("/cleardb", asyncHandler(handler.cleardb));
