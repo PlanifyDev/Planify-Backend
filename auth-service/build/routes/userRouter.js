@@ -47,7 +47,7 @@ exports.userRouter.post("/reset-password", (0, express_async_handler_1.default)(
 exports.userRouter.delete("/delete-user/:id", middleware.authByCache, (0, express_async_handler_1.default)(handler.deleteUserHandler));
 exports.userRouter.get("/resend-verification/:id", authByCache_1.authByCache, (0, express_async_handler_1.default)(handler.resendVerificationHandler));
 // endpoint to get data of user
-exports.userRouter.get("/get-user/:id", (0, express_async_handler_1.default)(handler.getUserHandler));
+exports.userRouter.get("/get-user/:id", authByCache_1.authByCache, (0, express_async_handler_1.default)(handler.getUserHandler));
 // endpoint to clear database
 exports.userRouter.delete("/cleardb", (0, express_async_handler_1.default)(handler.cleardb));
 exports.default = exports.userRouter;

@@ -10,8 +10,8 @@ export const signUpHandler: type.myHandler<SignUpReq, SignupRes> = async (
   res,
   next
 ) => {
-  const { firstname, lastname, email, password } = req.body;
-
+  const { firstname, lastname, password } = req.body;
+  const email = req.body.email.toLowerCase();
   // ---------------- check if all field is existing ----------------
   if (!firstname || !lastname || !email || !password) {
     return res
@@ -41,7 +41,7 @@ export const signUpHandler: type.myHandler<SignUpReq, SignupRes> = async (
   const hashedPassword = await help.hashPassword(password);
 
   const newUser: type.User = {
-    id: crypto.randomUUID(),
+    id: crypto.randomBytes(16).toString("hex"),
     firstname,
     lastname,
     image_url: "default image for now ",
@@ -49,6 +49,8 @@ export const signUpHandler: type.myHandler<SignUpReq, SignupRes> = async (
     password: hashedPassword,
     verified: false,
     user_plan: "free",
+    role: "user",
+    country: "Egypt",
   };
 
   // ---------------- save all data in db --------------------------
