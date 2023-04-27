@@ -1,3 +1,4 @@
+import base64
 import os
 import boto3
 import uuid
@@ -6,15 +7,16 @@ import cv2
 import requests
 from PIL import Image
 import io
-from flask.cli import load_dotenv
 
-load_dotenv()
+
 access_key = os.environ.get('AWS_ACCESS_KEY_ID')
 secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
 s3_reg = os.environ.get('AWS_S3_REGION')
 bucket_name = os.environ.get('AWS_S3_BUCKET')
+s3_url = os.environ.get('AWS_S3_ENDPOINT')
+imgbb_key = os.environ.get('IMGBB_KEY')
 
-s3_url = 'https://s3.' + s3_reg + '.amazonaws.com'
+print(access_key)
 
 s3 = boto3.client('s3',
                   aws_access_key_id=access_key,
@@ -42,16 +44,24 @@ def upload_to_s3(mask, folder_name='projects'):
 
 
 def upload_to_imgbb(image):
-    _, encoded_image = cv2.imencode('.jpg', image)
+    # rgb to bgr
+    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+    _, buffer = cv2.imencode('.png', image)
+    encoded_image = base64.b64encode(buffer).decode('utf-8')
 
     response = requests.post(
         "https://api.imgbb.com/1/upload",
         data={
-            "image": encoded_image.tobytes(),
+            "image": encoded_image,
         },
         params={
-            "key": "8d493e029a3607ac3f4c520c14d9d2d1",
+            "key": imgbb_key,
         },
     )
-    url = response.json()["data"]["url"]
-    print(url)
+    try:
+        url = response.json()["data"]["url"]
+        return url
+    except Exception as e:
+        print("Error uploading to imgbb", e)
+        return None
+

@@ -1,11 +1,16 @@
 from flask import Flask
 from flask import request
+from flask_cors import CORS
+
 from processing import process_data
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'the quick brown fox jumps over the lazy   dog'
+app.config['SECRET_KEY'] = 'hello darkness my old friend'
 app.config['CORS_HEADERS'] = 'Content-Type'
+
+cors = CORS()
+cors.init_app(app)
 
 
 @app.route('/', methods=['GET'])
@@ -16,7 +21,7 @@ def test():
         return "POST Error 405 Method Not Allowed"
 
 
-@app.route('/design', methods=['POST', 'GET'])
+@app.route('/design', methods=['POST', 'GET', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'])
 def design():
     if request.method == 'POST':
         data = request.get_json()

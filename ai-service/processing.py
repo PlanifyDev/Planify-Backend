@@ -11,7 +11,7 @@ from shapely.geometry import box
 
 from geometric import get_mask
 # from model import get_ai_pred
-from upload import upload_to_s3
+from upload import upload_to_s3, upload_to_imgbb
 
 
 def fix_fit_poly(poly, size, pad=False):
@@ -58,16 +58,13 @@ def fix_fit_poly(poly, size, pad=False):
 
 
 outex = cv2.imread("assets/outer1.jpg")
-# outex = np.double(outex)
-# outex = 2 * outex / 3
-# outex = np.uint8(outex)
-
 intex = cv2.imread("assets/inner1.jpg")
-
 outex_icon = cv2.imread("assets/outer2.jpg")
 intex_icon = cv2.imread("assets/inner2.jpg")
 
-print(cv2.__version__)
+# outex = np.double(outex)
+# outex = 2 * outex / 3
+# outex = np.uint8(outex)
 
 
 def draw_display_picture(mask):
@@ -204,9 +201,13 @@ def process_data(data):
     plt.imshow(disp_icon)
     plt.show()
 
-    mask_url = upload_to_s3(ai_mask_final, folder_name='masks')
-    disp_url = upload_to_s3(disp, folder_name='projects')
-    disp_icon_url = upload_to_s3(disp_icon, folder_name='projects_icon')
+    # mask_url = upload_to_s3(ai_mask_final, folder_name='masks')
+    # disp_url = upload_to_s3(disp, folder_name='projects')
+    # disp_icon_url = upload_to_s3(disp_icon, folder_name='projects_icon')
+
+    mask_url = upload_to_imgbb(ai_mask_final)
+    disp_url = upload_to_imgbb(disp)
+    disp_icon_url = upload_to_imgbb(disp_icon)
 
     return {
         **data,
