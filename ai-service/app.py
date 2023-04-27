@@ -15,7 +15,8 @@ def test():
     else:
         return "POST Error 405 Method Not Allowed"
 
-@app.route('/design', methods=['POST', 'GET', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'])
+
+@app.route('/design', methods=['POST', 'GET'])
 def design():
     if request.method == 'POST':
         data = request.get_json()
