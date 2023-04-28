@@ -168,11 +168,11 @@ def process_data(data):
 
     # TODO 5: Make 5 lines below a function
     # p = random_point_on_perimeter(poly_ai)
-    scaled_ai_poly = scale(poly_ai, xfact=0.9, yfact=0.9, origin=(ai_width[0] / 2, ai_width[1] / 2))
-    scaled_ai_door = scale(door_ai, xfact=0.9, yfact=0.9, origin=(ai_width[0] / 2, ai_width[1] / 2))
+    scaled_ai_poly = scale(poly_ai, xfact=0.8, yfact=0.8, origin=(ai_width[0] / 2, ai_width[1] / 2))
+    scaled_ai_door = scale(door_ai, xfact=0.8, yfact=0.8, origin=(ai_width[0] / 2, ai_width[1] / 2))
 
     ai_channel = get_mask(scaled_ai_poly, ai_width)
-    door_channel = get_mask(scaled_ai_door.centroid, ai_width, point_s=10)
+    door_channel = get_mask(scaled_ai_door.centroid, ai_width, point_s=7)
 
     # plt.imshow(ai_channel)
     # plt.show()
