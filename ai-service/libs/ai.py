@@ -7,7 +7,7 @@ from typing import Iterable
 import cv2
 import numpy as np
 from pandas import Series
-from shapely.geometry import MultiPolygon, Polygon, Point
+from shapely.geometry import MultiPolygon, Polygon, Point, box
 import matplotlib.pyplot as plt
 from skimage.feature import blob_dog, blob_log, blob_doh
 from skimage.color import rgb2gray
@@ -49,7 +49,8 @@ def get_mask(poly, shape=(256, 256), point_s=15, line_s=0):
 
 
 def get_rooms_number(area):
-    return rooms_number_model.predict([[area]])[0]
+    bd, bt = rooms_number_model.predict([[area]])[0]
+    return min(4, int(bd)), min(4, int(bt))
 
 
 onehot = {}
@@ -61,24 +62,29 @@ for i in [1, 2, 3, 4]:
         onehot[(i, j)] = img[:, :, :]
 
 
-def get_input(img, bedn, bathn, channels=None, n=None, draw=False, aug=False, aug_bath=False, aug_draw=False):
+def get_input(inner, door, bedn, bathn, channels=None, n=None, draw=False, aug=False, aug_bath=False, aug_draw=False):
     if channels is None:
         channels = []
 
-    img = cv2.imread(r"C:\Demon Home\Grad Project\ai-service\imgs/5.png")
-    img = np.array(img).astype(np.uint8)
-
-    # rgb to bgr
-    img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-    cc = img[:, :, 0].copy()
-    img[:, :, 0] = img[:, :, 1]
-    img[:, :, 1] = cc
+    # img = cv2.imread(r"C:\Demon Home\Grad Project\ai-service\imgs/5.png")
+    # img = np.array(img).astype(np.uint8)
+    #
+    # # rgb to bgr
+    # img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+    # cc = img[:, :, 0].copy()
+    # img[:, :, 0] = img[:, :, 1]
+    # img[:, :, 1] = cc
 
     # area = min(1, estimate_total_area(bedn, bathn) / 500) * 400 / 400
     #     area = torch.from_numpy(areas[int(area)]).view(-1, 256, 256)
     # area_input = torch.ones(1, 256, 256) * area
 
-    input_image = torch.from_numpy(img).permute(2, 0, 1) / 255
+    d = np.zeros((256, 256, 3))
+
+    d[:, :, 0] = door
+    d[:, :, 1] = inner
+
+    input_image = torch.from_numpy(d).permute(2, 0, 1) / 255
 
     n = len(channels) + 3 if not n else n
 
@@ -141,8 +147,8 @@ def get_rects(imgr, centroids):
     #     img[bounds>0] = 0
 
     img[np.where(bounds == 0)] = 0
-    plt.imshow(img)
-    plt.show()
+    # plt.imshow(img)
+    # plt.show()
 
     shapes = []
     cnts = cv2.findContours(img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -164,110 +170,7 @@ def get_rects(imgr, centroids):
 
     return [Point(*i[:2]) for i in sorted(shapes, key=lambda x: x[2], reverse=True)]
 
-
-
-imp = '3'
-bedn, bathn = 3, 2
-
-input_image = get_input(imp, bedn, bathn, aug=1)
-
-x = bed_model(input_image.reshape(1, 10, 256, 256))[0].permute(1, 2, 0).detach().numpy()
-im = imfy(x[:, :, 0])
-img = cv2.GaussianBlur(im, (15, 15), 5)
-ret, thresh = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-blobs_log = blob_log(img, min_sigma=12, max_sigma=30, threshold=0.07)
-bed_centroids = [Point(i[1], i[0]) for i in blobs_log]
-bed_centroids = get_rects(im, bed_centroids)[0]
-bed_centroids_in = get_mask(bed_centroids, point_s=8)
-
-plt.imshow(x)
-plt.show()
-plt.imshow(bed_centroids_in)
-plt.show()
-input_image = get_input(imp, bedn, bathn, channels=[bed_centroids_in], aug_bath=1)
-x = bed_b_model(input_image.reshape(1, 11, 256, 256))[0].permute(1, 2, 0).detach().numpy()
-im = imfy(x[:, :, 0])
-img = cv2.GaussianBlur(im, (15, 15), 5)
-ret, thresh = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-blobs_log = blob_log(img, min_sigma=12, max_sigma=30, threshold=0.01)
-bed_centroids = [Point(i[1], i[0]) for i in blobs_log]
-bed_centroids = get_rects(im, bed_centroids)[:bedn]
-bed_centroids_in = get_mask(bed_centroids, point_s=8)
-plt.imshow(x)
-plt.show()
-
-input_image = get_input(imp, bedn, bathn, channels=[bed_centroids_in], aug_bath=1)
-x = bed_bath(input_image.reshape(1, 11, 256, 256))[0].permute(1, 2, 0).detach().numpy()
-im = imfy(x[:, :, 0])
-img = cv2.GaussianBlur(im, (15, 15), 5)
-ret, thresh = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-blobs_log = blob_log(img, min_sigma=12, max_sigma=30, threshold=0.01)
-bed_centroids = [Point(i[1], i[0]) for i in blobs_log][:bedn]
-bed_centroids_in = get_mask(bed_centroids, point_s=5)
-
-im = imfy(x[:, :, 1])
-img = cv2.GaussianBlur(im, (15, 15), 5)
-ret, thresh = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-blobs_log = blob_log(img, min_sigma=10, max_sigma=15, threshold=0.01)
-bath_centroids = [Point(i[1], i[0]) for i in blobs_log]
-bath_centroids = get_rects(im, bath_centroids)[:bathn]
-bath_centroids_in = get_mask(bath_centroids, point_s=10)
-plt.imshow(x)
-plt.show()
-
-plt.imshow(
-    input_image.permute(1, 2, 0).detach().numpy()[:, :, 0] * 128 + input_image.permute(1, 2, 0).detach().numpy()[:, :,
-                                                                   1] * 256 + get_mask(bed_centroids,
-                                                                                       point_s=2) + get_mask(
-        bath_centroids, point_s=1))
-plt.show()
-
-# plt.imshow(input_image.permute(1, 2, 0).detach().numpy()[:, :, 0] * 128 + input_image.permute(1, 2, 0).detach().numpy()[:, :, 1]*256+ get_mask(bed_centroids, point_s=2) )
-# plt.show()
-# bed_centroids_in = get_mask(bed_centroids, point_s=10) > 0
-# bath_centroids_in = get_mask(bath_centroids, point_s=10) > 0
-# input_image = get_input(imp, bedn, bathn, [bed_centroids_in, bath_centroids_in], draw=1)
-# sh = draw_model(input_image.reshape(1, 4, 256, 256))[0].permute(1, 2, 0).detach().numpy()
-# plt.imshow(sh[:, :, :])
-
-# bed_centroids_in = get_mask(bed_centroids, point_s=8)>0
-# bath_centroids_in = get_mask(bath_centroids, point_s=5)>0
-# input_image = get_input(imp, bedn, bathn, channels=[bed_centroids_in, bath_centroids_in], aug_draw=1)
-# x = model_aug_draw(input_image.reshape(1, 12, 256, 256))[0].permute(1, 2, 0).detach().numpy()
-# plt.imshow(x[:, :,:3])
-# plt.show()
-# plt.imshow(x[:, :,1:4])
-# plt.show()
-# plt.imshow(x[:, :,2:5])
-# plt.show()
-
-bed_centroids_in = get_mask(bed_centroids, point_s=8) > 0
-bath_centroids_in = get_mask(bath_centroids, point_s=5) > 0
-input_image = get_input(imp, bedn, bathn, channels=[bed_centroids_in, bath_centroids_in], aug_draw=1)
-x = draw_model(input_image.reshape(1, 12, 256, 256))
-max_channels = torch.max(x, dim=1)[1]
-
-x[:, 4] *= 3
-x[:, 0][max_channels != 0] = 0
-x[:, 1][max_channels != 1] = 0
-x[:, 2][max_channels != 2] = 0
-x[:, 3][max_channels != 3] = 0
-x[:, 4][max_channels != 4] = 0
-x[:, 2] += x[:, 3]
-x[:, 0] += x[:, 4]
-x[:, 1] += x[:, 4]
-x[:, 2] += x[:, 4]
-
-x = (x > 0.5).bool().float()
-x = x[0].permute(1, 2, 0).detach().numpy()
-plt.imshow(x[:, :, :3])
-plt.show()
-
-import cv2
-from shapely.geometry import box
-
-
-def get_rects(channel, gcenters=True):
+def get_rects_2(channel, gcenters=True):
     a = channel.copy()
 
     a[a < 0.9] = 0
@@ -303,40 +206,117 @@ def get_rects(channel, gcenters=True):
     return MultiPolygon(final_c).buffer(0)
 
 
-img = x.copy()
-for _ in range(3):
-    bed_rects = get_rects(img[:, :, 0])
-    bath_rects = get_rects(img[:, :, 1])
+def get_design(door, inner, area):
+    bedn, bathn = get_rooms_number(area)
 
-    #     bed_rects = bed_rects - bath_rects.buffer(2, join_style=2, cap_style=2)
-    #     rr = get_mask(bed_rects) + 0.5 * get_mask(bath_rects)
-    #
-    #     plt.imshow(img)
-    #     plt.show()
+    inner = inner > 0
+    door = door > 0
 
-    bed_centroids_in = get_mask([i for i in bed_rects], point_s=8) > 0
-    bath_centroids_in = get_mask([i for i in bath_rects], point_s=5) > 0
-    input_image = get_input(imp, bedn, bathn, channels=[bed_centroids_in, bath_centroids_in], aug_draw=1)
-    img = draw_model(input_image.reshape(1, 12, 256, 256))
+    input_image = get_input(inner, door, bedn, bathn, aug=True)
 
-    max_channels = torch.max(img, dim=1)[1]
-    img[:, 0][max_channels != 0] = 0
-    img[:, 1][max_channels != 1] = 0
-    img[:, 2][max_channels != 2] = 0
-    img = img[0].permute(1, 2, 0).detach().numpy()
+    x = bed_model(input_image.reshape(1, 10, 256, 256))[0].permute(1, 2, 0).detach().numpy()
+    im = imfy(x[:, :, 0])
+    img = cv2.GaussianBlur(im, (15, 15), 5)
+    blobs_log = blob_log(img, min_sigma=12, max_sigma=30, threshold=0.07)
+    bed_centroids = [Point(i[1], i[0]) for i in blobs_log]
+    bed_centroids = get_rects(im, bed_centroids)[0]
+    bed_centroids_in = get_mask(bed_centroids, point_s=8)
 
-bed_centroids_in = get_mask(bed_centroids, point_s=8) > 0
-bath_centroids_in = get_mask(bath_centroids, point_s=5) > 0
-input_image = get_input(imp, bedn, bathn, channels=[bed_centroids_in, bath_centroids_in], aug_draw=1)
+    # plt.imshow(x)
+    # plt.show()
+    # plt.imshow(bed_centroids_in)
+    # plt.show()
+    input_image = get_input(inner, door, bedn, bathn, channels=[bed_centroids_in], aug_bath=True)
+    x = bed_b_model(input_image.reshape(1, 11, 256, 256))[0].permute(1, 2, 0).detach().numpy()
+    im = imfy(x[:, :, 0])
+    img = cv2.GaussianBlur(im, (15, 15), 5)
+    blobs_log = blob_log(img, min_sigma=12, max_sigma=30, threshold=0.01)
+    bed_centroids = [Point(i[1], i[0]) for i in blobs_log]
+    bed_centroids = get_rects(im, bed_centroids)[:bedn]
+    bed_centroids_in = get_mask(bed_centroids, point_s=8)
+    # plt.imshow(x)
+    # plt.show()
 
-img = draw_model(input_image.reshape(1, 12, 256, 256))[0].permute(1, 2, 0).detach().numpy()
+    input_image = get_input(inner, door, bedn, bathn, channels=[bed_centroids_in], aug_bath=True)
+    x = bed_bath(input_image.reshape(1, 11, 256, 256))[0].permute(1, 2, 0).detach().numpy()
+    im = imfy(x[:, :, 0])
+    img = cv2.GaussianBlur(im, (15, 15), 5)
+    blobs_log = blob_log(img, min_sigma=12, max_sigma=30, threshold=0.01)
+    bed_centroids = [Point(i[1], i[0]) for i in blobs_log][:bedn]
+    bed_centroids_in = get_mask(bed_centroids, point_s=5)
 
-bed_rects = get_rects(img[:, :, 0], 0)
-bath_rects = get_rects(img[:, :, 1], 0)
+    im = imfy(x[:, :, 1])
+    img = cv2.GaussianBlur(im, (15, 15), 5)
+    blobs_log = blob_log(img, min_sigma=10, max_sigma=15, threshold=0.01)
+    bath_centroids = [Point(i[1], i[0]) for i in blobs_log]
+    bath_centroids = get_rects(im, bath_centroids)[:bathn]
+    bath_centroids_in = get_mask(bath_centroids, point_s=10)
+    # plt.imshow(x)
+    # plt.show()
 
-bed_rects = bed_rects - bath_rects.buffer(2, join_style=2, cap_style=2)
-rr = 0.7 * get_mask(bed_rects) + 0.5 * get_mask(bath_rects) + 0.25 * input_image[1, :,: ].numpy() * 255+ 0.35 * input_image[0, :,: ].numpy() * 255
+    # plt.imshow( input_image.permute(1, 2, 0).detach().numpy()[:, :, 0] * 128 + input_image.permute(1, 2,
+    # 0).detach().numpy()[:, :, 1] * 256 + get_mask(bed_centroids, point_s=2) + get_mask( bath_centroids, point_s=1))
+    # plt.show()
 
-plt.imshow(rr)
-plt.show()
+    bed_centroids_in = get_mask(bed_centroids, point_s=8) > 0
+    bath_centroids_in = get_mask(bath_centroids, point_s=5) > 0
+    input_image = get_input(inner, door, bedn, bathn, channels=[bed_centroids_in, bath_centroids_in], aug_draw=1)
+    x = draw_model(input_image.reshape(1, 12, 256, 256))
+    max_channels = torch.max(x, dim=1)[1]
+
+    x[:, 4] *= 3
+    x[:, 0][max_channels != 0] = 0
+    x[:, 1][max_channels != 1] = 0
+    x[:, 2][max_channels != 2] = 0
+    x[:, 3][max_channels != 3] = 0
+    x[:, 4][max_channels != 4] = 0
+    x[:, 2] += x[:, 3]
+    x[:, 0] += x[:, 4]
+    x[:, 1] += x[:, 4]
+    x[:, 2] += x[:, 4]
+
+    x = (x > 0.5).bool().float()
+    x = x[0].permute(1, 2, 0).detach().numpy()
+    # plt.imshow(x[:, :, :3])
+    # plt.show()
+    x[x<0] = 0
+    x[x>1] = 1
+    # plt.imshow(x[:, :, :3])
+    # plt.show()
+    return (x[:, :, :3] * 255).astype(np.uint8)
+
+
+    img = x.copy()
+    for _ in range(3):
+        bed_rects = get_rects_2(img[:, :, 0])
+        bath_rects = get_rects_2(img[:, :, 1])
+        bed_centroids_in = get_mask([i for i in bed_rects], point_s=8) > 0
+        bath_centroids_in = get_mask([i for i in bath_rects], point_s=5) > 0
+        input_image = get_input(inner, door, bedn, bathn, channels=[bed_centroids_in, bath_centroids_in], aug_draw=1)
+        img = draw_model(input_image.reshape(1, 12, 256, 256))
+
+        max_channels = torch.max(img, dim=1)[1]
+        img[:, 0][max_channels != 0] = 0
+        img[:, 1][max_channels != 1] = 0
+        img[:, 2][max_channels != 2] = 0
+        img[img > 1] = 1
+        img[img < 0] = 0
+        img = img[0].permute(1, 2, 0).detach().numpy()
+
+
+    bed_centroids_in = get_mask(bed_centroids, point_s=8) > 0
+    bath_centroids_in = get_mask(bath_centroids, point_s=5) > 0
+    input_image = get_input(inner, door, bedn, bathn, channels=[bed_centroids_in, bath_centroids_in], aug_draw=1)
+
+    img = draw_model(input_image.reshape(1, 12, 256, 256))[0].permute(1, 2, 0).detach().numpy()
+
+    bed_rects = get_rects_2(img[:, :, 0], 0)
+    bath_rects = get_rects_2(img[:, :, 1], 0)
+
+    bed_rects = bed_rects - bath_rects.buffer(2, join_style=2, cap_style=2)
+    rr = 0.7 * get_mask(bed_rects) + 0.5 * get_mask(bath_rects) + 0.25 * input_image[1, :,: ].numpy() * 255+ 0.35 * input_image[0, :,: ].numpy() * 255
+
+    plt.imshow(rr)
+    plt.show()
+
 

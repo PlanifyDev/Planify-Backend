@@ -3,13 +3,14 @@ import time
 
 import cv2
 from geopandas import GeoSeries
-from shapely import Polygon, Point, MultiPolygon
+from shapely import Polygon, Point, MultiPolygon, GeometryCollection
 from shapely.affinity import scale, translate
 import matplotlib.pyplot as plt
 import numpy as np
 from shapely.geometry import box
 
 from geometric import get_mask
+from libs.ai import get_design
 # from model import get_ai_pred
 from upload import upload_to_s3, upload_to_imgbb
 
@@ -51,7 +52,7 @@ def fix_fit_poly(poly, size, pad=False):
     # poly_padded = scale(poly_fit, 1, 1, 1)
     #
 
-    if isinstance(poly_fit, MultiPolygon):
+    if isinstance(poly_fit, (MultiPolygon, GeometryCollection)):
         return max(poly_fit.geoms, key=lambda x: x.area), min(poly_fit.geoms, key=lambda x: x.area)
 
     return poly_fit, None
@@ -144,8 +145,8 @@ def process_data(data):
 
     door = get_door_rect(door, poly)
 
-    GeoSeries([poly, door]).plot(cmap='Dark2_r', alpha=0.5, figsize=(10, 10))
-    plt.show()
+    # GeoSeries([poly, door]).plot(cmap='Dark2_r', alpha=0.5, figsize=(10, 10))
+    # plt.show()
 
     compound_poly = MultiPolygon([poly, door])
 
@@ -156,7 +157,6 @@ def process_data(data):
     poly_disp, door_disp = fix_fit_poly(compound_poly, disp_width, pad=True)
     poly_ai, door_ai = fix_fit_poly(compound_poly, ai_width, pad=True)
     poly_disp_icon, door_disp_icon = fix_fit_poly(compound_poly, disp_icon_size, pad=True)
-
     disp_mask = get_mask(poly_disp, disp_width)
     disp_icon_mask = get_mask(poly_disp_icon, disp_icon_size)
 
@@ -172,7 +172,12 @@ def process_data(data):
     scaled_ai_door = scale(door_ai, xfact=0.9, yfact=0.9, origin=(ai_width[0] / 2, ai_width[1] / 2))
 
     ai_channel = get_mask(scaled_ai_poly, ai_width)
-    door_channel = get_mask(scaled_ai_door, ai_width, 10)
+    door_channel = get_mask(scaled_ai_door.centroid, ai_width, point_s=10)
+
+    # plt.imshow(ai_channel)
+    # plt.show()
+    # plt.imshow(door_channel)
+    # plt.show()
 
     ai_mask_final = np.stack([np.zeros_like(ai_channel), ai_channel, door_channel], axis=-1)
     # save image
@@ -195,16 +200,17 @@ def process_data(data):
     disp = draw_display_picture_2(disp_mask)
     disp_icon = draw_display_picture_2(disp_icon_mask, icon=True, padding=32)
 
-    plt.imshow(disp)
-    plt.show()
-
-    plt.imshow(disp_icon)
-    plt.show()
+    # plt.imshow(disp)
+    # plt.show()
+    #
+    # plt.imshow(disp_icon)
+    # plt.show()
 
     # mask_url = upload_to_s3(ai_mask_final, folder_name='masks')
     # disp_url = upload_to_s3(disp, folder_name='projects')
     # disp_icon_url = upload_to_s3(disp_icon, folder_name='projects_icon')
-
+    design_img = get_design(ai_channel, door_channel, area)
+    design_img_url = upload_to_imgbb(design_img)
     mask_url = upload_to_imgbb(ai_mask_final)
     disp_url = upload_to_imgbb(disp)
     disp_icon_url = upload_to_imgbb(disp_icon)
@@ -218,6 +224,7 @@ def process_data(data):
         'project_img': disp_url,
         'project_icon': disp_icon_url,
         'mask_img': mask_url,
+        'design_img': design_img_url,
         'ai_output': None,
     }
 
