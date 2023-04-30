@@ -32,6 +32,7 @@ else {
     try {
         yield client.connect();
         loggerService_1.default.info("Redis connected successfully ✅ ✅ ✅ ");
+        client.disconnect();
     }
     catch (error) {
         loggerService_1.default.error("Error connecting to Redis ❌ ❌ ❌ ❌ ❌ ❌ ❌", error.message);
@@ -61,6 +62,10 @@ class UserCacheDao {
                     cacheUser.user_plan,
                     "verified",
                     cacheUser.verified.toString(),
+                    "role",
+                    cacheUser.role,
+                    "country",
+                    cacheUser.country,
                 ])
                     .then((value) => {
                     return Promise.resolve();
@@ -153,6 +158,40 @@ class UserCacheDao {
                     "true",
                     "user_token",
                     token,
+                ])
+                    .then((value) => {
+                    return Promise.resolve();
+                })
+                    .catch((err) => {
+                    console.log(err);
+                    return Promise.reject(err);
+                });
+                client.disconnect();
+            }
+            catch (error) {
+                loggerService_1.default.error("Error connecting to Redis ❌ ❌ ❌ ");
+            }
+        });
+    }
+    // ------------- update user data in cache ----------------
+    updateUserDataCache(user_id, userCache) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield client.connect();
+                yield client
+                    .sendCommand([
+                    "hmset",
+                    user_id,
+                    "firstname",
+                    userCache.firstname,
+                    "lastname",
+                    userCache.lastname,
+                    "image_url",
+                    userCache.image_url,
+                    "role",
+                    userCache.role,
+                    "country",
+                    userCache.country,
                 ])
                     .then((value) => {
                     return Promise.resolve();

@@ -57,7 +57,8 @@ const forgetPassHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, 
     const token = help.createToken({ userId: user.id, verified: user.verified }, "1h");
     // send email
     // TODO: change the link to the frontend link
-    help.sendPassEmail(user.email, `<a href="http://localhost:3000/reset-password?token=${token}">Reset Password</a>`);
+    const reset_password_link = help.accessEnv("RESET_PASSWORD_URL_FRONT_END");
+    help.sendPassEmail(user.email, `<a href="${reset_password_link}/auth/change-password?token=${token}">Reset Password</a>`);
     return res.sendStatus(200);
 });
 exports.forgetPassHandler = forgetPassHandler;

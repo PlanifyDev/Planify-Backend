@@ -4,7 +4,7 @@ exports.ERRORS = void 0;
 var ERRORS;
 (function (ERRORS) {
     ERRORS["TOKEN_EXPIRED"] = "Token expired";
-    ERRORS["BAD_TOKEN"] = "Bad token";
+    ERRORS["BAD_TOKEN"] = "Please login again";
     ERRORS["USER_NOT_FOUND"] = "User not found";
     ERRORS["DUPLICATE_EMAIL"] = "An account with this email already exists";
     ERRORS["WRONG_LOGIN"] = "Wrong Email or Password";

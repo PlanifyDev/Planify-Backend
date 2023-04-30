@@ -49,12 +49,13 @@ export class UserDataStore implements UserDao {
     user_id: string,
     user: type.UserUpdateData
   ): Promise<void> {
-    const newData: string[] = [];
-    for (const key in user) {
-      newData.push(user[key]);
-    }
-
-    newData.push(user_id);
+    const newData: string[] = [
+      user.firstname,
+      user.lastname,
+      user.image_url,
+      user.password,
+      user_id,
+    ];
 
     try {
       await conn.query(MyQuery.updateAllData, newData);

@@ -9,7 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const port = accessEnv("PORT") || 3000;
+const port = 3000;
 
 app.use(loggerMiddleware);
 

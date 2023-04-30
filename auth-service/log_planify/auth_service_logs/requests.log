@@ -1,0 +1,45 @@
+4/24/2023, 10:59:48 AM | INFO | 200 |
+    request: POST | /signup/ | -ip: ::1 |- body: {"firstname":"Mostafa","lastname":"Ahmed","email":"mosTA148999@gmail.com","password":"12345678"} |
+
+4/26/2023, 4:11:35 PM | INFO | 200 |
+    request: POST | /signup/ | -ip: ::1 |- body: {"firstname":"Mostafa","lastname":"Ahmed","email":"mosTA148999@gmail.com","password":"12345678"} |
+
+4/26/2023, 4:12:55 PM | INFO | 200 |
+    request: PUT | /verify/a742d19676f6f2cf273734d1c0398e69 | -ip: ::1 |- body: {"verificationCode":"811295"} |
+
+4/26/2023, 4:13:49 PM | INFO | 200 |
+    request: PUT | /verify/a742d19676f6f2cf273734d1c0398e69 | -ip: ::1 |- body: {"verificationCode":"811295"} |
+
+4/26/2023, 4:15:29 PM | INFO | 200 |
+    request: PUT | /verify/a742d19676f6f2cf273734d1c0398e69 | -ip: ::1 |- body: {"verificationCode":"811295"} |
+
+4/26/2023, 4:18:47 PM | INFO | 200 |
+    request: POST | /signin | -ip: ::1 |- body: {"email":"mosta148999@gmail.com","password":"12345678"} |
+
+4/26/2023, 4:19:06 PM | INFO | 200 |
+    request: PUT | /verify/a742d19676f6f2cf273734d1c0398e69 | -ip: ::1 |- body: {"verificationCode":"811295"} |
+
+4/26/2023, 4:20:14 PM | INFO | 200 |
+    request: PUT | /update-all/a742d19676f6f2cf273734d1c0398e69 | -ip: ::1 |- body: {"firstname":"demonn","lastname":"demonn","password":"12345678","oldPassword":"12345678"} |
+
+4/26/2023, 4:20:24 PM | INFO | 200 |
+    request: GET | /get-user/a742d19676f6f2cf273734d1c0398e69 | -ip: ::1 |- body: {} |
+
+4/26/2023, 4:20:50 PM | INFO | 200 |
+    request: GET | /get-user/a742d19676f6f2cf273734d1c0398e69 | -ip: ::1 |- body: {} |
+
+4/26/2023, 4:21:52 PM | INFO | 200 |
+    request: PUT | /update-all/a742d19676f6f2cf273734d1c0398e69 | -ip: ::1 |- body: {"firstname":"demonn","lastname":"demonn","password":"12345678","oldPassword":"12345678","image_url":"no image_url ","role":"tanta","country":"engineer"} |
+
+4/26/2023, 4:22:00 PM | INFO | 200 |
+    request: GET | /get-user/a742d19676f6f2cf273734d1c0398e69 | -ip: ::1 |- body: {} |
+
+4/26/2023, 4:22:21 PM | INFO | 200 |
+    request: POST | /forget-password | -ip: ::1 |- body: {"email":"mosta148999@gmail.com"} |
+
+4/26/2023, 4:23:13 PM | INFO | 200 |
+    request: GET | /signout/a742d19676f6f2cf273734d1c0398e69 | -ip: ::1 |- body: {} |
+
+4/26/2023, 4:25:59 PM | INFO | 200 |
+    request: GET | /resend-verification/a742d19676f6f2cf273734d1c0398e69 | -ip: ::1 |- body: {} |
+

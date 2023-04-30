@@ -1,0 +1,46 @@
+4/24/2023, 10:57:17 AM | ERROR | Error connecting to Redis ❌ ❌ ❌ ❌ ❌ ❌ ❌ | 
+    - message: "Connection timeout" |
+
+4/24/2023, 11:00:09 AM | ERROR | Error connecting to Redis ❌ ❌ ❌  | 
+
+4/24/2023, 11:00:09 AM | ERROR | Error connecting to Redis ❌ ❌ ❌  | 
+
+4/24/2023, 11:46:15 AM | ERROR | Error connecting to Redis ❌ ❌ ❌ ❌ ❌ ❌ ❌ | 
+    - message: "Connection timeout" |
+
+4/26/2023, 10:29:30 AM | ERROR | Error connecting to Redis ❌ ❌ ❌ ❌ ❌ ❌ ❌ | 
+    - message: "Connection timeout" |
+
+4/26/2023, 11:12:06 AM | ERROR | Error connecting to Redis ❌ ❌ ❌ ❌ ❌ ❌ ❌ | 
+    - message: "Connection timeout" |
+
+4/26/2023, 12:01:57 PM | ERROR | Error connecting to Redis ❌ ❌ ❌ ❌ ❌ ❌ ❌ | 
+    - message: "Connection timeout" |
+
+4/26/2023, 3:54:01 PM | ERROR | Error connecting to Redis ❌ ❌ ❌ ❌ ❌ ❌ ❌ | 
+    - message: "Connection timeout" |
+
+4/26/2023, 3:54:15 PM | ERROR | Error connecting to Redis ❌ ❌ ❌ ❌ ❌ ❌ ❌ | 
+    - message: "connect ECONNREFUSED 127.0.0.1:6379" |
+
+4/26/2023, 3:55:58 PM | ERROR | Error connecting to Data Base  ❌ ❌ ❌ ❌ ❌ ❌ ❌ | 
+    - message: "The server does not support SSL connections" |
+
+4/26/2023, 3:56:32 PM | ERROR | Error connecting to Data Base  ❌ ❌ ❌ ❌ ❌ ❌ ❌ | 
+    - message: "The server does not support SSL connections" |
+
+4/26/2023, 3:57:12 PM | ERROR | Error connecting to Data Base  ❌ ❌ ❌ ❌ ❌ ❌ ❌ | 
+    - message: "The server does not support SSL connections" |
+
+4/26/2023, 3:57:55 PM | ERROR | Error connecting to Data Base  ❌ ❌ ❌ ❌ ❌ ❌ ❌ | 
+    - message: "The server does not support SSL connections" |
+
+4/26/2023, 4:00:46 PM | ERROR | Error connecting to Data Base  ❌ ❌ ❌ ❌ ❌ ❌ ❌ | 
+    - message: "The server does not support SSL connections" |
+
+4/26/2023, 4:02:53 PM | ERROR | Error connecting to Data Base  ❌ ❌ ❌ ❌ ❌ ❌ ❌ | 
+    - message: "The server does not support SSL connections" |
+
+4/26/2023, 4:07:08 PM | ERROR | Error connecting to Data Base  ❌ ❌ ❌ ❌ ❌ ❌ ❌ | 
+    - message: "The server does not support SSL connections" |
+

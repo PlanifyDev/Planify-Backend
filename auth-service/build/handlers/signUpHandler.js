@@ -52,7 +52,8 @@ const datastore_1 = require("../datastore");
 const help = __importStar(require("../helpers"));
 const cache_1 = require("../cache");
 const signUpHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { firstname, lastname, email, password } = req.body;
+    const { firstname, lastname, password } = req.body;
+    const email = req.body.email.toLowerCase();
     // ---------------- check if all field is existing ----------------
     if (!firstname || !lastname || !email || !password) {
         return res
@@ -72,7 +73,7 @@ const signUpHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, func
     // ---------------- hash the new password to store it --------------
     const hashedPassword = yield help.hashPassword(password);
     const newUser = {
-        id: crypto_1.default.randomUUID(),
+        id: crypto_1.default.randomBytes(16).toString("hex"),
         firstname,
         lastname,
         image_url: "default image for now ",
@@ -80,6 +81,8 @@ const signUpHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, func
         password: hashedPassword,
         verified: false,
         user_plan: "free",
+        role: "user",
+        country: "Egypt",
     };
     // ---------------- save all data in db --------------------------
     yield datastore_1.DB.insertUser(newUser).catch((error) => {

@@ -4,6 +4,17 @@ import * as type from "../../contracts/types";
 import { MyQuery } from "../query";
 
 export class projectDataStore implements ProjectDao {
+  /**
+   * @param newProjectDB
+   * @returns
+   * project_id: number
+   * @description
+   * this function takes in a newProjectDB object
+   * and returns the project_id of the newly created project
+   * first it creates an array of the keys of the newProjectDB object
+   * then it creates a new array of the values of the newProjectDB object to ensure the order of the keys
+   * then it creates a new project in the database and returns the project_id
+   */
   async createProject(newProjectDB: type.CreateProjectDB): Promise<number> {
     const project: type.CreateProjectDB[] = [];
 
@@ -17,9 +28,9 @@ export class projectDataStore implements ProjectDao {
       "project_icon",
       "user_id",
     ];
-    for (let i = 0; i < 7; i++) {
-      project.push(newProjectDB[keys[i]]);
-    }
+    keys.forEach((key) => {
+      project.push(newProjectDB[key]);
+    });
     try {
       const project_id = await (
         await conn.query(MyQuery.createProject, project)

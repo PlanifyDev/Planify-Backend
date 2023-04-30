@@ -9,9 +9,9 @@ export class VersionDataStore implements VersionDao {
 
     // to ensure the order of the keys
     const keys = ["name", "version_img", "version_icon", "project_id"];
-    for (let i = 0; i < 4; i++) {
-      version.push(newVersion[keys[i]]);
-    }
+    keys.forEach((key) => {
+      version.push(newVersion[key]);
+    });
     try {
       const version_id = await (
         await conn.query(MyQuery.createVersion, version)

@@ -14,9 +14,7 @@ if (ENV === "prod") {
     connectionString = DATABASE_URI_PROD;
     conn = new pg_1.Pool({
         connectionString,
-        ssl: {
-            rejectUnauthorized: false,
-        },
+        ssl: false,
     });
 }
 else {
