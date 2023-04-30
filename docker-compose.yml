@@ -8,7 +8,8 @@ services:
       - "6379:6379"
       - "8001:8001"
     networks:
-      - palnify-network
+      palnify-network:
+        ipv4_address: 172.25.0.3
 
   auth:
     container_name: planify-auth
@@ -20,11 +21,12 @@ services:
     depends_on:
       - rediss
 
-    environment:
-      - ENV_DB=dev
+    volumes:
+      - ./.env:/auth/.env
 
     networks:
-      - palnify-network
+      palnify-network:
+        ipv4_address: 172.25.0.4
 
   payment:
     container_name: planify-payment
@@ -40,7 +42,8 @@ services:
       - ENV_DB=dev
 
     networks:
-      - palnify-network
+      palnify-network:
+        ipv4_address: 172.25.0.5
 
   design:
     container_name: planify-design
@@ -56,7 +59,8 @@ services:
       - ENV_DB=dev
 
     networks:
-      - palnify-network
+      palnify-network:
+        ipv4_address: 172.25.0.6
 
   nginx:
     image: nginx
@@ -70,8 +74,13 @@ services:
       - payment
       - design
     networks:
-      - palnify-network
+      palnify-network:
+        ipv4_address: 172.25.0.7
 
 networks:
   palnify-network:
     driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.25.0.0/24
