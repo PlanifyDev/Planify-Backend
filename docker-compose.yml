@@ -1,6 +1,22 @@
 version: "3"
 
 services:
+  # postgres:
+  #   container_name: planify-db
+  #   image: postgres:latest
+  #   ports:
+  #     - "5432:5432"
+  #   environment:
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=postgres
+  #   networks:
+  #     palnify-network:
+  #       ipv4_address: 172.25.0.2
+
+  #   volumes:
+  #     - ./migrations/:/migrations/
+  #     - ./scripts/db.sh:/db.sh
+
   redis:
     container_name: planify-redis
     image: redis/redis-stack
