@@ -21,9 +21,7 @@ jobs:
       - name: Install dependencies
 
         run: |
-            cd design-service
-
-        run: |
+          cd design-service
           npm install
 
       - name: Build
