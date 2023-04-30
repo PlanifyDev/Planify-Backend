@@ -10,6 +10,7 @@ service AI {
 message project_request {
     string boundary = 1;
     string door_position = 2;
+    string area = 3;
 }
 
 message project_response {
@@ -21,6 +22,7 @@ message version_request {
     string boundary = 1;
     string door_position = 2;
     string constraints = 3;
+    string area = 4;
 }
 
 message version_response {

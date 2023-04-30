@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const port = accessEnv("PORT") || 3002;
+const port = 3002;
 
 // app.use(loggerMiddleware);
 
@@ -21,7 +21,7 @@ app.use("/version", versionRouter);
 
 app.use(loggerMiddleware);
 app.use(notFound);
-app.listen(port, "0.0.0.0", () => {
+app.listen(port, () => {
   logger.info(`\t 🫡    server listening on port ${port} .....`);
 });
 
