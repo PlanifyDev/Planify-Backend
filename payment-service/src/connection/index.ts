@@ -5,7 +5,7 @@ import logger from "../services/loggerService";
 const ENV = accessEnv("ENV_DB").trim();
 
 const DATABASE_URI_PROD = accessEnv("DATABASE_URI_PROD");
-let connectionString = accessEnv("DATABASE_URI_LOCAL");
+let connectionString = accessEnv("DATABASE_URL_LOCAL");
 
 let conn: Pool;
 
