@@ -65,11 +65,16 @@ jobs:
 
         run: |
           echo ${{ env.MACHINE_KEY }} > ~/machine_key.pem
+          ls -l ~/*.pem
+          cat ~/machine_key.pem
           chmod 400 ~/machine_key.pem
-          ssh  -i ~/machine_key.pem ${{ env.MACHINE_USERNAME }}@${{ env.MACHINE_HOST }} 
-          cd /home/${{ env.MACHINE_USERNAME }} 
-          docker-compose down 
-          echo "docker-compose down from github actions pipeline" >> /home/${{ env.MACHINE_USERNAME }}/pipeline.txt
+          ssh  -i ~/machine_key.pem ${{ env.MACHINE_USERNAME }}@${{ env.MACHINE_HOST }}
+          pwd
+          whoami
+
+# cd /home/${{ env.MACHINE_USERNAME }}
+# docker-compose down
+# echo "docker-compose down from github actions pipeline" >> /home/${{ env.MACHINE_USERNAME }}/pipeline.txt
 
 # run: |
 #             cd /home/ubuntu
