@@ -29,7 +29,6 @@ jobs:
   #         cd design-service
   #         npm run build
 
-
   # docker-build:
   #   runs-on: ubuntu-latest
   #   needs: build-code
@@ -56,19 +55,19 @@ jobs:
     runs-on: ubuntu-latest
     # needs: docker-build
 
-    strategy:
-      matrix:
-        host: ${{ secrets.MACHINE_HOST }}
-        username: ${{ secrets.MACHINE_USERNAME }}
-        key: ${{ secrets.MACHINE_KEY }}
     steps:
       - name: Connect to server via SSH
-        run: |
-          ssh -i ${{ matrix.key }} ${{ matrix.username }}@${{ matrix.host }} 
-          cd /home/${{ matrix.username }} 
-          docker-compose down 
-          echo "docker-compose down from github actions pipeline" >> /home/${{ matrix.username }}/pipeline.txt
 
+        env:
+          MACHINE_HOST: ${{ secrets.MACHINE_HOST }}
+          MACHINE_USERNAME: ${{ secrets.MACHINE_USERNAME }}
+          MACHINE_KEY: ${{ secrets.MACHINE_KEY }}
+
+        run: |
+          ssh  -i ${{ env.MACHINE_KEY }} ${{ env.MACHINE_USERNAME }}@${{ env.MACHINE_HOST }} 
+          cd /home/${{ env.MACHINE_USERNAME }} 
+          docker-compose down 
+          echo "docker-compose down from github actions pipeline" >> /home/${{ env.MACHINE_USERNAME }}/pipeline.txt
 
 # run: |
 #             cd /home/ubuntu
