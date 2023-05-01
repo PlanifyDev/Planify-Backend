@@ -69,23 +69,9 @@ jobs:
           key: ${{ env.MACHINE_KEY }}
           port: 22
           script: |
-            docker-compose down
+            rm -rf Planify-Backend
+            git clone https://github.com/PlanifyDev/Planify-Backend.git
+            cd Planify-Backend
 
-# run: |
-#   echo ${{ env.MACHINE_KEY }} > ~/machine_key.pem
-#   ls -l ~/*.pem
-#   cat ~/machine_key.pem
-#   chmod 400 ~/machine_key.pem
-#   ssh  -i ~/machine_key.pem ${{ env.MACHINE_USERNAME }}@${{ env.MACHINE_HOST }}
-#   pwd
-#   whoami
-
-# cd /home/${{ env.MACHINE_USERNAME }}
-# docker-compose down
-# echo "docker-compose down from github actions pipeline" >> /home/${{ env.MACHINE_USERNAME }}/pipeline.txt
-
-# run: |
-#             cd /home/ubuntu
-#             docker-compose down
-#             docker-compose pull
-#             docker-compose up -d
+            bash ./scripts/create_env.sh
+            bash ./scripts/deploy.sh
