@@ -57,20 +57,38 @@ jobs:
 
     steps:
       - name: Connect to server via SSH
-
         env:
           MACHINE_HOST: ${{ secrets.MACHINE_HOST }}
           MACHINE_USERNAME: ${{ secrets.MACHINE_USERNAME }}
           MACHINE_KEY: ${{ secrets.MACHINE_KEY }}
 
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ env.MACHINE_HOST }}
+          username: ${{ env.MACHINE_USERNAME }}
+          key: ${{ env.MACHINE_KEY }}
+          port: 22
+          script: |
+            ls
+            pwd
+            whoami
+            cd /home/${{ env.MACHINE_USERNAME }}
+            docker-compose down
+
+      - name: Run commands on Azure machine
         run: |
-          echo ${{ env.MACHINE_KEY }} > ~/machine_key.pem
-          ls -l ~/*.pem
-          cat ~/machine_key.pem
-          chmod 400 ~/machine_key.pem
-          ssh  -i ~/machine_key.pem ${{ env.MACHINE_USERNAME }}@${{ env.MACHINE_HOST }}
+          ls
           pwd
           whoami
+
+# run: |
+#   echo ${{ env.MACHINE_KEY }} > ~/machine_key.pem
+#   ls -l ~/*.pem
+#   cat ~/machine_key.pem
+#   chmod 400 ~/machine_key.pem
+#   ssh  -i ~/machine_key.pem ${{ env.MACHINE_USERNAME }}@${{ env.MACHINE_HOST }}
+#   pwd
+#   whoami
 
 # cd /home/${{ env.MACHINE_USERNAME }}
 # docker-compose down
