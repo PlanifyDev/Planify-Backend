@@ -64,7 +64,9 @@ jobs:
           MACHINE_KEY: ${{ secrets.MACHINE_KEY }}
 
         run: |
-          ssh  -i ${{ env.MACHINE_KEY }} ${{ env.MACHINE_USERNAME }}@${{ env.MACHINE_HOST }} 
+          echo ${{ env.MACHINE_KEY }} > ~/machine_key.pem
+          chmod 400 ~/machine_key.pem
+          ssh  -i ~/machine_key.pem ${{ env.MACHINE_USERNAME }}@${{ env.MACHINE_HOST }} 
           cd /home/${{ env.MACHINE_USERNAME }} 
           docker-compose down 
           echo "docker-compose down from github actions pipeline" >> /home/${{ env.MACHINE_USERNAME }}/pipeline.txt
