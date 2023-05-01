@@ -1,0 +1,4 @@
+5/1/2023, 11:39:53 AM | INFO | 401 | Unauthorized | 
+    request: GET | /project/ | -ip: ::1 |- body: {"user_id":"{{id}}"} |
+    response: 401 | - message: User not found |
+

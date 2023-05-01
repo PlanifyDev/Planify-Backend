@@ -10,6 +10,7 @@ echo DATABASE_URI_LOCAL=${{ secrets.DATABASE_URI_LOCAL }} >> .env
 echo ENV_DB=${{ secrets.ENV_DB }} >> .env
 echo ENV_CACHE=${{ secrets.ENV_CACHE }} >> .env
 echo REDIS_URL_LOCAL=${{ secrets.REDIS_URL_LOCAL }} >> .env
+echo DATABASE_URL_PROD=${{ secrets.DATABASE_URL_PROD }} >> .env
 echo FRONT_END_URL=${{ secrets.FRONT_END_URL }} >> .env 
 
 # payment
