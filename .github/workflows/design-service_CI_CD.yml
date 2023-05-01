@@ -62,17 +62,11 @@ jobs:
         key: ${{ secrets.MACHINE_KEY }}
     steps:
       - name: Connect to server via SSH
-
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ matrix.host }}
-          username: ${{ matrix.username }}
-          key: ${{ matrix.key }}
-          port: 22
-          script: |
-            cd /home/${{ matrix.username }}
-            docker-compose down
-            echo ">>>> docker-compose down from github pipeline" >> /home/${{ matrix.username }}/pipeline.txt
+        run: |
+          ssh  -i ${{ matrix.key }} ${{ matrix.username }}@${{ matrix.host }} 
+          cd /home/${{ matrix.username }} 
+          docker-compose down 
+          echo "docker-compose down from github actions pipeline" >> /home/${{ matrix.username }}/pipeline.txt
 
 # run: |
 #             cd /home/ubuntu
