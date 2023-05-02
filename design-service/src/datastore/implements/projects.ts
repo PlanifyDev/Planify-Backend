@@ -23,21 +23,16 @@ export class projectDataStore implements ProjectDao {
     return this._instance || (this._instance = new this());
   }
   async createProject(newProjectDB: type.CreateProjectDB): Promise<number> {
-    const project: type.CreateProjectDB[] = [];
-
-    // to ensure the order of the keys
-    const keys = [
-      "name",
-      "boundary",
-      "door_position",
-      "constraints",
-      "project_img",
-      "project_icon",
-      "user_id",
+    const project = [
+      newProjectDB.name,
+      newProjectDB.boundary,
+      newProjectDB.door_position,
+      newProjectDB.constraints,
+      newProjectDB.project_img,
+      newProjectDB.project_icon,
+      newProjectDB.user_id,
     ];
-    keys.forEach((key) => {
-      project.push(newProjectDB[key]);
-    });
+
     try {
       const project_id = await (
         await DB_CONN.query(MyQuery.createProject, project)

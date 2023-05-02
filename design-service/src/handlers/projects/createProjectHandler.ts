@@ -28,7 +28,7 @@ export const createProject: type.myHandler<
 
   const boundary = JSON.stringify(newProject.boundary);
   const door_position = JSON.stringify(newProject.door_position);
-  create_project(boundary, door_position)
+  await create_project(boundary, door_position)
     .then((response) => {
       aiResponse = response;
     })
@@ -45,6 +45,7 @@ export const createProject: type.myHandler<
     ...newProject,
     project_img: aiResponse.project_img,
     project_icon: aiResponse.project_icon,
+    user_id: res.locals.user_id,
   };
 
   let project_id: number;

@@ -33,12 +33,16 @@ export const createVersion: type.myHandler<
     return next(myError);
   }
 
+  if (!project) {
+    return res.status(404).send({ error: "project not found" });
+  }
+
   // ---------------------- 2. send boundary and constrains to AI. get version images ----------------------
   let aiResponse: type.AiVersionResponse;
   const boundary = JSON.stringify(project.boundary);
   const door_position = JSON.stringify(project.door_position);
   const constraints = JSON.stringify(project.constraints);
-  create_version(boundary, door_position, constraints)
+  await create_version(boundary, door_position, constraints)
     .then((response) => {
       aiResponse = response;
     })
