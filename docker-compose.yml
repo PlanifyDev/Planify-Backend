@@ -54,8 +54,8 @@ services:
       - auth
       - redis
 
-    environment:
-      - ENV_DB=dev
+    volumes:
+      - ./.env:/payment/.env
 
     networks:
       palnify-network:
@@ -71,8 +71,8 @@ services:
       - auth
       - redis
 
-    environment:
-      - ENV_DB=dev
+    volumes:
+      - ./.env:/design/.env
 
     networks:
       palnify-network:
