@@ -12,9 +12,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js 18.16.0
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: "18.16.0"
 
@@ -38,7 +38,7 @@ jobs:
       DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Login to DockerHub
         run: |
@@ -61,6 +61,25 @@ jobs:
           MACHINE_HOST: ${{ secrets.MACHINE_HOST }}
           MACHINE_USERNAME: ${{ secrets.MACHINE_USERNAME }}
           MACHINE_KEY: ${{ secrets.MACHINE_KEY }}
+          SALT_ROUND: ${{ secrets.SALT_ROUND }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          VERIFY_EMAIL: ${{ secrets.VERIFY_EMAIL }}
+          VERIFY_PASSWORD: ${{ secrets.VERIFY_PASSWORD }}
+          DATABASE_URI_LOCAL: ${{ secrets.DATABASE_URI_LOCAL }}
+          ENV_DB: ${{ secrets.ENV_DB }}
+          ENV_CACHE: ${{ secrets.ENV_CACHE }}
+          REDIS_URL_LOCAL: ${{ secrets.REDIS_URL_LOCAL }}
+          DATABASE_URL_PROD: ${{ secrets.DATABASE_URL_PROD }}
+          FRONT_END_URL: ${{ secrets.FRONT_END_URL }}
+          PAYPAL_ID: ${{ secrets.PAYPAL_ID }}
+          PAYPAL_SECRET: ${{ secrets.PAYPAL_SECRET }}
+          RETURN_URL: ${{ secrets.RETURN_URL }}
+          CANCEL_URL: ${{ secrets.CANCEL_URL }}
+          AUTH_GRPC_URL: ${{ secrets.AUTH_GRPC_URL }}
+          AI_GRPC_URL: ${{ secrets.AI_GRPC_URL }}
+          AUTH_LOG_PATH: ${{ secrets.AUTH_LOG_PATH }}
+          PAY_LOG_PATH: ${{ secrets.PAY_LOG_PATH }}
+          DESIGN_LOG_PATH: ${{ secrets.DESIGN_LOG_PATH }}
 
         uses: appleboy/ssh-action@master
         with:
