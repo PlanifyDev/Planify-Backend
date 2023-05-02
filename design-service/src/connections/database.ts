@@ -1,24 +1,25 @@
 import { Pool } from "pg";
 import { accessEnv } from "../helpers";
-import logger from "../services/loggerService";
+import { logger } from "../helpers";
 const ENV = accessEnv("ENV_DB").trim();
 
 let connectionString = accessEnv("DATABASE_URL_LOCAL");
 
-let conn: Pool;
+let DB_CONN: Pool;
 
 if (ENV === "prod") {
-  connectionString = accessEnv("DATABASE_URI_PROD");
-  conn = new Pool({
+  connectionString = accessEnv("DATABASE_URL_PROD");
+  DB_CONN = new Pool({
     connectionString,
-    ssl: false,
+    ssl: {
+      rejectUnauthorized: false,
+    },
   });
 } else {
-  conn = new Pool({ connectionString });
+  DB_CONN = new Pool({ connectionString });
 }
 
-conn
-  .connect()
+DB_CONN.connect()
   .then(() => {
     logger.info("Database connected successfully ✅ ✅ ✅ ");
   })
@@ -29,4 +30,4 @@ conn
     );
   });
 
-export default conn;
+export { DB_CONN };

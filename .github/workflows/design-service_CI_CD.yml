@@ -8,52 +8,52 @@ on:
       - "design-service/**"
 
 jobs:
-  # build-code:
-  #   runs-on: ubuntu-latest
+  build-code:
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Use Node.js 18.16.0
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: "18.16.0"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 18.16.0
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18.16.0"
 
-  #     - name: Install dependencies
+      - name: Install dependencies
 
-  #       run: |
-  #         cd design-service
-  #         npm install
+        run: |
+          cd design-service
+          npm install
 
-  #     - name: Build
-  #       run: |
-  #         cd design-service
-  #         npm run build
+      - name: Build
+        run: |
+          cd design-service
+          npm run build
 
-  # docker-build:
-  #   runs-on: ubuntu-latest
-  #   needs: build-code
-  #   env:
-  #     DOCKER_REPO: ${{ secrets.DOCKER_HUB_USERNAME }}/design
-  #     DOCKER_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-  #     DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: build-code
+    env:
+      DOCKER_REPO: ${{ secrets.DOCKER_HUB_USERNAME }}/design
+      DOCKER_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-  #   steps:
-  #     - uses: actions/checkout@v2
+    steps:
+      - uses: actions/checkout@v2
 
-  #     - name: Login to DockerHub
-  #       run: |
-  #         docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-  #     - name: Build Docker Image
-  #       run: |
-  #         cd design-service
-  #         docker build -t $DOCKER_REPO:latest .
-  #     - name: Push Docker Image
-  #       run: |
-  #         docker push $DOCKER_REPO:latest
+      - name: Login to DockerHub
+        run: |
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - name: Build Docker Image
+        run: |
+          cd design-service
+          docker build -t $DOCKER_REPO:latest .
+      - name: Push Docker Image
+        run: |
+          docker push $DOCKER_REPO:latest
 
   deploy:
     runs-on: ubuntu-latest
-    # needs: docker-build
+    needs: docker-build
 
     steps:
       - name: Connect to server via SSH
@@ -69,33 +69,9 @@ jobs:
           key: ${{ env.MACHINE_KEY }}
           port: 22
           script: |
-            ls
-            pwd
-            whoami
-            cd /home/${{ env.MACHINE_USERNAME }}
-            docker-compose down
+            rm -rf Planify-Backend
+            git clone https://github.com/PlanifyDev/Planify-Backend.git
+            cd Planify-Backend
 
-      - name: Run commands on Azure machine
-        run: |
-          ls
-          pwd
-          whoami
-
-# run: |
-#   echo ${{ env.MACHINE_KEY }} > ~/machine_key.pem
-#   ls -l ~/*.pem
-#   cat ~/machine_key.pem
-#   chmod 400 ~/machine_key.pem
-#   ssh  -i ~/machine_key.pem ${{ env.MACHINE_USERNAME }}@${{ env.MACHINE_HOST }}
-#   pwd
-#   whoami
-
-# cd /home/${{ env.MACHINE_USERNAME }}
-# docker-compose down
-# echo "docker-compose down from github actions pipeline" >> /home/${{ env.MACHINE_USERNAME }}/pipeline.txt
-
-# run: |
-#             cd /home/ubuntu
-#             docker-compose down
-#             docker-compose pull
-#             docker-compose up -d
+            bash ./scripts/create_env.sh
+            bash ./scripts/deploy.sh
