@@ -8,8 +8,8 @@ export const signInHandler: type.myHandler<
   api.SignInReq,
   api.SignInRes
 > = async (req, res, next) => {
-  const { email, password } = req.body;
-
+  const password = req.body.password;
+  const email = req.body.email.toLowerCase();
   // ---------------- check if all field is existing ----------------
   if (!email || !password) {
     return res.status(400).send({ error: help.ERRORS.WRONG_LOGIN });

@@ -7,6 +7,8 @@ export interface userCacheDao {
   getCachedUser(user_id: string): Promise<UserCacheData>;
   getVerificationCode(user_id: string): Promise<string>;
 
+  updateUserDataCache(user_id: string, userCache: any): Promise<void>;
+
   updateVerificationCache(user_id: string, verified: string): Promise<void>;
   updateImageCache(user_id: string, image_url: string): Promise<void>;
   updatePlanCache(user_id: string, plan_token: string): Promise<void>;

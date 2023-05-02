@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package ai_service;
+
+service AI {
+    rpc create_project (project_request) returns (project_response) {}
+    rpc create_version (version_request) returns (version_response) {}
+}
+
+message project_request {
+    string boundary = 1;
+    string door_position = 2;
+    string area = 3;
+}
+
+message project_response {
+    string project_img= 1;
+    string project_icon= 2;
+}
+
+message version_request {
+    string boundary = 1;
+    string door_position = 2;
+    string constraints = 3;
+    string area = 4;
+}
+
+message version_response {
+    string version_img= 1;
+    string version_icon= 2;
+}

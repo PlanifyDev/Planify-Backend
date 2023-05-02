@@ -3,47 +3,37 @@ from typing import Iterable
 import cv2
 import numpy as np
 from pandas import Series
-from shapely import Polygon, MultiPolygon
+from shapely import Polygon, MultiPolygon, Point
 
 
-def get_mask(poly, shape=None, centerize=False):
-    """ Return image conains multiploygon as a numpy array mask
-
-    Params:
-    -------
-    poly: Polygon or MultiPolygon or Iterable[Polygon or MultiPolygon]
-        The Polygon/s to get mask for
-    shape: tuple
-        The shape of the canvas to draw polygon/s on
-    centerize
-
-    Returns
-    -------
-    ndarray
-        Mask array of the input polygon/s
-    """
-
-    if shape is None:
+def get_mask(poly, shape=(256, 256), point_s=15, line_s=0):
+    try:
+        img = np.zeros(shape, dtype=np.uint8)
         if isinstance(poly, Polygon):
-            x1, y1, x2, y2 = poly.bounds
-            shape = (int(y2 - y1), int(x2 - x1))
+            if poly.is_empty:
+                return img
 
-    img = np.zeros(shape, dtype=np.uint8)
+            if line_s:
+                points = np.array(poly.exterior.coords[:], dtype=np.int32)
+                img = cv2.polylines(img, [points], True, (0, 255, 0), thickness=2)
+            else:
+                img = cv2.drawContours(img, np.int32([poly.exterior.coords]), -1, 255, -1)
 
-    if isinstance(poly, Polygon):
-        img = cv2.drawContours(img, np.int32([poly.exterior.coords]), -1, 255, -1)
+        elif isinstance(poly, MultiPolygon):
+            for p in poly.geoms:
+                img = cv2.drawContours(img, np.int32([p.exterior.coords]), -1, 255, -1)
 
-    elif isinstance(poly, MultiPolygon):
-        for p in poly.geoms:
-            img = cv2.drawContours(img, np.int32([p.exterior.coords]), -1, 255, -1)
+        elif isinstance(poly, Series):
+            polys = [p for p in poly.tolist() if p]
+            img = get_mask(polys, shape, point_s)
 
-    elif isinstance(poly, Series):
-        polys = [p for p in poly.tolist() if p]
-        img = get_mask(polys, shape)
-
-    elif isinstance(poly, Iterable):
-        for p in poly:
-            img = (img != 0) | (get_mask(p, shape) != 0)
-        img = img.astype(np.uint8) * 255
-
-    return img.astype(np.uint8)
+        elif isinstance(poly, Iterable):
+            for p in poly:
+                img = (img != 0) | (get_mask(p, shape, point_s) != 0)
+            img = img.astype(np.uint8) * 255
+        elif isinstance(poly, Point):
+            p = poly.coords[0]
+            img = cv2.circle(img, (int(p[0]), int(p[1])), point_s, 255, -1)
+        return img.astype(np.uint8)
+    except:
+        return img

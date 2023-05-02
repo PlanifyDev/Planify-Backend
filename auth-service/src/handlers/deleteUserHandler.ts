@@ -23,26 +23,26 @@ export const deleteUserHandler: type.myHandlerWithParam<
   });
 
   // -------------- delete user from S3 ----------------
-  AWS.config.update({
-    accessKeyId: help.accessEnv("AWS_ACCESS_KEY"),
-    secretAccessKey: help.accessEnv("AWS_SECRET_KEY"),
-    region: "us-east-1",
-  });
+  // AWS.config.update({
+  //   accessKeyId: help.accessEnv("AWS_ACCESS_KEY"),
+  //   secretAccessKey: help.accessEnv("AWS_SECRET_KEY"),
+  //   region: "us-east-1",
+  // });
 
-  const s3 = new AWS.S3();
-  const params = {
-    Bucket: help.accessEnv("AWS_S3_BUCKET_NAME"),
-    Key: userId,
-  };
+  // const s3 = new AWS.S3();
+  // const params = {
+  //   Bucket: help.accessEnv("AWS_S3_BUCKET_NAME"),
+  //   Key: userId,
+  // };
 
-  s3.deleteObject(params, (err, data) => {
-    if (err) {
-      return next(err);
-    }
-  });
+  // s3.deleteObject(params, (err, data) => {
+  //   if (err) {
+  //     return next(err);
+  //   }
+  // });
 
   return res.sendStatus(200);
-  };
+};
 
 // ----------------- delete all users from db ------------------------------
 export const cleardb: type.myHandler<never, never> = async (req, res, next) => {

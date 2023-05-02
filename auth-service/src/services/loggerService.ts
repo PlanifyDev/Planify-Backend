@@ -1,7 +1,7 @@
 import winston = require("winston");
 import { accessEnv } from "../helpers/accessEnv";
 
-const logPath = accessEnv("LOG_PATH");
+const logPath = accessEnv("AUTH_LOG_PATH");
 console.log(logPath);
 
 const dateFormat = () => {

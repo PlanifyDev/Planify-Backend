@@ -13,7 +13,7 @@ export const getAllPlans: type.myHandler<
   // get plans from cache
   const cachedPlans = await cache.getCachedPlans().then((data) => data);
   if (cachedPlans) {
-    plans = cachedPlans;
+    plans = JSON.parse(cachedPlans);
     return res.status(200).json({ plans });
   } else {
     // get plans from db

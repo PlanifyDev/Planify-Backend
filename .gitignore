@@ -1,5 +1,6 @@
 */node_modules
 *.env
+log_planify/
 
 ai-service/textures/Untitled.ipynb
 *.xml
@@ -23,4 +24,8 @@ ai-service/disp.jpg
 ai-service/mask.png
 */.vscode
 
-*/build/
+
+ai-service/models/draw.pth
+ai-service/models/beds2.pth
+ai-service/models/beds.pth
+ai-service/models/bed_bath.pth
