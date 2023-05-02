@@ -3,7 +3,7 @@ name: design-service
 on:
   push:
     branches:
-      - payment
+      - pay
     paths:
       - "payment-service/**"
 
