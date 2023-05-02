@@ -3,18 +3,19 @@ from generated.ai_service_pb2 import project_response, version_response
 from generated.ai_service_pb2_grpc import AIServicer, add_AIServicer_to_server
 from concurrent import futures
 
+
 class AIServicer(AIServicer):
     def create_project(self, request, context):
         print(request)
         response = project_response()
-        response.project_img = "project_image"
-        response.project_icon = "project_icon"
+        response.project_img = "project_image_from_aiiiii"
+        response.project_icon = "project_icon_from_aiiiii"
 
         return response
 
     def create_version(self, request, context):
         print(request)
-        
+
         response = version_response()
         response.version_img = "version_image"
         response.version_icon = "version_icon"
@@ -24,7 +25,7 @@ class AIServicer(AIServicer):
 
 server = grpc.server(
     futures.ThreadPoolExecutor(max_workers=10),
-    options=(('grpc.max_thread_pool_size', 10),)
+    options=(("grpc.max_thread_pool_size", 10),),
 )
 
 add_AIServicer_to_server(AIServicer(), server)
