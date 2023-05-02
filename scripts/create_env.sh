@@ -2,7 +2,7 @@
 
 touch .env
 
-echo SALT_ROUND=${ secrets.SALT_ROUND } >> .envs
+echo SALT_ROUND=${ secrets.SALT_ROUND } >> .env
 echo JWT_SECRET=${ secrets.JWT_SECRET } >> .env
 echo VERIFY_EMAIL=${ secrets.VERIFY_EMAIL } >> .env
 echo VERIFY_PASSWORD=${ secrets.VERIFY_PASSWORD } >> .env
