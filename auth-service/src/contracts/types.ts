@@ -9,6 +9,8 @@ export interface User {
   password: string;
   verified: boolean;
   user_plan: string;
+  role: string;
+  country: string;
 }
 
 export type UserRegister = Pick<
@@ -20,7 +22,10 @@ export type UserRes = Omit<User, "password">;
 
 export type UserCacheData = UserRes & { user_token: string };
 
-export type UserUpdateData = Pick<User, "firstname" | "lastname" | "password">;
+export type UserUpdateData = Pick<
+  User,
+  "firstname" | "lastname" | "password" | "image_url" | "role" | "country"
+>;
 
 type withError<T> = T & { error: string };
 export type myHandler<ReqBody, ResBody> = RequestHandler<

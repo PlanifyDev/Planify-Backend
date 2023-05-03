@@ -37,9 +37,11 @@ export const forgetPassHandler: type.myHandler<
 
   // send email
   // TODO: change the link to the frontend link
+
+  const front_end_url = help.accessEnv("FRONT_END_URL");
   help.sendPassEmail(
     user.email,
-    `<a href="http://localhost:3000/reset-password?token=${token}">Reset Password</a>`
+    `<a href="${front_end_url}/auth/change-password?token=${token}">Reset Password</a>`
   );
 
   return res.sendStatus(200);

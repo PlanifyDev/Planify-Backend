@@ -21,9 +21,7 @@ export interface GetProjectsRes {
 export interface CopyProjectParam {
   id: number;
 }
-export interface CopyProjectReq {
-  user_id: number;
-}
+export interface CopyProjectReq {}
 export interface CopyProjectRes {
   project: type.ProjectCopy;
 }
@@ -34,7 +32,6 @@ export interface UpdateProjectNameParam {
 }
 export interface UpdateProjectNameReq {
   name: string;
-  user_id: number;
 }
 export interface UpdateProjectNameRes {}
 
@@ -42,27 +39,21 @@ export interface UpdateProjectNameRes {}
 export interface MoveProjectToTrashParam {
   id: number;
 }
-export interface MoveProjectToTrashReq {
-  user_id: string;
-}
+export interface MoveProjectToTrashReq {}
 export interface MoveProjectToTrashRes {}
 
 // ----------------- Restore Project from trash --------------------------
 export interface RestoreProjectFromTrashParam {
   id: number;
 }
-export interface RestoreProjectFromTrashReq {
-  user_id: number;
-}
+export interface RestoreProjectFromTrashReq {}
 export interface RestoreProjectFromTrashRes {}
 
 // ----------------- Delete project permanently --------------------------
 export interface DeleteProjectParam {
   id: number;
 }
-export interface DeleteProjectReq {
-  user_id: number;
-}
+export interface DeleteProjectReq {}
 export interface DeleteProjectRes {}
 
 // =======================================================================================
@@ -71,7 +62,6 @@ export interface DeleteProjectRes {}
 
 // ----------------- Create new Version --------------------------
 export interface CreateVersionReq {
-  user_id: string;
   project_id: number;
 }
 export interface CreateVersionRes {
@@ -80,7 +70,6 @@ export interface CreateVersionRes {
 
 // ----------------- Get versions of project --------------------------
 export interface GetVersionsReq {
-  user_id: string;
   project_id: number;
 }
 export interface GetVersionsRes {
@@ -91,9 +80,7 @@ export interface GetVersionsRes {
 export interface GetVersionByIdParam {
   id: number;
 }
-export interface GetVersionByIdReq {
-  user_id: string;
-}
+export interface GetVersionByIdReq {}
 export interface GetVersionByIdRes extends type.Version {}
 
 // ----------------- Update Version Name --------------------------
@@ -101,7 +88,6 @@ export interface UpdateVersionNameParam {
   id: number;
 }
 export interface UpdateVersionNameReq {
-  user_id: string;
   name: string;
 }
 export interface UpdateVersionNameRes {}
@@ -110,25 +96,19 @@ export interface UpdateVersionNameRes {}
 export interface MoveVersionToTrashParam {
   id: number;
 }
-export interface MoveVersionToTrashReq {
-  user_id: string;
-}
+export interface MoveVersionToTrashReq {}
 export interface MoveVersionToTrashRes {}
 
 // ----------------- Restore Version from trash --------------------------
 export interface RestoreVersionFromTrashParam {
   id: number;
 }
-export interface RestoreVersionFromTrashReq {
-  user_id: string;
-}
+export interface RestoreVersionFromTrashReq {}
 export interface RestoreVersionFromTrashRes {}
 
 // ----------------- Delete version permanently --------------------------
 export interface DeleteVersionParam {
   id: number;
 }
-export interface DeleteVersionReq {
-  user_id: string;
-}
+export interface DeleteVersionReq {}
 export interface DeleteVersionRes {}

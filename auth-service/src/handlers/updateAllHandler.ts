@@ -32,7 +32,10 @@ export const updateAllHandler: type.myHandlerWithParam<
 
   const firstname = req.body.firstname || user.firstname;
   const lastname = req.body.lastname || user.lastname;
+  const image_url = req.body.image_url || user.image_url;
   let password = user.password;
+  const role = req.body.role || user.role;
+  const country = req.body.country || user.country;
 
   // ---- if he need to change password must pass old password ---------
   if (req.body.password) {
@@ -64,10 +67,31 @@ export const updateAllHandler: type.myHandlerWithParam<
     firstname,
     lastname,
     password,
+    image_url,
+    role,
+    country,
   };
   // ------------- update name in cache ----------------------
 
-  await cache.updateNameCache(user.id, firstname, lastname).catch((error) => {
+  // await cache.updateNameCache(user.id, firstname, lastname).catch((error) => {
+  //   return next(error);
+  // });
+
+  // // ------------- update image in cache ----------------------
+  // await cache.updateImageCache(user.id, image_url).catch((error) => {
+  //   return next(error);
+  // });
+
+  // ------------- update user data in cache ----------------------
+  const userCache = {
+    firstname,
+    lastname,
+    image_url,
+    role,
+    country,
+  };
+
+  await cache.updateUserDataCache(user.id, userCache).catch((error) => {
     return next(error);
   });
 

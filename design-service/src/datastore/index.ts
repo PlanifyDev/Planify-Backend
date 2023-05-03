@@ -6,8 +6,8 @@ class DataStore {
   public version: VersionDataStore;
 
   constructor() {
-    this.project = new projectDataStore();
-    this.version = new VersionDataStore();
+    this.project = projectDataStore.Instance;
+    this.version = VersionDataStore.Instance;
   }
 }
 

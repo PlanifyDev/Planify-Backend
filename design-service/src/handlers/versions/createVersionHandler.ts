@@ -1,7 +1,8 @@
 import { DB } from "../../datastore";
 import * as type from "../../contracts/types";
 import * as api from "../../contracts/api";
-import * as AI from "../../AI";
+// import * as AI from "../../AI";
+import { create_version } from "../../gRPC/ai_client/ai_client";
 import { MyError } from "../../helpers";
 
 /**
@@ -32,21 +33,26 @@ export const createVersion: type.myHandler<
     return next(myError);
   }
 
+  if (!project) {
+    return res.status(404).send({ error: "project not found" });
+  }
+
   // ---------------------- 2. send boundary and constrains to AI. get version images ----------------------
   let aiResponse: type.AiVersionResponse;
-  try {
-    aiResponse = await AI.createNewVersion(
-      project.boundary,
-      project.door_position,
-      project.constraints
-    );
-  } catch (error) {
-    const myError = new MyError(
-      "AI service Error: in create version AI service",
-      error.message
-    );
-    return next(myError);
-  }
+  const boundary = JSON.stringify(project.boundary);
+  const door_position = JSON.stringify(project.door_position);
+  const constraints = JSON.stringify(project.constraints);
+  await create_version(boundary, door_position, constraints)
+    .then((response) => {
+      aiResponse = response;
+    })
+    .catch((error) => {
+      const myError = new MyError(
+        "AI service Error: in create version AI service",
+        error.message
+      );
+      return next(myError);
+    });
 
   // ---------------------- 3. Insert the new version with the result to the DB ----------------------
   const versionDB: type.CreateVersionDB = {

@@ -10,8 +10,8 @@ CREATE TABLE plans (
     yearly_price            NUMERIC NOT NULL
 );
 
-INSERT INTO plans VALUES('03fdba11-50ca-44e1-8b16-949b9fcc7995', 'basic', 'free plan', 3, 'false', 'false', 'false' , 0, 0);
-INSERT INTO plans VALUES('85be656d-a9a8-4a0e-ae78-8b0f005f5fd2', 'premium', 'premium plan', 50, 'true', 'true', 'true', 0.01, 10);
+INSERT INTO plans VALUES('03fdba1150ca44e18b16949b9fcc7995', 'basic', 'free plan', 3, 'false', 'false', 'false' , 0, 0);
+INSERT INTO plans VALUES('85be656da9a84a0eae788b0f005f5fd2', 'premium', 'premium plan', 50, 'true', 'true', 'true', 0.01, 10);
 
 CREATE TABLE payment (
     payment_id              VARCHAR(100) PRIMARY KEY,

@@ -18,7 +18,7 @@ export const getProjects: type.myHandler<
   api.GetProjectsReq,
   api.GetProjectsRes
 > = async (_, res, next) => {
-  const user_id = res.locals.userId;
+  const user_id = res.locals.user_id;
   try {
     const projects = await DB.project.getProjects(user_id);
     res.status(200).send({ projects });

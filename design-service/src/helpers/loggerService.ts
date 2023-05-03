@@ -1,7 +1,7 @@
 import winston from "winston";
 import { accessEnv } from "./accessEnv";
 
-const logPath = accessEnv("LOG_PATH");
+const logPath = accessEnv("DESIGN_LOG_PATH");
 
 const dateFormat = () => {
   return new Date(Date.now()).toLocaleString();
