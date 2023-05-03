@@ -31,7 +31,6 @@ jobs:
 
   docker-build:
     runs-on: ubuntu-latest
-    needs: build-code
     env:
       DOCKER_REPO: ${{ secrets.DOCKER_HUB_USERNAME }}/design
       DOCKER_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
