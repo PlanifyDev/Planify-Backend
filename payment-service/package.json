@@ -30,7 +30,8 @@
     "paypal-rest-sdk": "^1.8.1",
     "pg": "^8.8.0",
     "redis": "^4.6.4",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "winston": "^3.8.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",
