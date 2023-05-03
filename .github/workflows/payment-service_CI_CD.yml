@@ -8,26 +8,6 @@ on:
       - "payment-service/**"
 
 jobs:
-  # build-code:
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Use Node.js 18.16.0
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: "18.16.0"
-
-  #     - name: Install dependencies
-  #       run: |
-  #         cd payment-service
-  #         npm install
-
-  #     - name: Build
-  #       run: |
-  #         cd payment-service
-  #         npm run build
-
   docker-build:
     runs-on: ubuntu-latest
     env:
