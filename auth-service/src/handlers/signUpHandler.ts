@@ -44,7 +44,7 @@ export const signUpHandler: type.myHandler<SignUpReq, SignupRes> = async (
     id: crypto.randomBytes(16).toString("hex"),
     firstname,
     lastname,
-    image_url: "default image for now ",
+    image_url: " ",
     email,
     password: hashedPassword,
     verified: false,

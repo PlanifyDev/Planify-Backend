@@ -54,6 +54,8 @@ export class UserDataStore implements UserDao {
       user.lastname,
       user.image_url,
       user.password,
+      user.country,
+      user.role,
       user_id,
     ];
 
