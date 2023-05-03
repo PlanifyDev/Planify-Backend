@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - prod
+  push:
+    branches:
+      - prod
 
 jobs:
   deploy:
@@ -33,7 +36,7 @@ jobs:
             echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
             echo VERIFY_EMAIL=${{ secrets.VERIFY_EMAIL }} >> .env
             echo VERIFY_PASSWORD=${{ secrets.VERIFY_PASSWORD }} >> .env
-            echo DATABASE_URI_LOCAL=${{ secrets.DATABASE_URI_LOCAL }} >> .env
+            echo DATABASE_URL_LOCAL=${{ secrets.DATABASE_URI_LOCAL }} >> .env
             echo ENV_DB=${{ secrets.ENV_DB }} >> .env
             echo ENV_CACHE=${{ secrets.ENV_CACHE }} >> .env
             echo REDIS_URL_LOCAL=${{ secrets.REDIS_URL_LOCAL }} >> .env

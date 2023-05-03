@@ -4,7 +4,7 @@ WORKDIR /payment
 
 COPY . .
 
-RUN ["npm",  "i"]
+RUN ["npm", "i"]
 
 
 RUN ["npm", "i", "-g", "pm2"] 
