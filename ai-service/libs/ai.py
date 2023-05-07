@@ -170,6 +170,7 @@ def get_rects(imgr, centroids):
 
     return [Point(*i[:2]) for i in sorted(shapes, key=lambda x: x[2], reverse=True)]
 
+
 def get_rects_2(channel, gcenters=True):
     a = channel.copy()
 
@@ -206,7 +207,12 @@ def get_rects_2(channel, gcenters=True):
     return MultiPolygon(final_c).buffer(0)
 
 
-def get_design(door, inner, area):
+def get_design2(door, inner, area, inner_poly, door_poly):
+    bed_centroids = []
+    bath_centroids = []
+
+
+def get_design(door, inner, area, inner_poly, door_poly):
     bedn, bathn = get_rooms_number(area)
 
     inner = inner > 0
@@ -260,7 +266,7 @@ def get_design(door, inner, area):
 
     bed_centroids_in = get_mask(bed_centroids, point_s=8) > 0
     bath_centroids_in = get_mask(bath_centroids, point_s=5) > 0
-    input_image = get_input(inner, door, bedn, bathn, channels=[bed_centroids_in, bath_centroids_in], aug_draw=1)
+    input_image = get_input(inner, door, bedn, bathn, channels=[bed_centroids_in, bath_centroids_in], aug_draw=True)
     x = draw_model(input_image.reshape(1, 12, 256, 256))
     max_channels = torch.max(x, dim=1)[1]
 
@@ -279,13 +285,21 @@ def get_design(door, inner, area):
     x = x[0].permute(1, 2, 0).detach().numpy()
     # plt.imshow(x[:, :, :3])
     # plt.show()
-    x[x<0] = 0
-    x[x>1] = 1
+    x[x < 0] = 0
+    x[x > 1] = 1
     # plt.imshow(x[:, :, :3])
     # plt.show()
+
+    # bath_centroids [[1, 2], [1, 4]], bed_centroids
+
+    print(bed_centroids)
+    print(bath_centroids)
+    print(inner_poly)
+    print(door_poly)
+
     return (x[:, :, :3] * 255).astype(np.uint8)
 
-
+    # stop here
     img = x.copy()
     for _ in range(3):
         bed_rects = get_rects_2(img[:, :, 0])
@@ -303,7 +317,6 @@ def get_design(door, inner, area):
         img[img < 0] = 0
         img = img[0].permute(1, 2, 0).detach().numpy()
 
-
     bed_centroids_in = get_mask(bed_centroids, point_s=8) > 0
     bath_centroids_in = get_mask(bath_centroids, point_s=5) > 0
     input_image = get_input(inner, door, bedn, bathn, channels=[bed_centroids_in, bath_centroids_in], aug_draw=1)
@@ -314,9 +327,9 @@ def get_design(door, inner, area):
     bath_rects = get_rects_2(img[:, :, 1], 0)
 
     bed_rects = bed_rects - bath_rects.buffer(2, join_style=2, cap_style=2)
-    rr = 0.7 * get_mask(bed_rects) + 0.5 * get_mask(bath_rects) + 0.25 * input_image[1, :,: ].numpy() * 255+ 0.35 * input_image[0, :,: ].numpy() * 255
+    rr = 0.7 * get_mask(bed_rects) + 0.5 * get_mask(bath_rects) + 0.25 * input_image[1, :,
+                                                                         :].numpy() * 255 + 0.35 * input_image[0, :,
+                                                                                                   :].numpy() * 255
 
     plt.imshow(rr)
     plt.show()
-
-

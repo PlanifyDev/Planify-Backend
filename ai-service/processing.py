@@ -165,7 +165,6 @@ def process_data(data):
     # get suggested number of rooms and bathrooms from area
     area = data.get('area', 0)
 
-
     # TODO 5: Make 5 lines below a function
     # p = random_point_on_perimeter(poly_ai)
     scaled_ai_poly = scale(poly_ai, xfact=0.8, yfact=0.8, origin=(ai_width[0] / 2, ai_width[1] / 2))
@@ -209,7 +208,7 @@ def process_data(data):
     # mask_url = upload_to_s3(ai_mask_final, folder_name='masks')
     # disp_url = upload_to_s3(disp, folder_name='projects')
     # disp_icon_url = upload_to_s3(disp_icon, folder_name='projects_icon')
-    design_img = get_design(ai_channel, door_channel, area)
+    design_img = get_design(ai_channel, door_channel, area, scaled_ai_door, scaled_ai_poly)
     design_img_url = upload_to_imgbb(design_img)
     mask_url = upload_to_imgbb(ai_mask_final)
     disp_url = upload_to_imgbb(disp)
