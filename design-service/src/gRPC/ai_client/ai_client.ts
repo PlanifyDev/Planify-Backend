@@ -28,10 +28,11 @@ const client = new aiService.AI(AI_GRPC_URL, grpc.credentials.createInsecure());
 
 export const create_project = (
   boundary: string,
-  door_position: string
+  door_position: string,
+  area: string
 ): Promise<type.AiProjectResponse> => {
   return new Promise((resolve, reject) => {
-    const request = { boundary, door_position };
+    const request = { boundary, door_position, area };
     client.create_project(request, (err: any, response: any) => {
       if (err) {
         console.log(err);

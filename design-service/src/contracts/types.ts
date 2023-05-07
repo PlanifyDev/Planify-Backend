@@ -7,7 +7,7 @@ export interface Project {
   boundary: Object;
   door_position: Object;
   // neighbors: Object;
-  constraints: Object;
+  area: string;
   project_img: string;
   project_icon: string;
   created_at: string;
@@ -18,22 +18,25 @@ export interface Project {
 // data from client to create new project
 export type NewProjectReq = Pick<
   Project,
-  "name" | "boundary" | "door_position" | "constraints" | "user_id" // neighbors is missing
+  "boundary" | "door_position" | "area" // neighbors is missing
 >;
 
 // data to insert to DB
-export type CreateProjectDB = Omit<Project, "id" | "created_at" | "deleted">;
+export type CreateProjectDB = Omit<
+  Project,
+  "id" | "name" | "created_at" | "deleted"
+>;
 
 // data to return to client
 export type projectRes = Omit<
   Project,
-  "boundary" | "door_position" | "constraints" | "user_id"
+  "boundary" | "door_position" | "area" | "user_id"
 >;
 
 // data to copy from project to create new project like old project
 export type ProjectCopy = Pick<
   Project,
-  "boundary" | "door_position" | "constraints" // neighbors is missing
+  "boundary" | "door_position" | "area" // neighbors is missing
 >;
 
 // version data store in DB
@@ -42,13 +45,17 @@ export interface Version {
   name: string;
   version_img: string;
   version_icon: string;
+  constraints: Object;
   created_at: string;
   deleted: boolean;
   project_id: number;
 }
 
 // version data to insert to DB
-export type CreateVersionDB = Omit<Version, "id" | "created_at" | "deleted">;
+export type CreateVersionDB = Omit<
+  Version,
+  "id" | "name" | "created_at" | "deleted"
+>;
 
 export interface AiProjectResponse {
   project_img: string;
