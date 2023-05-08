@@ -1,1 +1,1 @@
-test deploy pay 5
+test deploy pay 6
