@@ -3,6 +3,16 @@ import { PaymentDao } from "./dao/paymentDao";
 import { Payment } from "../contracts/types";
 import { payQuery } from "./query";
 export class PaymentDataStore implements PaymentDao {
+  // ------------- Singleton ----------------
+  private static instance: PaymentDataStore;
+  private constructor() {}
+  public static getInstance(): PaymentDataStore {
+    if (!PaymentDataStore.instance) {
+      PaymentDataStore.instance = new PaymentDataStore();
+    }
+    return PaymentDataStore.instance;
+  }
+
   async createPayment(payment: Payment): Promise<void> {
     const newPayment: string[] = [];
     for (const key in payment) {
@@ -99,4 +109,4 @@ export class PaymentDataStore implements PaymentDao {
   }
 }
 
-export const dbPayment = new PaymentDataStore();
+export const dbPayment = PaymentDataStore.getInstance();
