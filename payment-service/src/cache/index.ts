@@ -65,7 +65,7 @@ export class PaymentCache implements PaymentCacheDao {
   // ------------- get user from cache  ----------------
   async getCachedUser(user_id: string): Promise<UserCacheData> {
     try {
-      const user = await REDIS.hGetAll(user_id)
+      const user = await REDIS.get(user_id)
         .then((value: any) => {
           return Promise.resolve(value);
         })
