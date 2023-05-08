@@ -23,6 +23,10 @@ export const authByCache = async (req, res, next) => {
     return res.status(401).send({ error: "Bad token" });
   }
 
+  if (!user_id) {
+    return res.status(401).send({ error: "user_id is missing" });
+  }
+
   const user = await cache.getCachedUser(user_id);
   if (!Object.keys(user).length) {
     return res.status(401).send({ error: "User not found" });
