@@ -1,15 +1,25 @@
-import conn from "../connection";
+import { DB_CONN } from "../connections";
 import { PaymentDao } from "./dao/paymentDao";
 import { Payment } from "../contracts/types";
 import { payQuery } from "./query";
 export class PaymentDataStore implements PaymentDao {
+  // ------------- Singleton ----------------
+  private static instance: PaymentDataStore;
+  private constructor() {}
+  public static getInstance(): PaymentDataStore {
+    if (!PaymentDataStore.instance) {
+      PaymentDataStore.instance = new PaymentDataStore();
+    }
+    return PaymentDataStore.instance;
+  }
+
   async createPayment(payment: Payment): Promise<void> {
     const newPayment: string[] = [];
     for (const key in payment) {
       newPayment.push(payment[key]);
     }
     try {
-      await conn.query(payQuery.createPayment, newPayment);
+      await DB_CONN.query(payQuery.createPayment, newPayment);
       return Promise.resolve();
     } catch (error) {
       console.log(error);
@@ -19,7 +29,7 @@ export class PaymentDataStore implements PaymentDao {
 
   async getSuccessPayments(user_id: string): Promise<Payment[]> {
     try {
-      const successPayments = await conn.query(payQuery.getSuccessPayments, [
+      const successPayments = await DB_CONN.query(payQuery.getSuccessPayments, [
         user_id,
       ]);
       return Promise.resolve(successPayments.rows);
@@ -29,7 +39,7 @@ export class PaymentDataStore implements PaymentDao {
   }
   async deleteUnsuccessPayment(user_id: string): Promise<void> {
     try {
-      await conn.query(payQuery.deleteUnsuccessPayment, [user_id]);
+      await DB_CONN.query(payQuery.deleteUnsuccessPayment, [user_id]);
       return Promise.resolve();
     } catch (error) {
       return Promise.reject(error);
@@ -38,7 +48,9 @@ export class PaymentDataStore implements PaymentDao {
 
   async getPaymentPyId(payment_id: string): Promise<Payment> {
     try {
-      const payment = await conn.query(payQuery.getPaymentById, [payment_id]);
+      const payment = await DB_CONN.query(payQuery.getPaymentById, [
+        payment_id,
+      ]);
       return Promise.resolve(payment.rows[0]);
     } catch (error) {
       return Promise.reject(error);
@@ -47,7 +59,9 @@ export class PaymentDataStore implements PaymentDao {
 
   async getAllPayments(user_id: string): Promise<Payment[]> {
     try {
-      const allPayments = await conn.query(payQuery.getAllPayments, [user_id]);
+      const allPayments = await DB_CONN.query(payQuery.getAllPayments, [
+        user_id,
+      ]);
       return Promise.resolve(allPayments.rows as Payment[]);
     } catch (error) {
       return Promise.reject(error);
@@ -56,7 +70,7 @@ export class PaymentDataStore implements PaymentDao {
 
   async getLastSuccessPayment(user_id: string): Promise<Payment> {
     try {
-      const lastSuccessPayment = await conn.query(
+      const lastSuccessPayment = await DB_CONN.query(
         payQuery.getLastSuccessPayment,
         [user_id]
       );
@@ -73,7 +87,7 @@ export class PaymentDataStore implements PaymentDao {
     payer_id: string
   ): Promise<void> {
     try {
-      await conn.query(payQuery.updatePaymentStatus, [
+      await DB_CONN.query(payQuery.updatePaymentStatus, [
         payment_id,
         payment_status,
         created_date,
@@ -87,7 +101,7 @@ export class PaymentDataStore implements PaymentDao {
 
   async deletePayment(payment_id: string): Promise<void> {
     try {
-      await conn.query(payQuery.deletePayment, [payment_id]);
+      await DB_CONN.query(payQuery.deletePayment, [payment_id]);
       Promise.resolve();
     } catch (error) {
       Promise.reject(error);
@@ -95,4 +109,4 @@ export class PaymentDataStore implements PaymentDao {
   }
 }
 
-export const dbPayment = new PaymentDataStore();
+export const dbPayment = PaymentDataStore.getInstance();
