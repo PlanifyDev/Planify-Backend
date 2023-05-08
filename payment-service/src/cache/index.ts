@@ -4,16 +4,6 @@ import { logger, accessEnv } from "../helpers";
 import { REDIS } from "../connections";
 
 export class PaymentCache implements PaymentCacheDao {
-  // ------------- Singleton ----------------
-  private static instance: PaymentCache;
-  private constructor() {}
-  public static getInstance(): PaymentCache {
-    if (!PaymentCache.instance) {
-      PaymentCache.instance = new PaymentCache();
-    }
-    return PaymentCache.instance;
-  }
-
   // ------------- cache plans ----------------
   async cachePlans(plans: Plan[]): Promise<void> {
     try {
@@ -80,4 +70,4 @@ export class PaymentCache implements PaymentCacheDao {
   }
 }
 
-export const cache: PaymentCacheDao = PaymentCache.getInstance();
+export const cache: PaymentCacheDao = new PaymentCache();

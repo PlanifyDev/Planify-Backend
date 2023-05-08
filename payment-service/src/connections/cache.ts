@@ -4,10 +4,9 @@ import { accessEnv, logger } from "../helpers";
 const url = accessEnv("REDIS_URL_LOCAL");
 
 export class Redis {
-  private static instance: Redis;
   private REDIS;
 
-  private constructor() {
+  public constructor() {
     this.REDIS = createClient({ url: url });
 
     (async () => {
@@ -20,16 +19,9 @@ export class Redis {
     })();
   }
 
-  static getInstance(): Redis {
-    if (!Redis.instance) {
-      Redis.instance = new Redis();
-    }
-    return Redis.instance;
-  }
-
   getClient(): any {
     return this.REDIS;
   }
 }
 
-export const REDIS = Redis.getInstance().getClient();
+export const REDIS = new Redis().getClient();
