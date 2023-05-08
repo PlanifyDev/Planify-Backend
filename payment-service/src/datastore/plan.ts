@@ -3,6 +3,16 @@ import { PlanDao } from "./dao/planDao";
 import { Plan } from "../contracts/types";
 import { planQuery } from "./query";
 export class PlanDataStore implements PlanDao {
+  // ------------- Singleton ----------------
+  private static instance: PlanDataStore;
+  private constructor() {}
+  public static getInstance(): PlanDataStore {
+    if (!PlanDataStore.instance) {
+      PlanDataStore.instance = new PlanDataStore();
+    }
+    return PlanDataStore.instance;
+  }
+
   async createPlan(plan: Plan): Promise<void> {
     const newPlan: string[] = [];
     for (const key in plan) {
@@ -57,4 +67,4 @@ export class PlanDataStore implements PlanDao {
   }
 }
 
-export const dbPlan = new PlanDataStore();
+export const dbPlan = PlanDataStore.getInstance();
