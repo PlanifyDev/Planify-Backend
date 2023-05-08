@@ -19,7 +19,7 @@ export const createVersion: type.myHandler<
   api.CreateVersionReq,
   api.CreateVersionRes
 > = async (req, res, next) => {
-  const { project_id } = req.body;
+  const { project_id, constraints } = req.body;
 
   // ---------------------- 1. get the project data from DB ----------------------
   let project: type.Project;
@@ -41,8 +41,8 @@ export const createVersion: type.myHandler<
   let aiResponse: type.AiVersionResponse;
   const boundary = JSON.stringify(project.boundary);
   const door_position = JSON.stringify(project.door_position);
-  const constraints = JSON.stringify(project.constraints);
-  await create_version(boundary, door_position, constraints)
+  const constraints_str = JSON.stringify(constraints);
+  await create_version(boundary, door_position, project.area, constraints_str)
     .then((response) => {
       aiResponse = response;
     })
@@ -56,15 +56,15 @@ export const createVersion: type.myHandler<
 
   // ---------------------- 3. Insert the new version with the result to the DB ----------------------
   const versionDB: type.CreateVersionDB = {
-    name: "New Version",
     version_img: aiResponse.version_img,
     version_icon: aiResponse.version_icon,
+    constraints,
     project_id,
   };
 
-  let version_id: number;
+  let version_from_db: { id: number; name: string };
   try {
-    version_id = await DB.version.createVersion(versionDB);
+    version_from_db = await DB.version.createVersion(versionDB);
   } catch (error) {
     const myError = new MyError(
       "DB Error: in create version func",
@@ -74,11 +74,12 @@ export const createVersion: type.myHandler<
   }
 
   const versionInRes: type.Version = {
-    id: version_id,
-    name: "New Version",
+    id: version_from_db.id,
+    name: version_from_db.name,
     version_img: aiResponse.version_img,
     version_icon: aiResponse.version_icon,
     created_at: new Date(Date.now()).toLocaleString(),
+    constraints,
     deleted: false,
     project_id,
   };

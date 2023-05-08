@@ -46,10 +46,11 @@ export const create_project = (
 export const create_version = (
   boundary: string,
   door_position: string,
+  area: string,
   constraints: string
 ): Promise<type.AiVersionResponse> => {
   return new Promise((resolve, reject) => {
-    const request = { boundary, door_position };
+    const request = { boundary, door_position, area, constraints };
     client.create_version(request, (err: any, response: any) => {
       if (err) {
         console.log(err);

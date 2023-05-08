@@ -22,22 +22,23 @@ export class projectDataStore implements ProjectDao {
   static get Instance() {
     return this._instance || (this._instance = new this());
   }
-  async createProject(newProjectDB: type.CreateProjectDB): Promise<number> {
+  async createProject(
+    newProjectDB: type.CreateProjectDB
+  ): Promise<{ id: number; name: string }> {
     const project = [
-      newProjectDB.name,
       newProjectDB.boundary,
       newProjectDB.door_position,
-      newProjectDB.constraints,
+      newProjectDB.area,
       newProjectDB.project_img,
       newProjectDB.project_icon,
       newProjectDB.user_id,
     ];
 
     try {
-      const project_id = await (
+      const { id, name } = await (
         await DB_CONN.query(MyQuery.createProject, project)
-      ).rows[0].id;
-      return Promise.resolve(project_id);
+      ).rows[0];
+      return Promise.resolve({ id, name });
     } catch (error) {
       return Promise.reject(error);
     }

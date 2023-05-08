@@ -11,19 +11,21 @@ export class VersionDataStore implements VersionDao {
     return this._instance || (this._instance = new this());
   }
 
-  async createVersion(newVersion: CreateVersionDB): Promise<number> {
-    const version: CreateVersionDB[] = [];
+  async createVersion(
+    newVersion: CreateVersionDB
+  ): Promise<{ id: number; name: string }> {
+    const version = [
+      newVersion.version_img,
+      newVersion.version_icon,
+      newVersion.constraints,
+      newVersion.project_id,
+    ];
 
-    // to ensure the order of the keys
-    const keys = ["name", "version_img", "version_icon", "project_id"];
-    keys.forEach((key) => {
-      version.push(newVersion[key]);
-    });
     try {
-      const version_id = await (
+      const { id, name } = await (
         await DB_CONN.query(MyQuery.createVersion, version)
-      ).rows[0].id;
-      return Promise.resolve(version_id);
+      ).rows[0];
+      return Promise.resolve({ id, name });
     } catch (error) {
       return Promise.reject(error);
     }

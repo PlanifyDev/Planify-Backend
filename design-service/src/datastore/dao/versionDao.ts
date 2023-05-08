@@ -1,6 +1,8 @@
 import { Version, CreateVersionDB } from "../../contracts/types";
 export interface VersionDao {
-  createVersion(newVersion: CreateVersionDB): Promise<number>;
+  createVersion(
+    newVersion: CreateVersionDB
+  ): Promise<{ id: number; name: string }>;
 
   getVersions(project_id: number): Promise<Version[]>;
 

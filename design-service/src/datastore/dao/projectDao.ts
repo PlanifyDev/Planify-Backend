@@ -1,7 +1,9 @@
 import * as type from "../../contracts/types";
 
 export interface ProjectDao {
-  createProject(newProject: type.CreateProjectDB): Promise<number>;
+  createProject(
+    newProject: type.CreateProjectDB
+  ): Promise<{ id: number; name: string }>;
 
   getProject(project_id: number): Promise<type.Project>;
 
