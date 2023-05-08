@@ -17,7 +17,7 @@ export const createInvoice: myHandler<
 
   const plan = await dbPlan.getPlan(plan_id);
   if (!plan) {
-    return next(new NewError("Plan Not Found", 404));
+    return next(new NewError("Plan Not Found", {}, 404));
   }
   if (subscription == "monthly") {
     totalAmount = plan.monthly_price;
@@ -26,7 +26,7 @@ export const createInvoice: myHandler<
     totalAmount = plan.yearly_price;
     payment_description = `Subscription in ${plan.name} plan for one year`;
   } else {
-    return next(new NewError("Subscription Not Found", 404));
+    return next(new NewError("Subscription Not Found", {}, 404));
   }
 
   // create details of invoice
@@ -35,7 +35,9 @@ export const createInvoice: myHandler<
   // create invoice and return approval_url
   paypal.payment.create(invoiceObj, async function (error, payment) {
     if (error) {
-      return next(new NewError(error.message, 400));
+      return next(
+        new NewError("Error in create invoice in PayPal", error.message, 400)
+      );
     } else {
       // const created_date = new Date(payment.create_time).toLocaleDateString();
       // const created_date = payment.create_time;
@@ -54,14 +56,17 @@ export const createInvoice: myHandler<
       };
 
       await dbPayment.createPayment(paymentDB_obj).catch((error) => {
-        return next(new NewError(error.message, 500));
+        return next(
+          new NewError("Error in create invoice in DB", error.message, 500)
+        );
       });
 
       const redirect_url = payment.links.filter(
         (data) => data.rel == "approval_url"
       )[0].href;
 
-      return res.status(200).send({ redirect_url });
+      res.status(200).send({ redirect_url });
+      return next("invoice created successfully");
     }
   });
 };

@@ -23,7 +23,9 @@ export const success: myHandlerWithQuery<
       paymentDB = payment;
     })
     .catch((error) => {
-      return next(new help.NewError(error.message, 500));
+      return next(
+        new help.NewError("Error in get payment from DB", error.message, 500)
+      );
     });
 
   const execute_payment_json = {
@@ -45,7 +47,9 @@ export const success: myHandlerWithQuery<
       execute_payment_json,
       async (error, payment) => {
         if (error) {
-          return next(new help.NewError(error.message, 400));
+          return next(
+            new help.NewError("Error in execute payment", error.message, 400)
+          );
         } else {
           // ----------------- update payment after executed -----------------
           await dbPayment
@@ -56,7 +60,13 @@ export const success: myHandlerWithQuery<
               payerId
             )
             .catch((error) => {
-              return next(new help.NewError(error.message, 400));
+              return next(
+                new help.NewError(
+                  "Error in update payment status in DB",
+                  error.message,
+                  500
+                )
+              );
             });
 
           // ----------------- cerate token for plan -----------------------
@@ -73,17 +83,30 @@ export const success: myHandlerWithQuery<
               console.log(status);
             })
             .catch((error) => {
-              return next(new help.NewError(error.message, 400));
+              return next(
+                new help.NewError(
+                  "Error in update plan on auth service",
+                  error.message,
+                  400
+                )
+              );
             });
 
           // ----------------- update plan on cache -----------------
           cache
             .updatePlanToken(paymentDB.user_id, plan_token)
             .catch((error) => {
-              return next(new help.NewError(error.message, 500));
+              return next(
+                new help.NewError(
+                  "Error in update plan on cache",
+                  error.message,
+                  500
+                )
+              );
             });
 
-          return res.sendStatus(200);
+          res.sendStatus(200);
+          return next("payment success");
         }
       }
     );
