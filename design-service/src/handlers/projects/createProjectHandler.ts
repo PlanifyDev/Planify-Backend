@@ -48,9 +48,9 @@ export const createProject: type.myHandler<
     user_id: res.locals.user_id,
   };
 
-  let project_id: number;
+  let project_from_db: { id: number; name: string };
   try {
-    project_id = await DB.project.createProject(projectDB);
+    project_from_db = await DB.project.createProject(projectDB);
   } catch (error) {
     const myError = new MyError(
       "DB Error: in create project func",
@@ -60,7 +60,8 @@ export const createProject: type.myHandler<
   }
 
   const projectInRes: type.projectRes = {
-    id: project_id,
+    id: project_from_db.id,
+    name: project_from_db.name,
     project_img: aiResponse.project_img,
     project_icon: aiResponse.project_icon,
     created_at: new Date(Date.now()).toLocaleString(),

@@ -63,6 +63,7 @@ export interface DeleteProjectRes {}
 // ----------------- Create new Version --------------------------
 export interface CreateVersionReq {
   project_id: number;
+  constraints: Object;
 }
 export interface CreateVersionRes {
   version: type.Version;
