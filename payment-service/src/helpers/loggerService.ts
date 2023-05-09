@@ -1,8 +1,7 @@
-import winston = require("winston");
-import { accessEnv } from "../helpers/accessEnv";
+import winston from "winston";
+import { accessEnv } from "./accessEnv";
 
 const logPath = accessEnv("PAY_LOG_PATH");
-console.log(logPath);
 
 const dateFormat = () => {
   return new Date(Date.now()).toLocaleString();
@@ -13,7 +12,7 @@ const format = (info: any) => {
     info.message
   } | \n`;
   message = info.obj
-    ? message + `    - message: ${JSON.stringify(info.obj)} |\n`
+    ? message + `    - details: ${JSON.stringify(info.obj)} |\n`
     : message;
   return message;
 };
@@ -21,10 +20,13 @@ const format = (info: any) => {
 const requestsFormat = (info: any) => {
   let message = `${dateFormat()} | ${info.level.toUpperCase()} | ${
     info.res.statusCode
-  } |
+  } | ${info.message} | 
     request: ${info.req.method} | ${info.req.path} | -ip: ${
     info.req.ip
-  } |- body: ${JSON.stringify(info.req.body)} |\n`;
+  } |- body: ${JSON.stringify(info.req.body)} |
+    response: ${JSON.stringify(info.res.statusCode)} | - message: ${
+    info.res.message
+  } |\n`;
 
   return message;
 };
@@ -84,6 +86,4 @@ class LoggerService {
   }
 }
 
-const logger = new LoggerService();
-
-export default logger;
+export const logger = new LoggerService();

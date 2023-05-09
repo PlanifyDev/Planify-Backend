@@ -23,15 +23,18 @@ export const getAllPlans: type.myHandler<
         plans = data;
       })
       .catch((error) => {
-        return next(new NewError(error.message, 500));
+        return next(
+          new NewError("Error in get all plans from DB", error.message, 500)
+        );
       });
 
     // cache plans
     await cache.cachePlans(plans).catch((error) => {
-      return next(new NewError(error.message, 500));
+      return next(new NewError("Error in caching plans", error.message, 500));
     });
 
-    return res.status(200).json({ plans });
+    res.status(200).json({ plans });
+    return next(" all plans sent successfully");
   }
 };
 
@@ -49,7 +52,10 @@ export const getPlan: type.myHandlerWithParam<
       plan = data;
     })
     .catch((error) => {
-      return next(new NewError(error.message, 500));
+      return next(
+        new NewError("Error in get plan from DB", error.message, 500)
+      );
     });
   res.status(200).json({ plan });
+  return next(" plan sent successfully");
 };

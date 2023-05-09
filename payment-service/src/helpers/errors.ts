@@ -11,9 +11,11 @@ export enum ERRORS {
 }
 
 export class NewError extends Error {
+  errorObj: any;
   statusCode: number;
-  constructor(message: string, statusCode: number) {
+  constructor(message: string, errorObj: any, statusCode: number) {
     super(message);
+    this.errorObj = errorObj;
     this.statusCode = statusCode;
   }
 }

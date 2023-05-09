@@ -1,41 +1,23 @@
-import { createClient } from "redis";
-import { accessEnv } from "../helpers";
 import { Plan, UserCacheData } from "../contracts/types";
 import { PaymentCacheDao } from "./PaymentCacheDao";
-
-const env = accessEnv("ENV_CACHE").trim();
-
-let client;
-if (env === "prod") {
-  client = createClient({
-    url: accessEnv("REDIS_URL"),
-  });
-} else {
-  client = createClient({
-    url: accessEnv("REDIS_URL_LOCAL"),
-  });
-}
-
-(async () => {
-  try {
-    await client.connect();
-    console.log("Redis connected successfully ✅ ✅ ✅ ");
-    client.disconnect();
-  } catch (error) {
-    console.log(
-      "Error connecting to Redis ❌ ❌ ❌ ❌ ❌ ❌ ❌",
-      error.message
-    );
-  }
-})();
+import { logger, accessEnv } from "../helpers";
+import { REDIS } from "../connections";
 
 export class PaymentCache implements PaymentCacheDao {
+  // ------------- Singleton ----------------
+  private static instance: PaymentCache;
+  private constructor() {}
+  public static getInstance(): PaymentCache {
+    if (!PaymentCache.instance) {
+      PaymentCache.instance = new PaymentCache();
+    }
+    return PaymentCache.instance;
+  }
+
   // ------------- cache plans ----------------
   async cachePlans(plans: Plan[]): Promise<void> {
     try {
-      await client.connect();
-      await client
-        .set("plans", JSON.stringify(plans), "EX", 60 * 30 * 24)
+      await REDIS.set("plans", JSON.stringify(plans), "EX", 60 * 30 * 24)
         .then((value: any) => {
           return Promise.resolve();
         })
@@ -43,18 +25,15 @@ export class PaymentCache implements PaymentCacheDao {
           console.log(err);
           return Promise.reject(err);
         });
-      client.disconnect();
     } catch (error) {
-      console.log("Error connecting to Redis ❌ ❌ ❌ ");
+      logger.error("Error connecting to Redis:", error.message);
     }
   }
 
   // ------------- get plans from cache  ----------------
   async getCachedPlans(): Promise<any> {
     try {
-      await client.connect();
-      const plans = await client
-        .get("plans")
+      const plans = await REDIS.get("plans")
         .then((value: any) => {
           return Promise.resolve(value);
         })
@@ -62,50 +41,37 @@ export class PaymentCache implements PaymentCacheDao {
           console.log(err);
           return Promise.reject(err);
         });
-      client.disconnect();
       return plans;
     } catch (error) {
-      console.log("Error connecting to Redis ❌ ❌ ❌ ");
+      logger.error("Error connecting to Redis:", error.message);
     }
   }
 
   // ------------- update plan token in cache ----------------
   async updatePlanToken(user_id: string, user_plan: string): Promise<void> {
     try {
-      await client.connect();
-      await client
-        .hSet(user_id, "user_plan", user_plan)
+      await REDIS.hSet(user_id, "user_plan", user_plan)
         .then(() => {
           return Promise.resolve();
         })
         .catch((err: any) => {
           return Promise.reject(err);
         });
-      client.disconnect();
     } catch (error) {
-      console.log("Error connecting to Redis ❌ ❌ ❌ ");
+      logger.error("Error connecting to Redis:", error.message);
     }
   }
 
   // ------------- get user from cache  ----------------
   async getCachedUser(user_id: string): Promise<UserCacheData> {
     try {
-      await client.connect();
-      const user = await client
-        .hGetAll(user_id)
-        .then((value: any) => {
-          return Promise.resolve(value);
-        })
-        .catch((err: any) => {
-          console.log(err);
-          return Promise.reject(err);
-        });
-      client.disconnect();
-      return user;
+      const user = await REDIS.hGetAll(user_id);
+      return Promise.resolve(user);
     } catch (error) {
-      console.log("Error connecting to Redis ❌ ❌ ❌ ");
+      logger.error("Error connecting to Redis:", error.message);
+      return Promise.reject(error);
     }
   }
 }
 
-export const cache = new PaymentCache();
+export const cache: PaymentCacheDao = PaymentCache.getInstance();

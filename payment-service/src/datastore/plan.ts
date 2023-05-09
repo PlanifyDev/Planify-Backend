@@ -1,15 +1,25 @@
-import conn from "../connection";
+import { DB_CONN } from "../connections";
 import { PlanDao } from "./dao/planDao";
 import { Plan } from "../contracts/types";
 import { planQuery } from "./query";
 export class PlanDataStore implements PlanDao {
+  // ------------- Singleton ----------------
+  private static instance: PlanDataStore;
+  private constructor() {}
+  public static getInstance(): PlanDataStore {
+    if (!PlanDataStore.instance) {
+      PlanDataStore.instance = new PlanDataStore();
+    }
+    return PlanDataStore.instance;
+  }
+
   async createPlan(plan: Plan): Promise<void> {
     const newPlan: string[] = [];
     for (const key in plan) {
       newPlan.push(plan[key]);
     }
     try {
-      await conn.query(planQuery.createPlan, newPlan);
+      await DB_CONN.query(planQuery.createPlan, newPlan);
       return Promise.resolve();
     } catch (error) {
       return Promise.reject(error);
@@ -18,7 +28,7 @@ export class PlanDataStore implements PlanDao {
 
   async getPlan(plan_id: string): Promise<Plan> {
     try {
-      const plan = await conn.query(planQuery.getPlan, [plan_id]);
+      const plan = await DB_CONN.query(planQuery.getPlan, [plan_id]);
       return Promise.resolve(plan.rows[0]);
     } catch (error) {
       return Promise.reject(error);
@@ -27,7 +37,7 @@ export class PlanDataStore implements PlanDao {
 
   async geyAllPlans(): Promise<Plan[]> {
     try {
-      const allPlans = await conn.query(planQuery.geyAllPlans);
+      const allPlans = await DB_CONN.query(planQuery.geyAllPlans);
       return Promise.resolve(allPlans.rows);
     } catch (error) {
       return Promise.reject(error);
@@ -40,7 +50,7 @@ export class PlanDataStore implements PlanDao {
       newPlanList.push(newPlan[key]);
     }
     try {
-      await conn.query(planQuery.createPlan, newPlanList);
+      await DB_CONN.query(planQuery.createPlan, newPlanList);
       return Promise.resolve();
     } catch (error) {
       return Promise.reject(error);
@@ -49,7 +59,7 @@ export class PlanDataStore implements PlanDao {
 
   async deletePlan(plan_id: string): Promise<void> {
     try {
-      await conn.query(planQuery.deletePlan, [plan_id]);
+      await DB_CONN.query(planQuery.deletePlan, [plan_id]);
       Promise.resolve();
     } catch (error) {
       Promise.reject(error);
@@ -57,4 +67,4 @@ export class PlanDataStore implements PlanDao {
   }
 }
 
-export const dbPlan = new PlanDataStore();
+export const dbPlan = PlanDataStore.getInstance();

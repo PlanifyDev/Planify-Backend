@@ -1,26 +1,15 @@
-import * as type from "../contracts/types";
-import { createClient } from "redis";
-import { accessEnv } from "../helpers";
 import { cache } from "../cache";
-const env = accessEnv("ENV_CACHE").trim();
-
-let client;
-if (env === "prod") {
-  client = createClient({
-    url: accessEnv("REDIS_URL"),
-  });
-} else {
-  client = createClient({
-    url: accessEnv("REDIS_URL_LOCAL"),
-  });
-}
 
 export const authByCache = async (req, res, next) => {
   const token = req.headers.authorization;
+  const user_id = req.headers.id;
 
-  const { user_id } = req.body;
   if (!token) {
     return res.status(401).send({ error: "Bad token" });
+  }
+
+  if (!user_id) {
+    return res.status(401).send({ error: "user_id is missing" });
   }
 
   const user = await cache.getCachedUser(user_id);

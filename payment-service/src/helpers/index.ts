@@ -4,3 +4,4 @@ export * from "./sendEmail";
 export * from "./paypalConfig";
 export * from "./invoicePyment";
 export * from "./jwt";
+export * from "./loggerService";

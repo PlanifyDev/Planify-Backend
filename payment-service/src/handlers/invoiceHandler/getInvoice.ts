@@ -16,9 +16,12 @@ export const getAllInvoices: type.myHandler<
       invoices = data;
     })
     .catch((error) => {
-      return next(new NewError(error.message, 500));
+      return next(
+        new NewError("Error in get all invoices from DB", error.message, 500)
+      );
     });
   res.status(200).json({ invoices });
+  return next(" all invoices sent successfully");
 };
 
 // ------------------ Get single invoice --------------------
@@ -35,9 +38,12 @@ export const getInvoice: type.myHandlerWithParam<
       invoice = data;
     })
     .catch((error) => {
-      return next(new NewError(error.message, 500));
+      return next(
+        new NewError("Error in get invoice from DB", error.message, 500)
+      );
     });
   res.status(200).json({ invoice });
+  return next(" invoice sent successfully");
 };
 
 // ------------------ Delete invoice --------------------
@@ -49,7 +55,10 @@ export const deleteInvoice: type.myHandlerWithParam<
   const { payment_id } = req.params;
 
   await dbPayment.deletePayment(payment_id).catch((error) => {
-    return next(new NewError(error.message, 500));
+    return next(
+      new NewError("Error in delete invoice from DB", error.message, 500)
+    );
   });
   res.sendStatus(200);
+  return next(" invoice deleted successfully");
 };
