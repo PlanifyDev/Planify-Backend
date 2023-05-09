@@ -1,19 +1,4 @@
-import * as type from "../contracts/types";
-import { createClient } from "redis";
-import { accessEnv } from "../helpers";
 import { cache } from "../cache";
-const env = accessEnv("ENV_CACHE").trim();
-
-let client;
-if (env === "prod") {
-  client = createClient({
-    url: accessEnv("REDIS_URL"),
-  });
-} else {
-  client = createClient({
-    url: accessEnv("REDIS_URL_LOCAL"),
-  });
-}
 
 export const authByCache = async (req, res, next) => {
   const token = req.headers.authorization;
