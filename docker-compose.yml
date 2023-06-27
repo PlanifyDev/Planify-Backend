@@ -74,6 +74,16 @@ services:
       palnify-network:
         ipv4_address: 172.25.0.6
 
+  ai:
+    container_name: planify-ai
+    image: mosta1489/ai:latest
+    # build: ./ai-service
+    ports:
+      - "50051:50051"
+    networks:
+      palnify-network:
+        ipv4_address: 172.25.0.7
+
   nginx:
     image: nginx
     container_name: planify-nginx
@@ -87,7 +97,7 @@ services:
       - design
     networks:
       palnify-network:
-        ipv4_address: 172.25.0.7
+        ipv4_address: 172.25.0.8
 
 networks:
   palnify-network:
